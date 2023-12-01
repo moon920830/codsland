@@ -24,9 +24,15 @@ export default function CustomInput(props) {
     error,
     white,
     inputRootCustomClasses,
-    success
+    success,
+    onChange
   } = props;
-
+  const handleInputChange = (e) => {
+    // console.log('CustomInput onChange:', e.target.value);
+    if (onChange) {
+      onChange(e);
+    }
+  };
   const labelClasses = classNames({
     [" " + classes.labelRootError]: error,
     [" " + classes.labelRootSuccess]: success && !error
@@ -65,6 +71,7 @@ export default function CustomInput(props) {
         </InputLabel>
       ) : null}
       <Input
+        onChange={handleInputChange}
         classes={{
           input: inputClasses,
           root: marginTop,

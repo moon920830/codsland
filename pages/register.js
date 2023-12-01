@@ -156,6 +156,7 @@ export default function RegisterPage(props) {
                         checked: classes.radio,
                         root: classes.radioRoot
                       }}
+                      color="primary"
                     />
                   }
                   classes={{
@@ -182,6 +183,7 @@ export default function RegisterPage(props) {
                         checked: classes.radio,
                         root: classes.radioRoot
                       }}
+                      color="primary"
                     />
                   }
                   classes={{

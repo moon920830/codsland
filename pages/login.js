@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from 'react';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -16,6 +17,8 @@ import CardHeader from "/components/Card/CardHeader.js";
 import CardFooter from "/components/Card/CardFooter.js";
 import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
+import { useDispatch } from 'react-redux';
+import actions from '../redux/actions';
 
 
 import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
@@ -45,6 +48,15 @@ const useStyles = makeStyles((styles) => ({
 }));
 
 export default function LoginPage(props) {
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleEmailChange = (e) => {
+    console.log('Email changed:', e.target.value);
+  };
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   setTimeout(function () {
     setCardAnimation("");
@@ -52,6 +64,11 @@ export default function LoginPage(props) {
   const classes = useStyles();
   const { ...rest } = props;
   const matchesSm = useMediaQuery('(max-width:600px)');
+  const handleSubmit = e => {
+    console.log(password + email);
+    e.preventDefault();
+    dispatch(actions.authenticate({ email, password }, 'login'));
+  };
   return (
     <GridContainer sm={12}>
       { !matchesSm ? (
@@ -65,7 +82,7 @@ export default function LoginPage(props) {
         <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]}>
-            <form className={classes.form}>
+            <form className={classes.form} onSubmit={handleSubmit}>
               <CardHeader color="primary" className={classes.cardHeader}>
                 <img
                   src="/img/auth-logo.png"
@@ -85,6 +102,7 @@ export default function LoginPage(props) {
                 <CustomInput
                   labelText="Email..."
                   id="email"
+                  onChange={handleEmailChange}
                   formControlProps={{
                     fullWidth: true
                   }}
@@ -97,12 +115,14 @@ export default function LoginPage(props) {
                     )
                   }}
                 />
+
                 <CustomInput
                   labelText="Password"
                   id="pass"
                   formControlProps={{
                     fullWidth: true
                   }}
+                  onChange={handlePasswordChange}
                   inputProps={{
                     type: "password",
                     endAdornment: (
@@ -117,7 +137,7 @@ export default function LoginPage(props) {
                 />
               </CardBody>
               <CardFooter className={classes.cardFooter}>
-                <Button round color="primary" size="lg">
+                <Button type="submit" round color="primary" size="lg">
                   Sign In
                 </Button>
                 <a>Forget Password?</a>

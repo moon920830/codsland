@@ -58,8 +58,17 @@ import YouTubeIcon from '@material-ui/icons/YouTube';
 
 
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
+import { Container } from "@material-ui/core";
 
-const useStyles = makeStyles((styles));
+const useStyles = makeStyles(theme=>{return{
+  ...styles,
+  slideCard:{
+    backgroundColor:"#F5F5F5",
+    width:"90%",
+    marginLeft:"auto",
+    marginRight:"auto"
+  }
+}});
 
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
@@ -157,7 +166,6 @@ export default function Components(props) {
     speed: 500,
     dots: true,
     autoplay: true,
-
   };
   return (
     <div>
@@ -190,19 +198,20 @@ export default function Components(props) {
       </Parallax>
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.sections}>
-        <div className={classes.container}>
+          <Container maxWidth={false} style={{maxWidth:"80%"}} >
+        {/* <div className={classes.container}> */}
           <GridContainer justify="center">
             <GridItem xs={12} sm={6}>            
                 <h4 className={classes.title} style={{color: '#2E3192'}}>coDS HEALING</h4>
                 <h1 className={classes.title}>Who <span style={{color: '#2E3192'}}>We Are </span></h1>
                 <Carousel {...settings}>
-                <div>
-                  <p>The Church of Divine Structure is a worldwide healing community with its headquarters in Okanogan County, Washington. We are affiliated with the Eastern Orthodox Catholic Church. </p>
-                  <p>Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.</p>
+                <div  >
+                  <p style={{fontSize:"20px",lineHeight:"200%"}}>The Church of Divine Structure is a worldwide healing community with its headquarters in Okanogan County, Washington. We are affiliated with the Eastern Orthodox Catholic Church. </p>
+                  <p style={{fontSize:"20px",lineHeight:"200%"}}>Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.</p>
                 </div>
                 <div>
-                <p>The Church of Divine Structure is a worldwide healing community with its headquarters in Okanogan County, Washington. We are affiliated with the Eastern Orthodox Catholic Church. </p>
-                  <p>Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.</p>
+                  <p style={{fontSize:"20px",lineHeight:"200%"}}>The Church of Divine Structure is a worldwide healing community with its headquarters in Okanogan County, Washington. We are affiliated with the Eastern Orthodox Catholic Church. </p>
+                  <p style={{fontSize:"20px",lineHeight:"200%"}}>Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.</p>
                 </div>
               </Carousel>
             </GridItem>
@@ -226,11 +235,11 @@ export default function Components(props) {
                 <Card>
                     <CardBody>
                         <GridContainer>
-                            <GridItem sm={7}>
+                            <GridItem sm={8}>
                                 <h3 className={classes.title}>Service</h3>
-                                <p>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                                <p style={{fontSize:"20px",lineHeight:"200%"}}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
                             </GridItem>
-                            <GridItem sm={5}>
+                            <GridItem sm={4}>
                                 <GridContainer style={{justifyContent: "end"}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="140" height="103" viewBox="0 0 140 103" fill="none">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5756 14.8384C20.1646 5.74161 31.0049 0.48999 43.8655 0.48999C56.7262 0.48999 67.5664 5.74161 75.1554 14.8384C82.718 23.9035 86.9515 36.656 86.9515 51.5674C86.9515 66.4395 83.0553 79.0468 75.6336 87.9763C68.1736 96.9519 57.3134 102.011 43.8655 102.011C30.4176 102.011 19.5575 96.9519 12.0974 87.9763C4.67573 79.0468 0.779541 66.4395 0.779541 51.5674C0.779541 36.656 5.01301 23.9035 12.5756 14.8384ZM30.3607 73.0777C33.4662 77.5201 37.96 79.7699 43.8655 79.7699C49.771 79.7699 54.2649 77.5201 57.3704 73.0777C60.5563 68.5204 62.4276 61.4386 62.4276 51.5674C62.4276 41.3679 60.5523 34.1252 57.3616 29.4894C54.2557 24.9768 49.7674 22.7306 43.8655 22.7306C37.9636 22.7306 33.4754 24.9768 30.3694 29.4894C27.1788 34.1252 25.3035 41.3679 25.3035 51.5674C25.3035 61.4386 27.1748 68.5204 30.3607 73.0777ZM94.1108 24.8871V2.26586H139.311V100.362H115.421V24.8871H94.1108ZM117.535 22.7729V98.2474H137.197V4.37999H96.2249V22.7729H117.535ZM43.8655 2.60412C19.3839 2.60412 2.89367 22.5192 2.89367 51.5674C2.89367 80.6155 18.1154 99.8964 43.8655 99.8964C69.6156 99.8964 84.8374 80.6155 84.8374 51.5674C84.8374 22.5192 68.3472 2.60412 43.8655 2.60412ZM43.8655 81.884C30.8002 81.884 23.1893 71.7362 23.1893 51.5674C23.1893 30.7643 30.8002 20.6165 43.8655 20.6165C56.9309 20.6165 64.5417 30.7643 64.5417 51.5674C64.5417 71.7362 56.9309 81.884 43.8655 81.884Z" fill="#D5ECFD"/>
@@ -257,11 +266,11 @@ export default function Components(props) {
                 <Card style={{backgroundColor: "#D5ECFD"}}>
                     <CardBody>
                         <GridContainer>
-                            <GridItem sm={7}>
+                            <GridItem sm={8}>
                                 <h3 className={classes.title}>Service</h3>
-                                <p>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                                <p style={{fontSize:"20px",lineHeight:"200%"}}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
                             </GridItem>
-                            <GridItem sm={5}>
+                            <GridItem sm={4}>
                                 <GridContainer style={{justifyContent: "end"}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="167" height="103" viewBox="0 0 167 103" fill="none">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5711 14.8384C20.1601 5.74161 31.0004 0.48999 43.861 0.48999C56.7217 0.48999 67.5619 5.74161 75.1509 14.8384C82.7135 23.9035 86.947 36.656 86.947 51.5674C86.947 66.4395 83.0508 79.0468 75.6291 87.9763C68.169 96.9519 57.3089 102.011 43.861 102.011C30.4131 102.011 19.553 96.9519 12.0929 87.9763C4.67122 79.0468 0.775024 66.4395 0.775024 51.5674C0.775024 36.656 5.00849 23.9035 12.5711 14.8384ZM30.3561 73.0777C33.4616 77.5201 37.9555 79.7699 43.861 79.7699C49.7665 79.7699 54.2604 77.5201 57.3659 73.0777C60.5517 68.5204 62.4231 61.4386 62.4231 51.5674C62.4231 41.3679 60.5477 34.1252 57.3571 29.4894C54.2512 24.9768 49.7629 22.7306 43.861 22.7306C37.9591 22.7306 33.4708 24.9768 30.3649 29.4894C27.1743 34.1252 25.2989 41.3679 25.2989 51.5674C25.2989 61.4386 27.1703 68.5204 30.3561 73.0777ZM166.959 100.1L95.7553 100.37V82.0344L127.477 55.6429C137.414 47.4672 140.913 42.1805 140.913 35.4577C140.913 31.021 139.818 27.9542 138.065 26.0134C136.343 24.1069 133.712 22.9843 129.962 22.9843C126.098 22.9843 123.278 24.2785 121.384 26.5287C119.446 28.8313 118.25 32.4062 118.25 37.3604V39.4745H93.5989V37.3604C93.5989 26.3762 97.1141 17.1221 103.512 10.605C109.913 4.08395 119.018 0.48999 129.835 0.48999C140.917 0.48999 150.048 3.47615 156.427 9.32232C162.832 15.192 166.198 23.7021 166.198 34.1892C166.198 47.9559 157.855 58.8966 146.034 68.7902C146.034 68.7904 146.033 68.7907 146.033 68.7909L136.411 76.8524H166.959V100.1ZM130.596 78.9665L144.676 67.1697C156.346 57.4024 164.084 47.0009 164.084 34.1892C164.084 14.1473 151.272 2.60412 129.835 2.60412C109.859 2.60412 96.6322 15.3913 95.7591 35.2463C95.7285 35.9424 95.713 36.6472 95.713 37.3604H116.136C116.136 26.8321 121.209 20.8702 129.962 20.8702C138.334 20.8702 143.027 25.9441 143.027 35.4577C143.027 43.1954 138.841 49.0304 128.82 57.2755L97.8694 83.0257V98.2474L164.845 97.9937V78.9665H130.596ZM43.861 2.60412C19.3794 2.60412 2.88915 22.5192 2.88915 51.5674C2.88915 80.6155 18.1109 99.8964 43.861 99.8964C69.6111 99.8964 84.8329 80.6155 84.8329 51.5674C84.8329 22.5192 68.3426 2.60412 43.861 2.60412ZM43.861 81.884C30.7957 81.884 23.1848 71.7362 23.1848 51.5674C23.1848 30.7643 30.7957 20.6165 43.861 20.6165C56.9263 20.6165 64.5372 30.7643 64.5372 51.5674C64.5372 71.7362 56.9263 81.884 43.861 81.884Z" fill="white" fillOpacity="0.5"/>
@@ -290,11 +299,11 @@ export default function Components(props) {
                 <Card  style={{backgroundColor: "#D5ECFD"}}>
                     <CardBody>
                         <GridContainer>
-                            <GridItem sm={7}>
+                            <GridItem sm={8}>
                                 <h3 className={classes.title}>Service</h3>
-                                <p>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                                <p style={{fontSize:"20px",lineHeight:"200%"}}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
                             </GridItem>
-                            <GridItem sm={5}>
+                            <GridItem sm={4}>
                                 <GridContainer style={{justifyContent: "end"}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="164" height="103" viewBox="0 0 164 103" fill="none">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0902 14.9226C19.6793 5.82583 30.5195 0.574219 43.3802 0.574219C56.2408 0.574219 67.0811 5.82583 74.6701 14.9226C82.2327 23.9877 86.4661 36.7403 86.4661 51.6516C86.4661 66.5237 82.5699 79.131 75.1483 88.0605C67.6882 97.0361 56.8281 102.095 43.3802 102.095C29.9322 102.095 19.0721 97.0361 11.6121 88.0605C4.19038 79.131 0.294189 66.5237 0.294189 51.6516C0.294189 36.7403 4.52766 23.9877 12.0902 14.9226ZM29.8753 73.1619C32.9808 77.6043 37.4747 79.8541 43.3802 79.8541C49.2856 79.8541 53.7795 77.6043 56.885 73.1619C60.0709 68.6046 61.9422 61.5229 61.9422 51.6516C61.9422 41.4521 60.0669 34.2094 56.8763 29.5737C53.7703 25.061 49.2821 22.8149 43.3802 22.8149C37.4783 22.8149 32.99 25.061 29.8841 29.5737C26.6934 34.2094 24.8181 41.4521 24.8181 51.6516C24.8181 61.5229 26.6894 68.6046 29.8753 73.1619ZM108.847 56.3027V40.1207L109.466 39.5015C109.701 39.2664 109.932 39.094 110.055 39.0017L110.073 38.988C110.207 38.8878 110.221 38.8741 110.227 38.8676L110.277 38.8178L126.522 24.5907H94.6402V2.35008H160.009V21.7846L142.216 37.4103C153.986 42.1722 163.18 52.5629 163.18 68.1418C163.18 89.3842 145.942 102.095 126.056 102.095C116.507 102.095 107.572 99.1759 100.995 93.3317C94.3834 87.4568 90.3274 78.7753 90.3274 67.6344V65.5203H114.851V67.6344C114.851 71.8345 116.107 74.7948 118.044 76.7057C119.987 78.6233 122.861 79.7273 126.564 79.7273C130.065 79.7273 132.857 78.5424 134.774 76.5877C136.692 74.6304 137.895 71.7338 137.895 68.015C137.895 64.6646 136.934 61.7961 134.96 59.771C133.001 57.7615 129.771 56.3027 124.661 56.3027H108.847ZM140.426 38.9827C139.663 38.6996 138.89 38.4406 138.107 38.2057L157.895 20.8276V4.46422H96.7544V22.4766H132.145L111.722 40.3621C111.596 40.489 111.469 40.5841 111.342 40.6793C111.215 40.7744 111.088 40.8695 110.961 40.9964V54.1886H124.661C135.697 54.1886 140.009 60.531 140.009 68.015C140.009 76.3869 134.555 81.8414 126.564 81.8414C118.318 81.8414 112.737 76.8943 112.737 67.6344H92.4415C92.4415 68.3506 92.4591 69.0554 92.4937 69.7486C93.4827 89.56 108.408 99.9806 126.056 99.9806C145.083 99.9806 161.066 87.9301 161.066 68.1418C161.066 53.1454 152.021 43.286 140.426 38.9827ZM43.3802 2.68835C18.8985 2.68835 2.40832 22.6035 2.40832 51.6516C2.40832 80.6998 17.6301 99.9806 43.3802 99.9806C69.1303 99.9806 84.352 80.6998 84.352 51.6516C84.352 22.6035 67.8618 2.68835 43.3802 2.68835ZM43.3802 81.9682C30.3148 81.9682 22.704 71.8204 22.704 51.6516C22.704 30.8486 30.3148 20.7007 43.3802 20.7007C56.4455 20.7007 64.0564 30.8486 64.0564 51.6516C64.0564 71.8204 56.4455 81.9682 43.3802 81.9682Z" fill="white" fillOpacity="0.5"/>
@@ -321,11 +330,11 @@ export default function Components(props) {
                 <Card>
                     <CardBody>
                         <GridContainer>
-                            <GridItem sm={7}>
+                            <GridItem sm={8}>
                                 <h3 className={classes.title}>Service</h3>
-                                <p>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                                <p style={{fontSize:"20px",lineHeight:"200%"}}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
                             </GridItem>
-                            <GridItem sm={5}>
+                            <GridItem sm={4}>
                                 <GridContainer style={{justifyContent: "end"}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="174" height="102" viewBox="0 0 174 102" fill="none">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M11.8319 14.5503C19.421 5.45352 30.2612 0.201904 43.1219 0.201904C55.9825 0.201904 66.8228 5.45352 74.4118 14.5503C81.9744 23.6154 86.2079 36.368 86.2079 51.2793C86.2079 66.1514 82.3117 78.7587 74.89 87.6882C67.4299 96.6638 56.5698 101.722 43.1219 101.722C29.6739 101.722 18.8138 96.6638 11.3538 87.6882C3.93208 78.7587 0.0358887 66.1514 0.0358887 51.2793C0.0358887 36.368 4.26936 23.6154 11.8319 14.5503ZM29.617 72.7896C32.7225 77.232 37.2164 79.4818 43.1219 79.4818C49.0273 79.4818 53.5212 77.232 56.6267 72.7896C59.8126 68.2323 61.6839 61.1505 61.6839 51.2793C61.6839 41.0798 59.8086 33.8371 56.618 29.2013C53.512 24.6887 49.0238 22.4426 43.1219 22.4426C37.22 22.4426 32.7317 24.6887 29.6258 29.2013C26.4351 33.8371 24.5598 41.0798 24.5598 51.2793C24.5598 61.1505 26.4311 68.2323 29.617 72.7896ZM173.45 83.4564H161.907V100.073H138.271V83.4564H91.5913V62.6767L133.054 1.97777H161.907V61.2157H173.45V83.4564ZM159.793 63.3298V4.0919H134.17L93.7054 63.3298V81.3422H140.385V97.9593H159.793V81.3422H171.336V63.3298H159.793ZM140.385 63.3298H115.523L140.385 26.7977V63.3298ZM138.271 33.6618L119.519 61.2157H138.271V33.6618ZM43.1219 2.31603C18.6402 2.31603 2.15002 22.2311 2.15002 51.2793C2.15002 80.3274 17.3718 99.6083 43.1219 99.6083C68.872 99.6083 84.0937 80.3274 84.0937 51.2793C84.0937 22.2311 67.6035 2.31603 43.1219 2.31603ZM43.1219 81.5959C30.0565 81.5959 22.4457 71.4481 22.4457 51.2793C22.4457 30.4763 30.0565 20.3284 43.1219 20.3284C56.1872 20.3284 63.7981 30.4763 63.7981 51.2793C63.7981 71.4481 56.1872 81.5959 43.1219 81.5959Z" fill="#D5ECFD"/>
@@ -368,7 +377,7 @@ export default function Components(props) {
             <GridItem sm={4}>
                 <Card style={{backgroundColor: "#F8F8F8", marginTop:"150px"}}>
                     <CardBody>
-                        <img src="/img/airbuds.png" alt="..." style={{width:"100%", marginTop: "-150px"}}></img>
+                        <img src="/img/airbuds.png" alt="..." style={{width:"auto",height:"25vh", marginTop: "-150px"}}></img>
                         <h3 className={classes.title} style={{color: "#2E3192"}}>Air Buds</h3>
                         <p>Air Buds are designed to replace electronic ear buds.</p>
                         <Rating name="read-only" value={4} readOnly />
@@ -383,7 +392,7 @@ export default function Components(props) {
             <GridItem sm={4}>
                 <Card style={{backgroundColor: "#F8F8F8", marginTop:"150px"}}>
                     <CardBody>
-                        <img src="img/bioprotein.png" alt="..." style={{width:"100%", marginTop: "-150px", height:"290px"}}></img>
+                        <img src="img/bioprotein.png" alt="..." style={{width:"auto",height:"25vh", marginTop: "-150px"}}></img>
                         <h3 className={classes.title} style={{color: "#2E3192"}}>BioProtein-Plus</h3>
                         <p>Air Buds are designed to replace electronic ear buds.</p>
                         <Rating name="read-only" value={4} readOnly />
@@ -398,7 +407,7 @@ export default function Components(props) {
             <GridItem sm={4}>
                 <Card style={{backgroundColor: "#F8F8F8", marginTop:"150px"}}>
                     <CardBody>
-                        <img src="/img/grander.png" alt="..." style={{width:"100%", marginTop: "-150px", height:"290px"}}></img>
+                        <img src="/img/grander.png" alt="..." style={{width:"auto",height:"25vh", marginTop: "-150px"}}></img>
                         <h3 className={classes.title} style={{color: "#2E3192"}}>Grander Penergizer</h3>
                         <p>Air Buds are designed to replace electronic ear buds.</p>
                         <Rating name="read-only" value={4} readOnly />
@@ -417,13 +426,33 @@ export default function Components(props) {
           {/* Our Story */}
 
           <GridContainer style={{marginTop: "50px", backgroundColor:"#F8F8F8"}}>
-            <GridItem sm={6}>
+            <GridItem sm={5}>
               <img src="/img/yellowdean.png" style={{width: "100%"}}></img>
+            </GridItem>
+            <GridItem sm={1} >
+              <div style={{
+                width:"20%",
+                backgroundColor:"#2E3192",
+                height:"8vh",
+                marginTop:"10vh",
+                marginLeft:"auto",
+                marginRight:"auto",
+                borderRadius:"10px"
+              }} ></div>
+              <div style={{
+                width:"20%",
+                backgroundColor:"#dddddd",
+                height:"50vh",
+                marginTop:"4vh",
+                marginLeft:"auto",
+                marginRight:"auto",
+                borderRadius:"10px"
+              }} ></div>
             </GridItem>
             <GridItem sm={6}>
               <h1 className={classes.title}>OUR<span style={{color: '#2E3192'}}> Story</span></h1>
               <h2 className={classes.title}>Our Journey</h2>
-              <p>
+              <p style={{lineHeight:"200%",fontSize:"18px"}} >
                 Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.
                 The healing services of the Church Of Divine Structure are delivered all over the world by our sanctified ministers and deacons. The main two healers, Rev Dr Howell and Rev Rebecca, come back for rest and recovery to the CoDS’ headquarters in the Okanogan highlands in north-central Washington.
                 Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.
@@ -445,9 +474,9 @@ export default function Components(props) {
           <GridContainer justify="center">
             <h2 className={classes.title}>What Our Clients Say <span style={{color: '#2E3192'}}>About Us  </span></h2>
           </GridContainer>
-          <Slider {...testimonial_settings}>
+          <Slider spac {...testimonial_settings}>
             <div>
-              <Card style={{backgroundColor:"#F5F5F5"}}>
+              <Card className={classes.slideCard}>
                 <CardBody>
                   <GridContainer>
                   <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
@@ -465,7 +494,7 @@ export default function Components(props) {
               </Card>
             </div>
             <div>
-              <Card style={{backgroundColor:"#F5F5F5"}}>
+              <Card className={classes.slideCard}>
                 <CardBody>
                   <GridContainer>
                   <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
@@ -483,7 +512,7 @@ export default function Components(props) {
               </Card>
             </div>
             <div>
-              <Card style={{backgroundColor:"#F5F5F5"}}>
+              <Card className={classes.slideCard}>
                 <CardBody>
                   <GridContainer>
                   <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
@@ -501,7 +530,7 @@ export default function Components(props) {
               </Card>
             </div>
             <div>
-              <Card style={{backgroundColor:"#F5F5F5"}}>
+              <Card className={classes.slideCard}>
                 <CardBody>
                   <GridContainer>
                   <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
@@ -967,7 +996,7 @@ export default function Components(props) {
             <Card>
               <CardBody>
                 <GridContainer>
-                  <GridItem sm={6} style={{backgroundColor: "#1D1D1E"}}>
+                  <GridItem sm={6} style={{backgroundColor: "#1D1D1E",borderRadius:"5px"}}>
                     <h3 className={classes.title} style={{color:"white"}}>Contact Information</h3>
                     <h6 className={classes.title} style={{color:"white"}}>Say something to start a live chat!</h6>
                     <GridContainer style={{color:"white", marginLeft: "0px", marginTop: "100px"}}><PhoneIcon></PhoneIcon><p style={{marginBottom: "10px"}}>&nbsp;&nbsp;+1012 3456 789</p></GridContainer>
@@ -1071,6 +1100,7 @@ export default function Components(props) {
                               checked: classes.radio,
                               root: classes.radioRoot
                             }}
+                            color="primary"
                           />
                         }
                         classes={{
@@ -1097,6 +1127,7 @@ export default function Components(props) {
                               checked: classes.radio,
                               root: classes.radioRoot
                             }}
+                            color="primary"
                           />
                         }
                         classes={{
@@ -1108,8 +1139,8 @@ export default function Components(props) {
                       <FormControlLabel
                         control={
                           <Radio
-                            checked={selectedEnabled === "a"}
-                            onChange={() => setSelectedEnabled("a")}
+                            checked={selectedEnabled === "c"}
+                            onChange={() => setSelectedEnabled("c")}
                             value="b"
                             name="radio button enabled"
                             aria-label="B"
@@ -1123,6 +1154,7 @@ export default function Components(props) {
                               checked: classes.radio,
                               root: classes.radioRoot
                             }}
+                            color="primary"
                           />
                         }
                         classes={{
@@ -1185,7 +1217,8 @@ export default function Components(props) {
           </GridContainer>
 
           {/* Footer */}
-        </div>   
+        {/* </div> */}
+        </Container>   
         </div> 
       </div>
       <Footer />
