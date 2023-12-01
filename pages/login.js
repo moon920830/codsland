@@ -20,7 +20,6 @@ import Link from 'next/link'
 import { useDispatch } from 'react-redux';
 import actions from '../redux/actions';
 
-
 import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
 
 const useStyles = makeStyles((styles) => ({

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AUTHENTICATE, DEAUTHENTICATE } from '../types/authTypes';
 import { setCookie, removeCookie } from '../../utils/cookie';
 import { createError, removeError } from './errorActions';
+import {BACKEND_URL} from '../../AppConfigs'
 
 // gets token from the api and stores it in the redux store and in a cookie
 const authenticate = ({ email, password }, type) => {
@@ -14,7 +15,7 @@ const authenticate = ({ email, password }, type) => {
     try {
       const {
         data: { token },
-      } = await axios.post(`http://localhost:8000/auth/signin`, formData);
+      } = await axios.post(`${BACKEND_URL}/auth/signin`, formData);
       // const token = "djaojnhh234234";
       
       setCookie('token', token);
