@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from 'react';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -23,10 +24,14 @@ import Link from 'next/link'
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
-
-
-import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
-
+import axios from 'axios';
+import Datetime from "react-datetime";
+import {BACKEND_URL} from '../AppConfigs'
+import {useSnackbar} from 'notistack'
+import Router from 'next/router'
+import { FormControl } from "@material-ui/core";
+import { CalendarToday } from "@material-ui/icons";
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 const useStyles = makeStyles((styles) => ({
   authlogoNavigation: {
     position: 'relative',
@@ -59,7 +64,46 @@ export default function RegisterPage(props) {
   const classes = useStyles();
   const { ...rest } = props;
   const matchesSm = useMediaQuery('(max-width:600px)');
-  const [selectedEnabled, setSelectedEnabled] = React.useState("b");
+  const [selectedEnabled, setSelectedEnabled] = React.useState("male");
+  const snackbar=useSnackbar();
+  const [date, setDate] = useState('');
+  const handleDateChange = (e) => {
+    const selectedDate =  e._d;
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth() + 1; // Adding 1 because months are zero-indexed
+    const day = selectedDate.getDate();
+    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`; 
+    console.log(formattedDate);
+    setDate(formattedDate);
+  };
+  const renderInput = (props, openCalendar, closeCalendar) => (
+    <div className="input-container">
+      <input {...props} />
+      <CalendarTodayIcon className="calendar-icon" onClick={openCalendar} />
+    </div>
+  );
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+    const fullname=e.target.fullname.value;
+    const email=e.target.email.value;
+    const password=e.target.password.value;
+    // const birthday=e.target.birthday.value;
+    const city=e.target.city.value;
+    const country=e.target.country.value;
+    if(!fullname||!email||!password) return snackbar.enqueueSnackbar("Unvalid Input",{variant:"error"}) ;
+    axios.post(`${BACKEND_URL}/auth/signup`,{
+      fullname:fullname,
+      email:email,
+      password:password,
+      city:city,
+      birthday:date,
+      country:country,
+    }).then(response=>{
+      if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
+      snackbar.enqueueSnackbar("Success",{variant:"success"});
+      return Router.push("/")
+    })
+  }
   return (
     <GridContainer sm={12}>
       { !matchesSm ? (
@@ -73,7 +117,7 @@ export default function RegisterPage(props) {
         <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]} style={{marginBottom: "-30px"}}>
-            <form className={classes.form}>
+            <form className={classes.form} onSubmit={handleSubmit} >
               <CardHeader color="primary" className={classes.cardHeader}>
                 <img
                   src="/img/auth-logo.png"
@@ -102,7 +146,8 @@ export default function RegisterPage(props) {
                       <InputAdornment position="end">
                         <PersonOutlineIcon className={classes.inputIconsColor} />
                       </InputAdornment>
-                    )
+                    ),
+                    name:"fullname"
                   }}
                 />
                 <CustomInput
@@ -117,7 +162,8 @@ export default function RegisterPage(props) {
                       <InputAdornment position="end">
                         <Email className={classes.inputIconsColor} />
                       </InputAdornment>
-                    )
+                    ),
+                    name:"email"
                   }}
                 />
                 <CustomInput
@@ -135,14 +181,15 @@ export default function RegisterPage(props) {
                         </Icon>
                       </InputAdornment>
                     ),
-                    autoComplete: "off"
+                    autoComplete: "off",
+                    name:"password"
                   }}
                 />
                 <FormControlLabel
                   control={
                     <Radio
-                      checked={selectedEnabled === "a"}
-                      onChange={() => setSelectedEnabled("a")}
+                      checked={selectedEnabled === "male"}
+                      onChange={() => setSelectedEnabled("male")}
                       value="a"
                       name="radio button enabled"
                       aria-label="A"
@@ -168,8 +215,8 @@ export default function RegisterPage(props) {
                 <FormControlLabel
                   control={
                     <Radio
-                      checked={selectedEnabled === "b"}
-                      onChange={() => setSelectedEnabled("b")}
+                      checked={selectedEnabled === "female"}
+                      onChange={() => setSelectedEnabled("female")}
                       value="b"
                       name="radio button enabled"
                       aria-label="B"
@@ -192,20 +239,13 @@ export default function RegisterPage(props) {
                   }}
                   label="Female"
                 />
-                <CustomInput
-                  labelText="Date of Birth..."
-                  id="birth"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <DateRangeIcon className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    )
-                  }}
+                <Datetime
+                  inputProps={{ placeholder: "Datetime Picker Here" }}
+                  dateFormat={"YYYY-MM-DD"}
+                  timeFormat={false}
+                  onChange={handleDateChange}
+                  renderInput={renderInput}
+                  // style={{display: "flex"}}
                 />
                 <CustomInput
                   labelText="City..."
@@ -219,7 +259,8 @@ export default function RegisterPage(props) {
                       <InputAdornment position="end">
                         <LocationCityIcon className={classes.inputIconsColor} />
                       </InputAdornment>
-                    )
+                    ),
+                    name:"city"
                   }}
                 />
                 <CustomInput
@@ -234,12 +275,13 @@ export default function RegisterPage(props) {
                       <InputAdornment position="end">
                         <LanguageIcon className={classes.inputIconsColor} />
                       </InputAdornment>
-                    )
+                    ),
+                    name:"country"
                   }}
                 />
               </CardBody>
               <CardFooter className={classes.cardFooter}>
-                <Button round color="primary" size="lg">
+                <Button type="submit" round color="primary" size="lg">
                   Sign Up
                 </Button>
                 <p>Already have an Account? <Link href="/login">Login</Link> </p>

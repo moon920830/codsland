@@ -151,7 +151,8 @@ export default function Components(props) {
           height: i === currentSlide ? "20px" : "20px",
           border: "1px solid black",
           borderRadius: '100%',
-          backgroundColor: i === currentSlide ? 'black' : 'white',
+          borderColor:"#2E3192",
+          backgroundColor: i === currentSlide ? '#2E3192' : 'white',
           padding: "5px"
         }}
       >
@@ -567,7 +568,7 @@ export default function Components(props) {
             {/* Membership */}
 
             <GridContainer justify="center" style={{ marginTop: "50px" }}>
-              <h4 className={classes.title} style={{ color: '#2E3192' }}>coDS island</h4>
+              <h4 className={classes.title} style={{ color: '#2E3192' }}>CODS ISLAND</h4>
             </GridContainer>
             <GridContainer justify="center">
               <h2 className={classes.title}>Our <span style={{ color: '#2E3192' }}>Pricing & Membership</span></h2>
@@ -1001,7 +1002,7 @@ export default function Components(props) {
             {/* Contact US */}
 
             <GridContainer justify="center" style={{ marginTop: "50px" }}>
-              <h4 className={classes.title} style={{ color: '#2E3192' }}>coDS island</h4>
+              <h4 className={classes.title} style={{ color: '#2E3192' }}>CODS ISLAND</h4>
             </GridContainer>
             <GridContainer justify="center">
               <h2 className={classes.title}>Contact  <span style={{ color: '#2E3192' }}>Us </span></h2>

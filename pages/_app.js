@@ -4,6 +4,8 @@ import Head from "next/head";
 import "/styles/scss/nextjs-material-kit.scss?v=1.2.0";
 import { wrapper } from '../redux';
 import { removeError } from '../redux/actions/errorActions';
+import { SnackbarProvider } from 'notistack';
+// import DateFnsUtils from "@date-io/date-fns";
 class MyApp extends App {
   componentDidMount() {
     let comment = document.createComment(`
@@ -47,7 +49,9 @@ class MyApp extends App {
           />
           <title>NextJS Material Kit by Creative Tim</title>
         </Head>
+        <SnackbarProvider anchorOrigin={{horizontal:"left",vertical:"top"}} >
         <Component {...pageProps} />
+        </SnackbarProvider>
       </React.Fragment>
     );
   }
