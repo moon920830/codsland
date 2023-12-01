@@ -173,6 +173,9 @@ export default function Components(props) {
   return (
     <div>
       <Header
+      style={{
+        fontFamily:"satoshi"
+      }}
         brand={
           <>
             <div style={{width:"102px",height:"87px",backgroundColor:"white",borderRadius:"19px",display:"flex",justifyContent:"center"}} >
@@ -180,7 +183,7 @@ export default function Components(props) {
             </div>
           </>
         }
-        rightLinks={<HeaderLinks />}
+        rightLinks={<HeaderLinks/>}
         fixed
         color="transparent"
         changeColorOnScroll={{

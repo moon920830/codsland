@@ -5,7 +5,15 @@ import "/styles/scss/nextjs-material-kit.scss?v=1.2.0";
 import { wrapper } from '../redux';
 import { removeError } from '../redux/actions/errorActions';
 import { SnackbarProvider } from 'notistack';
+import '../styles/css/index.css'
+import {ThemeProvider,createMuiTheme} from '@material-ui/core/styles'
+import { CssBaseline } from "@material-ui/core";
 // import DateFnsUtils from "@date-io/date-fns";
+const theme=createMuiTheme({
+  typography:{
+    fontFamily:'satoshi'
+  },
+})
 class MyApp extends App {
   componentDidMount() {
     let comment = document.createComment(`
@@ -37,6 +45,7 @@ class MyApp extends App {
 
     return { pageProps };
   }
+  
   render() {
     const { Component, pageProps } = this.props;
 
