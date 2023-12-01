@@ -373,11 +373,13 @@ export default function Components(props) {
           <GridContainer justify="center">
             <h2 className={classes.title}>Featured  <span style={{color: '#2E3192'}}>Products</span></h2>
           </GridContainer>
-          <GridContainer>
+          <GridContainer  >
             <GridItem sm={4}>
                 <Card style={{backgroundColor: "#F8F8F8", marginTop:"150px"}}>
                     <CardBody>
+                      <div style={{width:"100%",display:"flex", justifyContent:"center"}} >
                         <img src="/img/airbuds.png" alt="..." style={{width:"auto",height:"25vh", marginTop: "-150px"}}></img>
+                      </div>
                         <h3 className={classes.title} style={{color: "#2E3192"}}>Air Buds</h3>
                         <p>Air Buds are designed to replace electronic ear buds.</p>
                         <Rating name="read-only" value={4} readOnly />
@@ -392,7 +394,9 @@ export default function Components(props) {
             <GridItem sm={4}>
                 <Card style={{backgroundColor: "#F8F8F8", marginTop:"150px"}}>
                     <CardBody>
+                      <div style={{width:"100%",display:"flex", justifyContent:"center"}} >
                         <img src="img/bioprotein.png" alt="..." style={{width:"auto",height:"25vh", marginTop: "-150px"}}></img>
+                      </div>
                         <h3 className={classes.title} style={{color: "#2E3192"}}>BioProtein-Plus</h3>
                         <p>Air Buds are designed to replace electronic ear buds.</p>
                         <Rating name="read-only" value={4} readOnly />
@@ -407,7 +411,9 @@ export default function Components(props) {
             <GridItem sm={4}>
                 <Card style={{backgroundColor: "#F8F8F8", marginTop:"150px"}}>
                     <CardBody>
-                        <img src="/img/grander.png" alt="..." style={{width:"auto",height:"25vh", marginTop: "-150px"}}></img>
+                        <div style={{width:"100%",display:"flex", justifyContent:"center"}} >
+                          <img src="/img/grander.png" alt="..." style={{width:"auto",height:"25vh", marginTop: "-150px"}}></img>
+                        </div>
                         <h3 className={classes.title} style={{color: "#2E3192"}}>Grander Penergizer</h3>
                         <p>Air Buds are designed to replace electronic ear buds.</p>
                         <Rating name="read-only" value={4} readOnly />
