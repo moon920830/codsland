@@ -1,4 +1,4 @@
-import { AUTHENTICATE, DEAUTHENTICATE } from '../types/authTypes';
+import { AUTHENTICATE, DEAUTHENTICATE, SAVESTRING } from '../types/authTypes';
 import { HYDRATE } from 'next-redux-wrapper';
 
 const initialState = {
@@ -9,6 +9,8 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case HYDRATE:
       return { ...state, ...action.payload.authentication };
+    case SAVESTRING:
+      return { ...state, stringValue : action.payload };
     case AUTHENTICATE:
       return { ...state, token: action.payload };
     case DEAUTHENTICATE:

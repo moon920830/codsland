@@ -6,9 +6,8 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import LockOutlinedIcon from '@material-ui/icons/Lock';
+import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import Email from "@material-ui/icons/Email";
-import LockOutlined from '@material-ui/icons/LockOutlined'
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -24,12 +23,14 @@ import actions from '../redux/actions';
 
 import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
 import imageStyles from "../styles/jss/nextjs-material-kit/imagesStyles.js";
+import { Box } from "@material-ui/core";
+import { connect } from 'react-redux';
 import axios from "axios";
 import { BACKEND_URL } from "../AppConfigs";
 import { useSnackbar } from "notistack";
-import Router from "next/router";
+import OtpInput from 'react-otp-input';
 
-
+import headerStyles from "/styles/jss/nextjs-material-kit/components/headerStyle.js";
 const useStyles = makeStyles((styles) => ({
   authlogoNavigation: {
     position: 'relative',
@@ -58,16 +59,14 @@ const useStyles = makeStyles((styles) => ({
     width: "100px",
     height: "100px",
   },
-  ...imageStyles
+  ...imageStyles,
+  ...headerStyles
   // Other styles
 }));
 
-export default function ForgotPasswordPage(props) {
+function ResetPasswordPage(props) {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  const [otp, setOtp] = useState('');
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   setTimeout(function () {
     setCardAnimation("");
@@ -79,19 +78,15 @@ export default function ForgotPasswordPage(props) {
     console.log(email);
     e.preventDefault();
 
-    
-    dispatch(actions.savestring(email));
-    Router.push("/reset-password");
+    axios.post(`${BACKEND_URL}/forgot-password`,{
+      email:email,
+    }).then(response=>{
+      if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
+      snackbar.enqueueSnackbar("Success",{variant:"success"});
 
-    // axios.post(`${BACKEND_URL}/forgot-password`,{
-    //   email:email,
-    // }).then(response=>{
-    //   if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
-    //   snackbar.enqueueSnackbar("Success",{variant:"success"});
-
-    //   dispatch(actions.savestring(email));
-    //   return Router.push("/reset-password")
-    // });
+      
+      return Router.push("/reset-password")
+    });
   };
   return (
     <GridContainer sm={12}>
@@ -116,7 +111,7 @@ export default function ForgotPasswordPage(props) {
                         " " +
                         classes.LockIconWrapper
                       }>
-                    <LockOutlinedIcon style={{width: "40%", height: "40%"}} />
+                    <EmailOutlinedIcon style={{width: "40%", height: "40%"}} />
                   </div>
                 </GridContainer>
                     {/* <img
@@ -130,33 +125,29 @@ export default function ForgotPasswordPage(props) {
                         classes.imgFluid
                       }
                     /> */}
-                <h3>Forgot password</h3>
-                <h4>Enter Your Email To Reset Password</h4>
+                <h3>Password Reset</h3>
+                <h4>We sent a code to {props.stringValue}</h4>
               </CardHeader>
               <CardBody>
-                <CustomInput
-                  labelText="Email..."
-                  id="email"
-                  onChange={handleEmailChange}
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "email",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Email className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    )
-                  }}
-                />
+                <GridContainer>
+                <h4 style={{fontWeight: "bold"}}>OTP</h4>
+                  <OtpInput
+                    value={otp}
+                    onChange={setOtp}
+                    numInputs={4}
+                    renderSeparator={<span style={{marginLeft: "15px", marginRight: "15px"}}></span>}
+                    renderInput={(props) => <input {...props}
+                    style={{width: "100%", height: "100%", textAlign: "center", fontSize: "18px", borderRadius: "26px", backgroundColor: "#F3F3F3", borderWidth: "0px", paddingTop: "10px", paddingBottom: "10px",}}
+                    />}
+                  />
+                </GridContainer>
 
               </CardBody>
               <CardFooter className={classes.cardFooter}>
                 <Button type="submit" round color="primary" size="lg">
-                  Send
+                  Verify
                 </Button>
-                <Link href="/login">Back To Login</Link>
+                <p>Didn't Receive? <Link href="/login">Resent</Link></p>
               </CardFooter>
             </form>
           </Card>
@@ -166,3 +157,10 @@ export default function ForgotPasswordPage(props) {
     </GridContainer>
 );
 }
+const mapStateToProps = (state) => {
+  return {
+    stringValue: state.authentication.stringValue,
+  };
+};
+
+export default connect(mapStateToProps)(ResetPasswordPage);

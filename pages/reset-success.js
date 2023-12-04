@@ -6,8 +6,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import LockOutlinedIcon from '@material-ui/icons/Lock';
-import Email from "@material-ui/icons/Email";
+import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 import LockOutlined from '@material-ui/icons/LockOutlined'
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
@@ -62,11 +61,15 @@ const useStyles = makeStyles((styles) => ({
   // Other styles
 }));
 
-export default function ForgotPasswordPage(props) {
+export default function ResetSuccessPage(props) {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+  const handleConfirmPasswordChange = (e) => {
+    setConfirm(e.target.value);
   };
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   setTimeout(function () {
@@ -105,61 +108,19 @@ export default function ForgotPasswordPage(props) {
       <GridItem sm={6}>
         <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
-          <Card className={classes[cardAnimaton]}>
-            <form className={classes.form} onSubmit={handleSubmit}>
-              <CardHeader color="primary" className={classes.cardHeader}>
                 <GridContainer justify="center" alignItems="center" direction="column">
-                  <div className={
-                        classes.imgRaised +
-                        " " +
-                        classes.imgRoundedCircle +
-                        " " +
-                        classes.LockIconWrapper
-                      }>
-                    <LockOutlinedIcon style={{width: "40%", height: "40%"}} />
+                  <div style={{backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%", width: "120px", height: "120px"}}>
+                    <CheckOutlinedIcon style={{width: "40%", height: "40%", color: "white"}} />
                   </div>
-                </GridContainer>
-                    {/* <img
-                      src="/img/auth-logo.png"
-                      alt="..."
-                      className={
-                        classes.imgRaised +
-                        " " +
-                        classes.imgRoundedCircle +
-                        " " +
-                        classes.imgFluid
-                      }
-                    /> */}
-                <h3>Forgot password</h3>
-                <h4>Enter Your Email To Reset Password</h4>
-              </CardHeader>
-              <CardBody>
-                <CustomInput
-                  labelText="Email..."
-                  id="email"
-                  onChange={handleEmailChange}
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "email",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Email className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    )
-                  }}
-                />
 
-              </CardBody>
-              <CardFooter className={classes.cardFooter}>
-                <Button type="submit" round color="primary" size="lg">
-                  Send
-                </Button>
-                <Link href="/login">Back To Login</Link>
-              </CardFooter>
-            </form>
-          </Card>
+                  
+                  <h3 style={{textAlign: "center"}}>Password has been Reset Successfully</h3>
+                  <Link href="/login">
+                    <Button round color="primary" size="lg">
+                      Login
+                    </Button>
+                  </Link>
+                </GridContainer>
           </GridItem>
         </GridContainer>
       </GridItem>

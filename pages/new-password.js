@@ -7,7 +7,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import LockOutlinedIcon from '@material-ui/icons/Lock';
-import Email from "@material-ui/icons/Email";
 import LockOutlined from '@material-ui/icons/LockOutlined'
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
@@ -62,11 +61,15 @@ const useStyles = makeStyles((styles) => ({
   // Other styles
 }));
 
-export default function ForgotPasswordPage(props) {
+export default function NewPasswordPage(props) {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+  const handleConfirmPasswordChange = (e) => {
+    setConfirm(e.target.value);
   };
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   setTimeout(function () {
@@ -130,22 +133,39 @@ export default function ForgotPasswordPage(props) {
                         classes.imgFluid
                       }
                     /> */}
-                <h3>Forgot password</h3>
-                <h4>Enter Your Email To Reset Password</h4>
+                <h3>Set New Password</h3>
+                <h4>Save at Least 8 Character</h4>
               </CardHeader>
               <CardBody>
                 <CustomInput
-                  labelText="Email..."
-                  id="email"
-                  onChange={handleEmailChange}
+                  labelText="New Password..."
+                  id="password"
+                  onChange={handlePasswordChange}
                   formControlProps={{
                     fullWidth: true
                   }}
                   inputProps={{
-                    type: "email",
+                    type: "password",
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Email className={classes.inputIconsColor} />
+                        <LockOutlined className={classes.inputIconsColor} />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+
+                <CustomInput
+                  labelText="Confirm New Password..."
+                  id="new_password"
+                  onChange={handleConfirmPasswordChange}
+                  formControlProps={{
+                    fullWidth: true
+                  }}
+                  inputProps={{
+                    type: "password",
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <LockOutlined className={classes.inputIconsColor} />
                       </InputAdornment>
                     )
                   }}
@@ -154,7 +174,7 @@ export default function ForgotPasswordPage(props) {
               </CardBody>
               <CardFooter className={classes.cardFooter}>
                 <Button type="submit" round color="primary" size="lg">
-                  Send
+                  Save & Continue
                 </Button>
                 <Link href="/login">Back To Login</Link>
               </CardFooter>
