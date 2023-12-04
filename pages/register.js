@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -38,7 +38,7 @@ import Datetime from "react-datetime";
 import { BACKEND_URL } from "../AppConfigs";
 import { useSnackbar } from "notistack";
 import Router from "next/router";
-import { Box, FormControl } from "@material-ui/core";
+import { Avatar, Box, FormControl } from "@material-ui/core";
 import { CalendarToday } from "@material-ui/icons";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 
@@ -72,7 +72,8 @@ const useStyles = makeStyles((style) => ({
     borderRadius: "50%",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    cursor: "pointer"
   },
   modalPersonIcon: {
     width: "40%",
@@ -103,6 +104,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 Transition.displayName = "Transition";
 
 export default function RegisterPage(props) {
+  const fileInputRef = useRef(null);
+  const [profileImage, setProfileImage] = useState(null);
+
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   setTimeout(function () {
     setCardAnimation("");
@@ -114,6 +118,16 @@ export default function RegisterPage(props) {
   const snackbar = useSnackbar();
   const [date, setDate] = useState("");
   const [uploadModal, setUploadModal] = React.useState(false);
+
+  const handleUploadClick = (e) => {
+    fileInputRef.current.click();
+  }
+
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setProfileImage(e.target.files[0]);
+    }
+  }
 
   const handleDateChange = (e) => {
     const selectedDate = e._d;
@@ -142,15 +156,23 @@ export default function RegisterPage(props) {
     const country = e.target.country.value;
     if (!fullname || !email || !password)
       return snackbar.enqueueSnackbar("Unvalid Input", { variant: "error" });
+
+    const formData = new FormData();
+    if(profileImage != null)
+      formData.append('upload', profileImage);
+    formData.append('fullname', fullname);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('city', city);
+    formData.append('birthday', date);
+    formData.append('country', country);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
     axios
-      .post(`${BACKEND_URL}/auth/signup`, {
-        fullname: fullname,
-        email: email,
-        password: password,
-        city: city,
-        birthday: date,
-        country: country,
-      })
+      .post(`${BACKEND_URL}/auth/signup`, formData, config)
       .then((response) => {
         if (response.data.status == "error")
           return snackbar.enqueueSnackbar(
@@ -359,7 +381,7 @@ export default function RegisterPage(props) {
                   Sign Up
                 </Button> */}
                   <Button round color="primary" size="lg" onClick={() => setUploadModal(true)}>
-                    Test
+                    Sign Up
                   </Button>
 
                   <Dialog
@@ -396,13 +418,23 @@ export default function RegisterPage(props) {
                       className={classes.modalBody}
                     >
                       <GridContainer justify="center" alignItems="center" direction="column">
-                        <div className={classes.modalPersonIconWrapper}>
-                          <PersonOutlineIcon className={classes.modalPersonIcon} />
+                        <div className={classes.modalPersonIconWrapper} onClick={handleUploadClick}>
+                          {!profileImage && <PersonOutlineIcon className={classes.modalPersonIcon} /> }
+
+                          
+                          {profileImage && <Avatar src={URL.createObjectURL(profileImage)} style={{width: "100%", height: "100%"}} />}
                         </div>
                         <div className={classes.modalCustomTitle}>Upload Profile</div>
-                        <Button className={classes.modalSkipButton} size="lg" color="primary" round>
-                          Skip Now
-                        </Button>
+                        {profileImage ? (
+                          <Button className={classes.modalSkipButton} size="lg" color="primary" round type="submit">
+                            Upload
+                          </Button>
+                        ) : (
+                          <Button className={classes.modalSkipButton} size="lg" color="primary" round type="submit">
+                            Skip Now
+                          </Button>
+                        )}
+                        <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" hidden />
                       </GridContainer>
                     </DialogContent>
                   </Dialog>

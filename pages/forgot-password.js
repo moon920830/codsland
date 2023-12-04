@@ -47,7 +47,7 @@ const useStyles = makeStyles((styles) => ({
   // Other styles
 }));
 
-export default function LoginPage(props) {
+export default function ForgotPasswordPage(props) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -99,8 +99,8 @@ export default function LoginPage(props) {
                     />
                   </a>
                 </Link>
-                <h3>Sign In</h3>
-                <h4>Enter your Detail To continue</h4>
+                <h3>Forgot password</h3>
+                <h4>Enter Your Email To Reset Password</h4>
               </CardHeader>
               <CardBody>
                 <CustomInput
@@ -120,30 +120,12 @@ export default function LoginPage(props) {
                   }}
                 />
 
-                <CustomInput
-                  labelText="Password"
-                  id="pass"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  onChange={handlePasswordChange}
-                  inputProps={{
-                    type: "password",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <LockOutlined className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    ),
-                    autoComplete: "off"
-                  }}
-                />
               </CardBody>
               <CardFooter className={classes.cardFooter}>
                 <Button type="submit" round color="primary" size="lg">
-                  Sign In
+                  Send
                 </Button>
-                <Link href="/forgot-password">Forget Password?</Link>
-                <p>Don't have an Account? <Link href="/register">Register Now</Link> </p>
+                <Link href="/login">Back To Login</Link>
               </CardFooter>
             </form>
           </Card>
