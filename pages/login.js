@@ -53,6 +53,7 @@ export default function LoginPage(props) {
   const [password, setPassword] = useState('');
   const handleEmailChange = (e) => {
     console.log('Email changed:', e.target.value);
+    setEmail(e.target.value)
   };
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
