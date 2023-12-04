@@ -1,17 +1,25 @@
 import React from "react";
-import { useState } from 'react';
+import { useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Slide from "@material-ui/core/Slide";
+import IconButton from "@material-ui/core/IconButton";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
+import PersonOutlinedIcon from '@material-ui/icons/PersonOutlined';
+import Close from "@material-ui/icons/Close";
 import Email from "@material-ui/icons/Email";
-import LockOutlined from '@material-ui/icons/LockOutlined'
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
-import LanguageIcon from '@material-ui/icons/Language';
+import LockOutlined from "@material-ui/icons/LockOutlined";
+import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
+import DateRangeIcon from "@material-ui/icons/DateRange";
+import LocationCityIcon from "@material-ui/icons/LocationCity";
+import LanguageIcon from "@material-ui/icons/Language";
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -21,41 +29,78 @@ import CardBody from "/components/Card/CardBody.js";
 import CardHeader from "/components/Card/CardHeader.js";
 import CardFooter from "/components/Card/CardFooter.js";
 import CustomInput from "/components/CustomInput/CustomInput.js";
-import Link from 'next/link'
+import Link from "next/link";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
-import axios from 'axios';
+import axios from "axios";
 import Datetime from "react-datetime";
-import {BACKEND_URL} from '../AppConfigs'
-import {useSnackbar} from 'notistack'
-import Router from 'next/router'
-import { FormControl } from "@material-ui/core";
+import { BACKEND_URL } from "../AppConfigs";
+import { useSnackbar } from "notistack";
+import Router from "next/router";
+import { Box, FormControl } from "@material-ui/core";
 import { CalendarToday } from "@material-ui/icons";
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-const useStyles = makeStyles((styles) => ({
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+
+import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
+const useStyles = makeStyles((style) => ({
   authlogoNavigation: {
-    position: 'relative',
-    width: '100%',
-    height: '100vh',
+    position: "relative",
+    width: "100%",
+    height: "100vh",
     backgroundImage: "url('/img/auth-bg.jpg')",
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
   },
   overlay: {
     content: '""',
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#2E3192',
-    mixBlendMode: 'overlay',
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#2E3192",
+    mixBlendMode: "overlay",
     zIndex: 1,
-    boxShadow: '1px 0px 1px 1px rgba(0,0,0,0.1)',
+    boxShadow: "1px 0px 1px 1px rgba(0,0,0,0.1)",
   },
+  modalPersonIconWrapper: {
+    marginTop: style.spacing(4),
+    backgroundColor: "#F3F3F3",
+    width: "136px",
+    height: "136px",
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  modalPersonIcon: {
+    width: "40%",
+    height: "40%",
+  },
+  modalCustomTitle: {
+    fontSize: "40px",
+    fontWeight: "600",
+    marginTop: style.spacing(4)
+  },
+  makecenter: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  modalSkipButton: {
+    marginTop: style.spacing(4),
+    marginBottom: style.spacing(3)
+  },
+  ...modalStyle
   // Other styles
 }));
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="down" ref={ref} {...props} />;
+});
+
+Transition.displayName = "Transition";
 
 export default function RegisterPage(props) {
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
@@ -64,16 +109,20 @@ export default function RegisterPage(props) {
   }, 700);
   const classes = useStyles();
   const { ...rest } = props;
-  const matchesSm = useMediaQuery('(max-width:600px)');
+  const matchesSm = useMediaQuery("(max-width:600px)");
   const [selectedEnabled, setSelectedEnabled] = React.useState("male");
-  const snackbar=useSnackbar();
-  const [date, setDate] = useState('');
+  const snackbar = useSnackbar();
+  const [date, setDate] = useState("");
+  const [uploadModal, setUploadModal] = React.useState(false);
+
   const handleDateChange = (e) => {
-    const selectedDate =  e._d;
+    const selectedDate = e._d;
     const year = selectedDate.getFullYear();
     const month = selectedDate.getMonth() + 1; // Adding 1 because months are zero-indexed
     const day = selectedDate.getDate();
-    const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`; 
+    const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${
+      day < 10 ? "0" : ""
+    }${day}`;
     console.log(formattedDate);
     setDate(formattedDate);
   };
@@ -83,44 +132,58 @@ export default function RegisterPage(props) {
       <CalendarTodayIcon className="calendar-icon" onClick={openCalendar} />
     </div>
   );
-  const handleSubmit=(e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const fullname=e.target.fullname.value;
-    const email=e.target.email.value;
-    const password=e.target.password.value;
+    const fullname = e.target.fullname.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
     // const birthday=e.target.birthday.value;
-    const city=e.target.city.value;
-    const country=e.target.country.value;
-    if(!fullname||!email||!password) return snackbar.enqueueSnackbar("Unvalid Input",{variant:"error"}) ;
-    axios.post(`${BACKEND_URL}/auth/signup`,{
-      fullname:fullname,
-      email:email,
-      password:password,
-      city:city,
-      birthday:date,
-      country:country,
-    }).then(response=>{
-      if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
-      snackbar.enqueueSnackbar("Success",{variant:"success"});
-      return Router.push("/")
-    })
-  }
+    const city = e.target.city.value;
+    const country = e.target.country.value;
+    if (!fullname || !email || !password)
+      return snackbar.enqueueSnackbar("Unvalid Input", { variant: "error" });
+    axios
+      .post(`${BACKEND_URL}/auth/signup`, {
+        fullname: fullname,
+        email: email,
+        password: password,
+        city: city,
+        birthday: date,
+        country: country,
+      })
+      .then((response) => {
+        if (response.data.status == "error")
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        snackbar.enqueueSnackbar("Success", { variant: "success" });
+        return Router.push("/");
+      });
+  };
   return (
     <GridContainer sm={12}>
-      { !matchesSm ? (
+      {!matchesSm ? (
         <GridItem sm={6}>
           <div className={classes.authlogoNavigation}>
             <div className={classes.overlay}></div>
           </div>
         </GridItem>
-      ) : null }
+      ) : null}
       <GridItem sm={6}>
-        <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
+        <GridContainer
+          justify="center"
+          alignItems="center"
+          style={{ height: "100%" }}
+        >
           <GridItem md={9} lg={7} xl={7}>
-          <Card className={classes[cardAnimaton]} style={{marginBottom: "-30px"}}>
-            <form className={classes.form} onSubmit={handleSubmit} >
-              <CardHeader color="primary" className={classes.cardHeader}>
-                <Link href="/" >
+            <Card
+              className={classes[cardAnimaton]}
+              style={{ marginBottom: "-30px" }}
+            >
+              <form className={classes.form} onSubmit={handleSubmit}>
+                <CardHeader color="primary" className={classes.cardHeader}>
+                  <Link href="/">
                     <a>
                       <img
                         src="/img/auth-logo.png"
@@ -135,165 +198,225 @@ export default function RegisterPage(props) {
                       />
                     </a>
                   </Link>
-                <h3>Sign Up</h3>
-                <h4>Enter your personal Detail To register</h4>
-              </CardHeader>
-              <CardBody>
-              <CustomInput
-                  labelText="Full Name..."
-                  id="name"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <PersonOutlineIcon className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    ),
-                    name:"fullname"
-                  }}
-                />
-                <CustomInput
-                  labelText="Email..."
-                  id="email"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "email",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Email className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    ),
-                    name:"email"
-                  }}
-                />
-                <CustomInput
-                  labelText="Password"
-                  id="pass"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "password",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <LockOutlined className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    ),
-                    autoComplete: "off",
-                    name:"password"
-                  }}
-                />
-                <FormControlLabel
-                  control={
-                    <Radio
-                      checked={selectedEnabled === "male"}
-                      onChange={() => setSelectedEnabled("male")}
-                      value="a"
-                      name="radio button enabled"
-                      aria-label="A"
-                      icon={
-                        <FiberManualRecord className={classes.radioUnchecked} />
-                      }
-                      checkedIcon={
-                        <FiberManualRecord className={classes.radioChecked} />
-                      }
-                      classes={{
-                        checked: classes.radio,
-                        root: classes.radioRoot
-                      }}
-                      color="primary"
-                    />
-                  }
-                  classes={{
-                    label: classes.label,
-                    root: classes.labelRoot
-                  }}
-                  label="Male"
-                />
-                <FormControlLabel
-                  control={
-                    <Radio
-                      checked={selectedEnabled === "female"}
-                      onChange={() => setSelectedEnabled("female")}
-                      value="b"
-                      name="radio button enabled"
-                      aria-label="B"
-                      icon={
-                        <FiberManualRecord className={classes.radioUnchecked} />
-                      }
-                      checkedIcon={
-                        <FiberManualRecord className={classes.radioChecked} />
-                      }
-                      classes={{
-                        checked: classes.radio,
-                        root: classes.radioRoot
-                      }}
-                      color="primary"
-                    />
-                  }
-                  classes={{
-                    label: classes.label,
-                    root: classes.labelRoot
-                  }}
-                  label="Female"
-                />
-                <Datetime
-                  inputProps={{ placeholder: "Datetime Picker Here" }}
-                  dateFormat={"YYYY-MM-DD"}
-                  timeFormat={false}
-                  onChange={handleDateChange}
-                  renderInput={renderInput}
-                  // style={{display: "flex"}}
-                />
-                <CustomInput
-                  labelText="City..."
-                  id="city"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <LocationCityIcon className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    ),
-                    name:"city"
-                  }}
-                />
-                <CustomInput
-                  labelText="Country..."
-                  id="country"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  inputProps={{
-                    type: "",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <LanguageIcon className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    ),
-                    name:"country"
-                  }}
-                />
-              </CardBody>
-              <CardFooter className={classes.cardFooter}>
-                <Button type="submit" round color="primary" size="lg">
+                  <h3>Sign Up</h3>
+                  <h4>Enter your personal Detail To register</h4>
+                </CardHeader>
+                <CardBody>
+                  <CustomInput
+                    labelText="Full Name..."
+                    id="name"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      type: "",
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <PersonOutlineIcon
+                            className={classes.inputIconsColor}
+                          />
+                        </InputAdornment>
+                      ),
+                      name: "fullname",
+                    }}
+                  />
+                  <CustomInput
+                    labelText="Email..."
+                    id="email"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      type: "email",
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Email className={classes.inputIconsColor} />
+                        </InputAdornment>
+                      ),
+                      name: "email",
+                    }}
+                  />
+                  <CustomInput
+                    labelText="Password"
+                    id="pass"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      type: "password",
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <LockOutlined className={classes.inputIconsColor} />
+                        </InputAdornment>
+                      ),
+                      autoComplete: "off",
+                      name: "password",
+                    }}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Radio
+                        checked={selectedEnabled === "male"}
+                        onChange={() => setSelectedEnabled("male")}
+                        value="a"
+                        name="radio button enabled"
+                        aria-label="A"
+                        icon={
+                          <FiberManualRecord
+                            className={classes.radioUnchecked}
+                          />
+                        }
+                        checkedIcon={
+                          <FiberManualRecord className={classes.radioChecked} />
+                        }
+                        classes={{
+                          checked: classes.radio,
+                          root: classes.radioRoot,
+                        }}
+                        color="primary"
+                      />
+                    }
+                    classes={{
+                      label: classes.label,
+                      root: classes.labelRoot,
+                    }}
+                    label="Male"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Radio
+                        checked={selectedEnabled === "female"}
+                        onChange={() => setSelectedEnabled("female")}
+                        value="b"
+                        name="radio button enabled"
+                        aria-label="B"
+                        icon={
+                          <FiberManualRecord
+                            className={classes.radioUnchecked}
+                          />
+                        }
+                        checkedIcon={
+                          <FiberManualRecord className={classes.radioChecked} />
+                        }
+                        classes={{
+                          checked: classes.radio,
+                          root: classes.radioRoot,
+                        }}
+                        color="primary"
+                      />
+                    }
+                    classes={{
+                      label: classes.label,
+                      root: classes.labelRoot,
+                    }}
+                    label="Female"
+                  />
+                  <Datetime
+                    inputProps={{ placeholder: "Datetime Picker Here" }}
+                    dateFormat={"YYYY-MM-DD"}
+                    timeFormat={false}
+                    onChange={handleDateChange}
+                    renderInput={renderInput}
+                    // style={{display: "flex"}}
+                  />
+                  <CustomInput
+                    labelText="City..."
+                    id="city"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      type: "",
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <LocationCityIcon
+                            className={classes.inputIconsColor}
+                          />
+                        </InputAdornment>
+                      ),
+                      name: "city",
+                    }}
+                  />
+                  <CustomInput
+                    labelText="Country..."
+                    id="country"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    inputProps={{
+                      type: "",
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <LanguageIcon className={classes.inputIconsColor} />
+                        </InputAdornment>
+                      ),
+                      name: "country",
+                    }}
+                  />
+                </CardBody>
+                <CardFooter className={classes.cardFooter}>
+                  {/* <Button type="submit" round color="primary" size="lg">
                   Sign Up
-                </Button>
-                <p>Already have an Account? <Link href="/login">Login</Link> </p>
-              </CardFooter>
-            </form>
-          </Card>
+                </Button> */}
+                  <Button round color="primary" size="lg" onClick={() => setUploadModal(true)}>
+                    Test
+                  </Button>
+
+                  <Dialog
+                    classes={{
+                      root: classes.center,
+                      paper: classes.modal
+                    }}
+                    open={uploadModal}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={() => setUploadModal(false)}
+                    aria-labelledby="classic-modal-slide-title"
+                    aria-describedby="classic-modal-slide-description"
+                    maxWidth="sm"
+                    fullWidth={true}
+                  >
+                    <DialogTitle
+                      id="classic-modal-slide-title"
+                      disableTypography
+                      className={classes.modalHeader}
+                    >
+                      <IconButton
+                        className={classes.modalCloseButton}
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        onClick={() => setUploadModal(false)}
+                      >
+                        <Close className={classes.modalClose} />
+                      </IconButton>
+                    </DialogTitle>
+                    <DialogContent
+                      id="classic-modal-slide-description"
+                      className={classes.modalBody}
+                    >
+                      <GridContainer justify="center" alignItems="center" direction="column">
+                        <div className={classes.modalPersonIconWrapper}>
+                          <PersonOutlineIcon className={classes.modalPersonIcon} />
+                        </div>
+                        <div className={classes.modalCustomTitle}>Upload Profile</div>
+                        <Button className={classes.modalSkipButton} size="lg" color="primary" round>
+                          Skip Now
+                        </Button>
+                      </GridContainer>
+                    </DialogContent>
+                  </Dialog>
+
+
+                  <p>
+                    Already have an Account? <Link href="/login">Login</Link>{" "}
+                  </p>
+                </CardFooter>
+              </form>
+            </Card>
           </GridItem>
         </GridContainer>
       </GridItem>
     </GridContainer>
-);
+  );
 }
