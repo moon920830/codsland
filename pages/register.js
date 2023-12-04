@@ -7,6 +7,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import Email from "@material-ui/icons/Email";
+import LockOutlined from '@material-ui/icons/LockOutlined'
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
@@ -176,9 +177,7 @@ export default function RegisterPage(props) {
                     type: "password",
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Icon className={classes.inputIconsColor}>
-                          lock_outline
-                        </Icon>
+                        <LockOutlined className={classes.inputIconsColor} />
                       </InputAdornment>
                     ),
                     autoComplete: "off",

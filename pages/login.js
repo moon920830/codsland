@@ -7,6 +7,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import Email from "@material-ui/icons/Email";
+import LockOutlined from '@material-ui/icons/LockOutlined'
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -126,9 +127,7 @@ export default function LoginPage(props) {
                     type: "password",
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Icon className={classes.inputIconsColor}>
-                          lock_outline
-                        </Icon>
+                        <LockOutlined className={classes.inputIconsColor} />
                       </InputAdornment>
                     ),
                     autoComplete: "off"
