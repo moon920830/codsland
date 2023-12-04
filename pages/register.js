@@ -118,7 +118,12 @@ export default function RegisterPage(props) {
   const snackbar = useSnackbar();
   const [date, setDate] = useState("");
   const [uploadModal, setUploadModal] = React.useState(false);
-
+  const refForm =useRef(null);
+  const refFullName=useRef(null);
+  const refPassword=useRef(null);
+  const refEmail=useRef(null);
+  const refCity=useRef(null);
+  const refCountry=useRef(null);
   const handleUploadClick = (e) => {
     fileInputRef.current.click();
   }
@@ -183,6 +188,42 @@ export default function RegisterPage(props) {
         return Router.push("/");
       });
   };
+  const saveProfile=()=>{
+    const fullname = refFullName.current.value;
+    const email = refEmail.current.value;
+    const password = refPassword.current.value;
+    // const birthday=e.target.birthday.value;
+    const city = refCity.current.value;
+    const country = refCountry.current.value;
+    if (!fullname || !email || !password)
+      return snackbar.enqueueSnackbar("Unvalid Input", { variant: "error" });
+
+    const formData = new FormData();
+    if(profileImage != null)
+      formData.append('upload', profileImage);
+    formData.append('fullname', fullname);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('city', city);
+    formData.append('birthday', date);
+    formData.append('country', country);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
+    axios
+      .post(`${BACKEND_URL}/auth/signup`, formData)
+      .then((response) => {
+        if (response.data.status == "error")
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        snackbar.enqueueSnackbar("Success", { variant: "success" });
+        return Router.push("/");
+      });
+  }
   return (
     <GridContainer sm={12}>
       {!matchesSm ? (
@@ -203,7 +244,7 @@ export default function RegisterPage(props) {
               className={classes[cardAnimaton]}
               style={{ marginBottom: "-30px" }}
             >
-              <form className={classes.form} onSubmit={handleSubmit}>
+              <form ref={refForm} className={classes.form} onSubmit={handleSubmit}>
                 <CardHeader color="primary" className={classes.cardHeader}>
                   <Link href="/">
                     <a>
@@ -240,6 +281,7 @@ export default function RegisterPage(props) {
                         </InputAdornment>
                       ),
                       name: "fullname",
+                      inputRef:refFullName
                     }}
                   />
                   <CustomInput
@@ -256,6 +298,7 @@ export default function RegisterPage(props) {
                         </InputAdornment>
                       ),
                       name: "email",
+                      inputRef:refEmail
                     }}
                   />
                   <CustomInput
@@ -273,6 +316,7 @@ export default function RegisterPage(props) {
                       ),
                       autoComplete: "off",
                       name: "password",
+                      inputRef:refPassword
                     }}
                   />
                   <FormControlLabel
@@ -357,6 +401,7 @@ export default function RegisterPage(props) {
                         </InputAdornment>
                       ),
                       name: "city",
+                      inputRef:refCity
                     }}
                   />
                   <CustomInput
@@ -373,6 +418,7 @@ export default function RegisterPage(props) {
                         </InputAdornment>
                       ),
                       name: "country",
+                      inputRef:refCountry
                     }}
                   />
                 </CardBody>
@@ -426,11 +472,11 @@ export default function RegisterPage(props) {
                         </div>
                         <div className={classes.modalCustomTitle}>Upload Profile</div>
                         {profileImage ? (
-                          <Button className={classes.modalSkipButton} size="lg" color="primary" round type="submit">
+                          <Button onClick={saveProfile} className={classes.modalSkipButton} size="lg" color="primary" round type="submit">
                             Upload
                           </Button>
                         ) : (
-                          <Button className={classes.modalSkipButton} size="lg" color="primary" round type="submit">
+                          <Button onClick={saveProfile} className={classes.modalSkipButton} size="lg" color="primary" round type="submit">
                             Skip Now
                           </Button>
                         )}
