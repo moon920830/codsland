@@ -84,17 +84,21 @@ export default function LoginPage(props) {
           <Card className={classes[cardAnimaton]}>
             <form className={classes.form} onSubmit={handleSubmit}>
               <CardHeader color="primary" className={classes.cardHeader}>
-                <img
-                  src="/img/auth-logo.png"
-                  alt="..."
-                  className={
-                    classes.imgRaised +
-                    " " +
-                    classes.imgRoundedCircle +
-                    " " +
-                    classes.imgFluid
-                  }
-                />
+                <Link href="/" >
+                  <a>
+                    <img
+                      src="/img/auth-logo.png"
+                      alt="..."
+                      className={
+                        classes.imgRaised +
+                        " " +
+                        classes.imgRoundedCircle +
+                        " " +
+                        classes.imgFluid
+                      }
+                    />
+                  </a>
+                </Link>
                 <h3>Sign In</h3>
                 <h4>Enter your Detail To continue</h4>
               </CardHeader>

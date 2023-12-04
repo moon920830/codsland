@@ -120,17 +120,21 @@ export default function RegisterPage(props) {
           <Card className={classes[cardAnimaton]} style={{marginBottom: "-30px"}}>
             <form className={classes.form} onSubmit={handleSubmit} >
               <CardHeader color="primary" className={classes.cardHeader}>
-                <img
-                  src="/img/auth-logo.png"
-                  alt="..."
-                  className={
-                    classes.imgRaised +
-                    " " +
-                    classes.imgRoundedCircle +
-                    " " +
-                    classes.imgFluid
-                  }
-                />
+                <Link href="/" >
+                    <a>
+                      <img
+                        src="/img/auth-logo.png"
+                        alt="..."
+                        className={
+                          classes.imgRaised +
+                          " " +
+                          classes.imgRoundedCircle +
+                          " " +
+                          classes.imgFluid
+                        }
+                      />
+                    </a>
+                  </Link>
                 <h3>Sign Up</h3>
                 <h4>Enter your personal Detail To register</h4>
               </CardHeader>
