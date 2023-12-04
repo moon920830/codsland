@@ -58,9 +58,11 @@ class MyApp extends App {
           />
           <title>NextJS Material Kit by Creative Tim</title>
         </Head>
+        <ThemeProvider theme={theme} >
         <SnackbarProvider anchorOrigin={{horizontal:"left",vertical:"top"}} >
         <Component {...pageProps} />
         </SnackbarProvider>
+        </ThemeProvider>
       </React.Fragment>
     );
   }
