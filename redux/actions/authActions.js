@@ -1,6 +1,6 @@
 import Router from 'next/router';
 import axios from 'axios';
-import { AUTHENTICATE, DEAUTHENTICATE, SAVESTRING } from '../types/authTypes';
+import { AUTHENTICATE, DEAUTHENTICATE, SAVESTRING, SAVEOTP } from '../types/authTypes';
 import { setCookie, removeCookie } from '../../utils/cookie';
 import { createError, removeError } from './errorActions';
 import {BACKEND_URL} from '../../AppConfigs'
@@ -50,10 +50,17 @@ const deauthenticate = () => {
 
 
 
-// saves a simple string in store
+// saves a simple string in store // used for email save
 const savestring = stringValue => {
   return dispatch => {
     dispatch({ type: SAVESTRING, payload: stringValue });
+  };
+};
+
+// saves a otp in store
+const saveotp = otp => {
+  return dispatch => {
+    dispatch({ type: SAVEOTP, payload: otp });
   };
 };
 
@@ -61,5 +68,6 @@ export default {
   authenticate,
   reauthenticate,
   deauthenticate,
-  savestring
+  savestring,
+  saveotp
 };

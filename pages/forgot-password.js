@@ -63,6 +63,7 @@ const useStyles = makeStyles((styles) => ({
 }));
 
 export default function ForgotPasswordPage(props) {
+  const snackbar = useSnackbar();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const handleEmailChange = (e) => {
@@ -80,18 +81,18 @@ export default function ForgotPasswordPage(props) {
     e.preventDefault();
 
     
-    dispatch(actions.savestring(email));
-    Router.push("/reset-password");
+    // dispatch(actions.savestring(email));
+    // Router.push("/reset-password");
 
-    // axios.post(`${BACKEND_URL}/forgot-password`,{
-    //   email:email,
-    // }).then(response=>{
-    //   if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
-    //   snackbar.enqueueSnackbar("Success",{variant:"success"});
+    axios.post(`${BACKEND_URL}/auth/forgot-password`,{
+      email:email,
+    }).then(response=>{
+      if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
+      snackbar.enqueueSnackbar("Success",{variant:"success"});
 
-    //   dispatch(actions.savestring(email));
-    //   return Router.push("/reset-password")
-    // });
+      dispatch(actions.savestring(email));
+      return Router.push("/reset-password")
+    });
   };
   return (
     <GridContainer sm={12}>

@@ -1,3 +1,4 @@
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const DEAUTHENTICATE = 'DEAUTHENTICATE';
 export const SAVESTRING = 'SAVESTRING';
+export const SAVEOTP = 'SAVEOTP';
