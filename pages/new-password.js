@@ -18,6 +18,7 @@ import CardHeader from "/components/Card/CardHeader.js";
 import CardFooter from "/components/Card/CardFooter.js";
 import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
+import { connect } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import actions from '../redux/actions';
 
@@ -61,7 +62,8 @@ const useStyles = makeStyles((styles) => ({
   // Other styles
 }));
 
-export default function NewPasswordPage(props) {
+function NewPasswordPage(props) {
+  const snackbar = useSnackbar();
   const dispatch = useDispatch();
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -79,21 +81,25 @@ export default function NewPasswordPage(props) {
   const { ...rest } = props;
   const matchesSm = useMediaQuery('(max-width:600px)');
   const handleSubmit = e => {
-    console.log(email);
     e.preventDefault();
-
     
-    dispatch(actions.savestring(email));
-    Router.push("/reset-password");
-
-    // axios.post(`${BACKEND_URL}/forgot-password`,{
-    //   email:email,
+    if(password != confirm)
+    {
+      return snackbar.enqueueSnackbar("Password mismatch",{variant:"error"});
+    }
+    if(!password || !confirm)
+    {
+      return snackbar.enqueueSnackbar("Type password",{variant:"error"});
+    }
+    
+    // axios.post(`${BACKEND_URL}/reset-password`,{
+    //   otp:props.otp,
+    //   password:password,
     // }).then(response=>{
     //   if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
     //   snackbar.enqueueSnackbar("Success",{variant:"success"});
 
-    //   dispatch(actions.savestring(email));
-    //   return Router.push("/reset-password")
+    //   return Router.push("/reset-success")
     // });
   };
   return (
@@ -186,3 +192,12 @@ export default function NewPasswordPage(props) {
     </GridContainer>
 );
 }
+
+
+const mapStateToProps = (state) => {
+  return {
+    otp: state.authentication.otp,
+  };
+};
+
+export default connect(mapStateToProps)(NewPasswordPage);

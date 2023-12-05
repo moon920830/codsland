@@ -65,6 +65,7 @@ const useStyles = makeStyles((styles) => ({
 }));
 
 function ResetPasswordPage(props) {
+  const snackbar = useSnackbar();
   const dispatch = useDispatch();
   const [otp, setOtp] = useState('');
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
@@ -75,17 +76,16 @@ function ResetPasswordPage(props) {
   const { ...rest } = props;
   const matchesSm = useMediaQuery('(max-width:600px)');
   const handleSubmit = e => {
-    console.log(email);
     e.preventDefault();
 
-    axios.post(`${BACKEND_URL}/forgot-password`,{
-      email:email,
+    axios.post(`${BACKEND_URL}/auth/check-otp`,{
+      otp:otp,
     }).then(response=>{
       if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
       snackbar.enqueueSnackbar("Success",{variant:"success"});
 
-      
-      return Router.push("/reset-password")
+      dispatch(actions.saveotp(otp));
+      return Router.push("/new-password")
     });
   };
   return (
