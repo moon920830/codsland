@@ -5,3 +5,7 @@
 body{
     font-family: satoshi;
 }
+
+html {
+    scroll-behavior: smooth;
+}

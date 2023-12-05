@@ -52,52 +52,76 @@ export default function HeaderLinks(props) {
       </ListItem> */}
       <ListItem className={classes.listItem}>
         <Button
-          href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
+          // href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
           color="transparent"
           target="_blank"
           className={classes.navLink}
+          onClick={() => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            });
+          }}
         >
           Home
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
         <Button
-          href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
           color="transparent"
           target="_blank"
           className={classes.navLink}
         >
-          About
+          <a
+            href="#about_section"
+            style={{color:"inherit"}}
+            >
+          About</a>
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
         <Button
-          href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
+          // href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
           color="transparent"
           target="_blank"
           className={classes.navLink}
         >
-          Services
+          <a
+            href="#service_section"
+            style={{color:"inherit"}}
+            >
+            Services
+          </a>
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
         <Button
-          href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
+          // href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
           color="transparent"
           target="_blank"
           className={classes.navLink}
         >
-          Products
+          <a
+            href="#product_section"
+            style={{color:"inherit"}}
+            >
+            Products
+          </a>
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
         <Button
-          href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
+          // href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
           color="transparent"
           target="_blank"
-          className={classes.navLink}
+          style={{color:"inherit"}}
         >
+          <a
+            href="#contact_section"
+            style={{color:"inherit"}}
+          >
           Contact
+          </a>
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
