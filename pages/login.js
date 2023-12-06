@@ -20,6 +20,13 @@ import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
 import { useDispatch } from 'react-redux';
 import actions from '../redux/actions';
+//others
+import { useSnackbar } from "notistack";
+import axios from 'axios';
+import { BACKEND_URL } from "../AppConfigs";
+import { setCookie, removeCookie } from '../utils/cookie';
+import { AUTHENTICATE } from '../redux/types/authTypes';
+import Router from "next/router";
 
 import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
 
@@ -48,6 +55,7 @@ const useStyles = makeStyles((styles) => ({
 }));
 
 export default function LoginPage(props) {
+  const snackbar = useSnackbar();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,12 +74,48 @@ export default function LoginPage(props) {
   const { ...rest } = props;
   const matchesSm = useMediaQuery('(max-width:600px)');
   const handleSubmit = e => {
-    console.log(password + email);
     e.preventDefault();
-    dispatch(actions.authenticate({ email, password }, 'login'));
+
+    const formData = { email, password };
+    //validation
+    if(email === null || email === undefined)
+      return snackbar.enqueueSnackbar("Email field required", { variant: "error" });
+    if(password === null || password === undefined)
+      return snackbar.enqueueSnackbar("Password field required", { variant: "error" });
+    if(password.length < 6)
+      return snackbar.enqueueSnackbar("Password must be longer than 6 characters", { variant: "error" });
+
+    axios
+      .post(`${BACKEND_URL}/auth/signin`, formData)
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        //success
+        snackbar.enqueueSnackbar("Login Success", { variant: "success" });
+        
+        const {
+          data: {
+            data: { token, fullname, email },
+          },
+        } = response;
+        setCookie("token", token);
+        dispatch(actions.removeError());
+        dispatch({ type: AUTHENTICATE, payload: { token, fullname, email } });
+        return Router.push("/home-feed");
+      });
+    // dispatch(actions.authenticate({ email, password }, 'login'));
   };
   return (
-    <GridContainer sm={12}>
+    <GridContainer>
       { !matchesSm ? (
         <GridItem sm={6}>
           <div className={classes.authlogoNavigation}>
@@ -107,6 +151,7 @@ export default function LoginPage(props) {
                 <CustomInput
                   labelText="Email..."
                   id="email"
+                  type="email"
                   onChange={handleEmailChange}
                   formControlProps={{
                     fullWidth: true

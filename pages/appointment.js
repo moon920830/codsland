@@ -60,14 +60,16 @@ import Radio from "@material-ui/core/Radio";
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
-
+//redux
+import { useSelector } from "react-redux";
+//rsuite
 import { Calendar, Whisper, Popover, Badge } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
 
 import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 
-import { Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@material-ui/core";
+import { Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Input, Typography } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -133,7 +135,10 @@ function SamplePrevArrow(props) {
   );
 }
 
-export default function Components(props) {
+export default function Appointment(props) {
+  //redux
+  const redux_fullname = useSelector((state) => state.authentication.fullname);
+  //other
   const classes = useStyles();
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -294,10 +299,10 @@ export default function Components(props) {
                   <DialogActions className={classes.modalFooter}>
                     <Grid container justify="center">
                         <Grid item>
-                          <Button round color="secondary" size="md" onClick={() => setSelectTimeModal(false)}>
+                          <Button round color="secondary" onClick={() => setSelectTimeModal(false)}>
                             Cancel
                           </Button>
-                          <Button round color="primary" size="md" onClick={handleSelectTime}>
+                          <Button round color="primary" onClick={handleSelectTime}>
                             Get Appointment
                           </Button>
                         </Grid>
@@ -345,6 +350,7 @@ export default function Components(props) {
                         <CustomInput
                           labelText=""
                           id="name"
+                          customValue={redux_fullname}
                           formControlProps={{
                             fullWidth: true,
                           }}
@@ -377,6 +383,7 @@ export default function Components(props) {
                         <CustomInput
                           labelText=""
                           id="time"
+                          customValue={selectedDate}
                           formControlProps={{
                             fullWidth: true,
                           }}
@@ -406,10 +413,10 @@ export default function Components(props) {
                   <DialogActions className={classes.modalFooter}>
                     <Grid container justify="center">
                         <Grid item>
-                          <Button round color="secondary" size="md" onClick={() => setEnterDetailsModal(false)}>
+                          <Button round color="secondary" onClick={() => setEnterDetailsModal(false)}>
                             Cancel
                           </Button>
-                          <Button round color="primary" size="md" onClick={handleEnterDetails}>
+                          <Button round color="primary" onClick={handleEnterDetails}>
                             Get Appointment
                           </Button>
                         </Grid>
@@ -462,7 +469,7 @@ export default function Components(props) {
                   <DialogActions className={classes.modalFooter}>
                     <Grid container justify="center">
                         <Grid item>
-                          <Button round color="primary" size="md" onClick={() => setSuccessModal(false)}>
+                          <Button round color="primary" onClick={() => setSuccessModal(false)}>
                             View
                           </Button>
                         </Grid>

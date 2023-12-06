@@ -25,7 +25,8 @@ export default function CustomInput(props) {
     white,
     inputRootCustomClasses,
     success,
-    onChange
+    onChange,
+    customValue
   } = props;
   const handleInputChange = (e) => {
     // console.log('CustomInput onChange:', e.target.value);
@@ -81,6 +82,7 @@ export default function CustomInput(props) {
         }}
         id={id}
         {...inputProps}
+        defaultValue={customValue}
       />
     </FormControl>
   );

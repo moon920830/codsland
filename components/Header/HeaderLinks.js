@@ -42,6 +42,15 @@ function HeaderLinks(props) {
     }
   }
 
+  const handleLogin = () => {
+    if(!(props.token==null || props.token==undefined))
+    {
+      return snackbar.enqueueSnackbar("Already signed in. Click dashboard", { variant: "info" });
+    } else {
+      return Router.push("/login");
+    }
+  }
+
   return (
     <List className={classes.list}>
       {/* <ListItem className={classes.listItem}>
@@ -154,16 +163,15 @@ function HeaderLinks(props) {
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
-        <Link href={'/login'} >
         <Button
           href=""
           color="transparent"
           target="_blank"
           className={classes.navLink}
+          onClick={handleLogin}
         >
           Log In
         </Button>
-        </Link>
       </ListItem>
       {/* <ListItem className={classes.listItem}>
         <Button

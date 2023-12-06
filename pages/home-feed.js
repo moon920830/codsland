@@ -66,10 +66,12 @@ import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import Avatar from '@material-ui/core/Avatar';
-
+//redux
+import { useSelector } from "react-redux";
+//rsuite
 import { Calendar, Whisper, Popover, Badge } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
-
+//style
 import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 
@@ -157,7 +159,11 @@ function SamplePrevArrow(props) {
   );
 }
 
-export default function Components(props) {
+export default function HomeFeed(props) {
+  //redux
+  const redux_email = useSelector((state) => state.authentication.email);
+  const redux_fullname = useSelector((state) => state.authentication.fullname);
+  //other
   const classes = useStyles();
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -231,10 +237,10 @@ export default function Components(props) {
                     </GridItem>
                   </GridContainer>
                   <GridContainer justify="center">
-                    <h4>Reinhard Van Zry</h4>
+                    <h4>{redux_fullname}</h4>
                   </GridContainer>
                   <GridContainer justify="center">
-                    <h5>@Reinhard...</h5>
+                    <h5>{redux_email}</h5>
                   </GridContainer>
                   <GridContainer style={{marginTop: "10px"}}>
                     <GridItem sm={1}></GridItem>
@@ -356,7 +362,7 @@ export default function Components(props) {
                         <GridItem sm={3}>
                         </GridItem>
                         <GridItem sm={3}>
-                          <Button round color="primary" size="md">
+                          <Button round color="primary">
                             Post
                           </Button>
                         </GridItem>

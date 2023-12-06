@@ -41,6 +41,11 @@ import Router from "next/router";
 import { Avatar, Box, FormControl } from "@material-ui/core";
 import { CalendarToday } from "@material-ui/icons";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+//redux
+import { useDispatch } from 'react-redux';
+import actions from '../redux/actions';
+//others
+import validator from "validator";
 
 import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 const useStyles = makeStyles((style) => ({
@@ -104,6 +109,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 Transition.displayName = "Transition";
 
 export default function RegisterPage(props) {
+  const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const [profileImage, setProfileImage] = useState(null);
 
@@ -195,8 +201,22 @@ export default function RegisterPage(props) {
     // const birthday=e.target.birthday.value;
     const city = refCity.current.value;
     const country = refCountry.current.value;
-    if (!fullname || !email || !password)
-      return snackbar.enqueueSnackbar("Unvalid Input", { variant: "error" });
+    // if (!fullname || !email || !password)
+    //   return snackbar.enqueueSnackbar("Unvalid Input", { variant: "error" });
+    if (!fullname)
+      return snackbar.enqueueSnackbar("Enter your name", { variant: "error" });
+    if (!email)
+      return snackbar.enqueueSnackbar("Enter your email", { variant: "error" });
+    if (!validator.isEmail(email))
+      return snackbar.enqueueSnackbar("Enter valid email", { variant: "error" });
+    if (!password)
+      return snackbar.enqueueSnackbar("Enter your password", { variant: "error" });
+    if (password.length < 6)
+      return snackbar.enqueueSnackbar("Password must be longer than 6 characters", { variant: "error" });
+    if (!city)
+      return snackbar.enqueueSnackbar("Enter your city", { variant: "error" });
+    if (!country)
+      return snackbar.enqueueSnackbar("Enter your country", { variant: "error" });
 
     const formData = new FormData();
     if(profileImage != null)
@@ -215,17 +235,19 @@ export default function RegisterPage(props) {
     axios
       .post(`${BACKEND_URL}/auth/signup`, formData)
       .then((response) => {
-        if (response.data.status == "error")
+        if (response.data.status == "error") {
+          dispatch(actions.createError(response.data.error));
           return snackbar.enqueueSnackbar(
             response.data.error ? response.data.error : "Error",
             { variant: "error" }
           );
+        }
         snackbar.enqueueSnackbar("Success", { variant: "success" });
         return Router.push("/");
       });
   }
   return (
-    <GridContainer sm={12}>
+    <GridContainer>
       {!matchesSm ? (
         <GridItem sm={6}>
           <div className={classes.authlogoNavigation}>
@@ -287,6 +309,7 @@ export default function RegisterPage(props) {
                   <CustomInput
                     labelText="Email..."
                     id="email"
+                    type="email"
                     formControlProps={{
                       fullWidth: true,
                     }}
@@ -423,9 +446,6 @@ export default function RegisterPage(props) {
                   />
                 </CardBody>
                 <CardFooter className={classes.cardFooter}>
-                  {/* <Button type="submit" round color="primary" size="lg">
-                  Sign Up
-                </Button> */}
                   <Button round color="primary" size="lg" onClick={() => setUploadModal(true)}>
                     Sign Up
                   </Button>
