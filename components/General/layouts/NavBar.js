@@ -8,6 +8,7 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/SearchOutlined'
 import { Search,SmsOutlined,SmsRounded,HomeOutlined,HomeRounded, PeopleOutlined, NotificationsOutlined } from '@material-ui/icons';
 import Badge from '@material-ui/core/Badge';
+import Router from "next/router";
 const useStyles=makeStyles(theme=>{
     return {
         logoAvatar:{
@@ -105,7 +106,7 @@ export default function ElevateAppBar(props) {
             <Toolbar>
                 <Grid container alignItems='center'>
                     <Grid container item xs={5} alignItems='center' style={{display:'flex',flexDirection:"row"}} >
-                        <Avatar src='/img/auth-logo.png' className={classes.logoAvatar}  />
+                        <Avatar src='/img/auth-logo.png' className={classes.logoAvatar} onClick={() => { Router.push("/") }} style={{cursor: "pointer"}}  />
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
                             <SearchIcon color='default' style={{opacity:0.5}} />
@@ -122,7 +123,7 @@ export default function ElevateAppBar(props) {
                     </Grid>
                     <Grid item xs={2}>
                         <div style={{flexGrow:1,alignContent:'center',alignItems:'center'}} >
-                            <IconButton><HomeRounded/></IconButton>
+                            <IconButton><HomeRounded onClick={() => {Router.push("/")}} /></IconButton>
                             <IconButton><SmsOutlined/></IconButton>
                             <IconButton><PeopleOutlined/></IconButton>
                             <IconButton ><Badge color="secondary" variant="dot" invisible={false}><NotificationsOutlined/></Badge></IconButton>

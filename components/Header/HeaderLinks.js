@@ -18,12 +18,30 @@ import IconButton from "@material-ui/core/IconButton";
 import CustomDropdown from "/components/CustomDropdown/CustomDropdown.js";
 import Button from "/components/CustomButtons/Button.js";
 
+//redux
+import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
+
+//noti
+import { useSnackbar } from "notistack";
+import Router from "next/router";
 import styles from "/styles/jss/nextjs-material-kit/components/headerLinksStyle.js";
 
 const useStyles = makeStyles(styles);
 
-export default function HeaderLinks(props) {
+function HeaderLinks(props) {
   const classes = useStyles();
+  const snackbar = useSnackbar();
+
+  const handleDashboard = () => {
+    if(props.token==null || props.token==undefined)
+    {
+      return snackbar.enqueueSnackbar("Sign in first", { variant: "info" });
+    } else {
+      return Router.push("/home-feed");
+    }
+  }
+
   return (
     <List className={classes.list}>
       {/* <ListItem className={classes.listItem}>
@@ -125,6 +143,17 @@ export default function HeaderLinks(props) {
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
+        <Button
+          href=""
+          color="transparent"
+          target="_blank"
+          className={classes.navLink}
+          onClick={handleDashboard}
+        >
+          Dashboard
+        </Button>
+      </ListItem>
+      <ListItem className={classes.listItem}>
         <Link href={'/login'} >
         <Button
           href=""
@@ -200,3 +229,14 @@ export default function HeaderLinks(props) {
     </List>
   );
 }
+
+
+
+
+const mapStateToProps = (state) => {
+  return {
+    token: state.authentication.token,
+  };
+};
+
+export default connect(mapStateToProps)(HeaderLinks);

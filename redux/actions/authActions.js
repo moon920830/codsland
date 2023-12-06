@@ -14,19 +14,19 @@ const authenticate = ({ email, password }, type) => {
     const formData = { email, password };
     try {
       const {
-        data: { token },
+        data: { data: { token } },
       } = await axios.post(`${BACKEND_URL}/auth/signin`, formData);
       // const token = "djaojnhh234234";
-      
+      console.log(token);
       setCookie('token', token);
       Router.push('/');
       dispatch(removeError());
       dispatch({ type: AUTHENTICATE, payload: token });
-    } catch ({ response }) {
+    } catch (response) {
       const {
-        data: { message },
+        status
       } = response;
-      dispatch(createError(message));
+      dispatch(createError(status));
     }
   };
 };

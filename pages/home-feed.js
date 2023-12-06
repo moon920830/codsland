@@ -105,6 +105,9 @@ const useStyles = makeStyles(theme => {
     cardSubTitle: {
       opacity:"0.5",
       fontSize: "13px"
+    },
+    cursor: {
+      cursor: "pointer"
     }
   }
 });
@@ -266,7 +269,7 @@ export default function Components(props) {
                         </GridItem>
                         <GridItem>
                           <Link href="/appointment">
-                            <h5>Appointments</h5>
+                            <h5 className={classes.cursor}>Appointments</h5>
                           </Link>
                         </GridItem>
                         <GridItem>
