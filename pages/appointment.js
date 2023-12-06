@@ -45,6 +45,7 @@ import CardBody from "/components/Card/CardBody.js";
 import CardHeader from "/components/Card/CardHeader.js";
 import Slider from "react-slick";
 import NavPills from "/components/NavPills/NavPills.js";
+import ElevateAppBar from "/components/General/layouts/NavBar.js";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import PhoneIcon from '@material-ui/icons/Phone';
 import MailIcon from '@material-ui/icons/Mail';
@@ -215,16 +216,12 @@ export default function Components(props) {
 
   return (
     <div>
-      
-      
-      <div className={classNames(classes.main, classes.mainRaised)}>
+      <ElevateAppBar />
+      <div className={classNames(classes.mainRaised)}>
         <div className={classes.sections}>
           <Container maxWidth={false} style={{ maxWidth: "80%" }} >
             <GridContainer justify="center">
               <h2 className={classes.title}>Appointment</h2>
-              
-
-              
                 <Dialog
                   classes={{
                     root: classes.center,
