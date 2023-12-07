@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/SearchOutlined";
+import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
 import {
   Search,
   SmsOutlined,
@@ -166,6 +167,13 @@ export default function ElevateAppBar(props) {
                   }}
                 >
                   <HomeRounded />
+                </IconButton>
+                <IconButton
+                  onClick={() => {
+                    Router.push("/home-feed");
+                  }}
+                >
+                  <DashboardOutlinedIcon />
                 </IconButton>
                 <IconButton>
                   <SmsOutlined />
