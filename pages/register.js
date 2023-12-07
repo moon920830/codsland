@@ -20,6 +20,7 @@ import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import DateRangeIcon from "@material-ui/icons/DateRange";
 import LocationCityIcon from "@material-ui/icons/LocationCity";
 import LanguageIcon from "@material-ui/icons/Language";
+import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -97,6 +98,9 @@ const useStyles = makeStyles((style) => ({
   modalSkipButton: {
     marginTop: style.spacing(4),
     marginBottom: style.spacing(3)
+  },
+  cursor: {
+    cursor: 'pointer'
   },
   ...modalStyle
   // Other styles
@@ -256,6 +260,10 @@ export default function RegisterPage(props) {
         </GridItem>
       ) : null}
       <GridItem sm={6}>
+        <GridContainer direction="row" alignItems="center">
+          <KeyboardBackspaceOutlinedIcon onClick={() => {Router.push("/")}} className={classes.cursor} />
+          <h4>&nbsp;Back</h4>
+        </GridContainer>
         <GridContainer
           justify="center"
           alignItems="center"

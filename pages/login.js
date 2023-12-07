@@ -7,7 +7,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import Email from "@material-ui/icons/Email";
-import LockOutlined from '@material-ui/icons/LockOutlined'
+import LockOutlined from '@material-ui/icons/LockOutlined';
+import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -29,6 +30,7 @@ import { AUTHENTICATE } from '../redux/types/authTypes';
 import Router from "next/router";
 
 import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
+import { BackspaceOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((styles) => ({
   authlogoNavigation: {
@@ -51,6 +53,9 @@ const useStyles = makeStyles((styles) => ({
     zIndex: 1,
     boxShadow: '1px 0px 1px 1px rgba(0,0,0,0.1)',
   },
+  cursor: {
+    cursor: 'pointer'
+  }
   // Other styles
 }));
 
@@ -124,6 +129,10 @@ export default function LoginPage(props) {
         </GridItem>
       ) : null }
       <GridItem sm={6}>
+        <GridContainer direction="row" alignItems="center">
+          <KeyboardBackspaceOutlinedIcon onClick={() => {Router.push("/")}} className={classes.cursor} />
+          <h4>&nbsp;Back</h4>
+        </GridContainer>
         <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]}>

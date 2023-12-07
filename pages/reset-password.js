@@ -8,6 +8,7 @@ import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import Email from "@material-ui/icons/Email";
+import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -18,8 +19,10 @@ import CardHeader from "/components/Card/CardHeader.js";
 import CardFooter from "/components/Card/CardFooter.js";
 import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
+//redux
 import { useDispatch } from 'react-redux';
 import actions from '../redux/actions';
+import Router from "next/router";
 
 import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
 import imageStyles from "../styles/jss/nextjs-material-kit/imagesStyles.js";
@@ -58,6 +61,9 @@ const useStyles = makeStyles((styles) => ({
     alignItems: "center",
     width: "100px",
     height: "100px",
+  },
+  cursor: {
+    cursor: 'pointer'
   },
   ...imageStyles,
   ...headerStyles
@@ -98,6 +104,10 @@ function ResetPasswordPage(props) {
         </GridItem>
       ) : null }
       <GridItem sm={6}>
+        <GridContainer direction="row" alignItems="center">
+          <KeyboardBackspaceOutlinedIcon onClick={() => {Router.push("/")}} className={classes.cursor} />
+          <h4>&nbsp;Back</h4>
+        </GridContainer>
         <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]}>

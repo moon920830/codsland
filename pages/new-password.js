@@ -8,6 +8,7 @@ import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
 import LockOutlinedIcon from '@material-ui/icons/Lock';
 import LockOutlined from '@material-ui/icons/LockOutlined'
+import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
 // core components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -57,6 +58,9 @@ const useStyles = makeStyles((styles) => ({
     alignItems: "center",
     width: "100px",
     height: "100px",
+  },
+  cursor: {
+    cursor: 'pointer'
   },
   ...imageStyles
   // Other styles
@@ -112,6 +116,10 @@ function NewPasswordPage(props) {
         </GridItem>
       ) : null }
       <GridItem sm={6}>
+        <GridContainer direction="row" alignItems="center">
+          <KeyboardBackspaceOutlinedIcon onClick={() => {Router.push("/")}} className={classes.cursor} />
+          <h4>&nbsp;Back</h4>
+        </GridContainer>
         <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]}>
