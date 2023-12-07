@@ -21,7 +21,7 @@ export const getCookie = (key, req) => {
     : getCookieFromServer(key, req);
 };
 
-const getCookieFromBrowser = key => {
+export const getCookieFromBrowser = key => {
   return cookie.get(key);
 };
 

@@ -69,7 +69,7 @@ import 'rsuite/dist/rsuite.min.css';
 import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 
-import { Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Input, Typography } from "@material-ui/core";
+import { Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Input, Typography } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -299,7 +299,7 @@ export default function Appointment(props) {
                   <DialogActions className={classes.modalFooter}>
                     <Grid container justify="center">
                         <Grid item>
-                          <Button round color="secondary" onClick={() => setSelectTimeModal(false)}>
+                          <Button round onClick={() => setSelectTimeModal(false)}>
                             Cancel
                           </Button>
                           <Button round color="primary" onClick={handleSelectTime}>
@@ -413,7 +413,7 @@ export default function Appointment(props) {
                   <DialogActions className={classes.modalFooter}>
                     <Grid container justify="center">
                         <Grid item>
-                          <Button round color="secondary" onClick={() => setEnterDetailsModal(false)}>
+                          <Button round onClick={() => setEnterDetailsModal(false)}>
                             Cancel
                           </Button>
                           <Button round color="primary" onClick={handleEnterDetails}>
@@ -499,7 +499,7 @@ export default function Appointment(props) {
                       tabContent: (
                         <GridContainer>
                           <GridItem>
-                            <GridContainer className={classes.title} style={{backgroundColor:"#2E3192", borderRadius: "26px 26px 0px 0px", color: "white"}}>
+                            <GridContainer alignItems="center" className={classes.title} style={{backgroundColor:"#2E3192", borderRadius: "26px 26px 0px 0px", color: "white"}}>
                               <GridItem sm={2}>Name of Patient</GridItem>
                               <GridItem sm={2}>Event name</GridItem>
                               <GridItem sm={4}>Length of appointment</GridItem>
@@ -509,14 +509,19 @@ export default function Appointment(props) {
                             </GridContainer>
                           </GridItem>
                           <GridItem>
-                            <GridContainer className={classes.title}>
-                              <GridItem sm={2}>John Doe</GridItem>
-                              <GridItem sm={2}>Initial Consultation</GridItem>
-                              <GridItem sm={4}>20 Mins(Child Treatment, First Visit Consultation)</GridItem>
-                              <GridItem sm={1}>Pending</GridItem>
-                              <GridItem sm={2}>5 Dec 2023</GridItem>
-                              <GridItem sm={1}>Cancel</GridItem>
-                            </GridContainer>
+                            {Array.from({length: 10}).map((item, index) => (
+                              <React.Fragment key={index}>
+                                <GridContainer className={classes.title}>
+                                  <GridItem sm={2}>John Doe</GridItem>
+                                  <GridItem sm={2}>Initial Consultation</GridItem>
+                                  <GridItem sm={4}>20 Mins(Child Treatment, First Visit Consultation)</GridItem>
+                                  <GridItem sm={1}>Pending</GridItem>
+                                  <GridItem sm={2}>5 Dec 2023</GridItem>
+                                  <GridItem sm={1}>Cancel</GridItem>
+                                </GridContainer>
+                                {index != 9 && <Divider />}
+                              </React.Fragment>
+                            ))}
                           </GridItem>
                         </GridContainer>
                       )

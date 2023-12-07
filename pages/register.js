@@ -247,7 +247,7 @@ export default function RegisterPage(props) {
           );
         }
         snackbar.enqueueSnackbar("Success", { variant: "success" });
-        return Router.push("/");
+        return Router.push("/login");
       });
   }
   return (
@@ -262,7 +262,7 @@ export default function RegisterPage(props) {
       <GridItem sm={6}>
         <GridContainer direction="row" alignItems="center">
           <KeyboardBackspaceOutlinedIcon onClick={() => {Router.push("/")}} className={classes.cursor} />
-          <h4>&nbsp;Back</h4>
+          <h4 onClick={() => {Router.push("/")}} className={classes.cursor} >&nbsp;Back</h4>
         </GridContainer>
         <GridContainer
           justify="center"

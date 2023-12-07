@@ -58,6 +58,8 @@ import YouTubeIcon from '@material-ui/icons/YouTube';
 
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 import { Container, IconButton, Typography } from "@material-ui/core";
+//hook
+import { useCheckTokenValidity } from '../redux/hooks.js';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -169,6 +171,9 @@ export default function Home(props) {
     dots: true,
     autoplay: true,
   };
+
+  useCheckTokenValidity();
+
   return (
     <div>
       <Header

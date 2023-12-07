@@ -269,8 +269,8 @@ export default function HomeFeed(props) {
                           <Divider />
                         </GridItem>
                         <GridItem>
-                          <Link href="/">
-                            <h5>My Profile</h5>
+                          <Link href="/myprofile">
+                            <h5 className={classes.cursor}>My Profile</h5>
                           </Link>
                         </GridItem>
                         <GridItem>
@@ -279,19 +279,19 @@ export default function HomeFeed(props) {
                           </Link>
                         </GridItem>
                         <GridItem>
-                          <Link href="/">
-                            <h5>Events</h5>
-                          </Link>
+                          {/* <Link href="/"> */}
+                            <h5 className={classes.cursor}>Events</h5>
+                          {/* </Link> */}
                         </GridItem>
                         <GridItem>
-                          <Link href="/">
-                            <h5>Community Groups</h5>
-                          </Link>
+                          {/* <Link href="/"> */}
+                            <h5 className={classes.cursor}>Community Groups</h5>
+                          {/* </Link> */}
                         </GridItem>
                         <GridItem>
-                          <Link href="/">
-                            <h5>Find Friends</h5>
-                          </Link>
+                          {/* <Link href="/"> */}
+                            <h5 className={classes.cursor}>Find Friends</h5>
+                          {/* </Link> */}
                         </GridItem>
                         <GridItem>
                           <Divider />
@@ -300,19 +300,19 @@ export default function HomeFeed(props) {
                             <h5 style={{fontWeight: "bold"}}>Important links</h5>
                         </GridItem>
                         <GridItem>
-                          <Link href="/">
-                            <h5>Privacy Policy</h5>
-                          </Link>
+                          {/* <Link href="/"> */}
+                            <h5 className={classes.cursor}>Privacy Policy</h5>
+                          {/* </Link> */}
                         </GridItem>
                         <GridItem>
-                          <Link href="/">
-                            <h5>Terms & Condition</h5>
-                          </Link>
+                          {/* <Link href="/"> */}
+                            <h5 className={classes.cursor}>Terms & Condition</h5>
+                          {/* </Link> */}
                         </GridItem>
                         <GridItem>
-                          <Link href="/">
-                            <h5>Membership</h5>
-                          </Link>
+                          {/* <Link href="/"> */}
+                            <h5 className={classes.cursor}>Membership</h5>
+                          {/* </Link> */}
                         </GridItem>
                       </GridContainer>
                     </GridItem>

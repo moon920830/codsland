@@ -118,7 +118,7 @@ function NewPasswordPage(props) {
       <GridItem sm={6}>
         <GridContainer direction="row" alignItems="center">
           <KeyboardBackspaceOutlinedIcon onClick={() => {Router.push("/")}} className={classes.cursor} />
-          <h4>&nbsp;Back</h4>
+          <h4 onClick={() => {Router.push("/")}} className={classes.cursor} >&nbsp;Back</h4>
         </GridContainer>
         <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>

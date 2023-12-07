@@ -8,6 +8,8 @@ import { SnackbarProvider } from 'notistack';
 import '../styles/css/index.css'
 import {ThemeProvider,createMuiTheme} from '@material-ui/core/styles'
 import { CssBaseline } from "@material-ui/core";
+import { getCookieFromBrowser,getCookie } from '../utils/cookie';
+import { AUTHENTICATE } from '../redux/types/authTypes';
 // import DateFnsUtils from "@date-io/date-fns";
 const theme=createMuiTheme({
   typography:{
@@ -15,6 +17,9 @@ const theme=createMuiTheme({
   },
 })
 class MyApp extends App {
+  constructor(props) {
+   super(props);
+  }
   componentDidMount() {
     let comment = document.createComment(`
 
@@ -35,8 +40,25 @@ class MyApp extends App {
 `);
     document.insertBefore(comment, document.documentElement);
   }
+  fetchToken() {
+    return getCookieFromBrowser('token');
+  }
   static async getInitialProps({ Component, ctx }) {
+    let token;
+    // Check if running on the server
+    if (ctx.req) {
+      // Access cookies from the request object on the server
+      token = ctx.req.headers.cookie ? getCookie('token', ctx.req) : null;
+    } else {
+      // Access cookies from the document object on the client
+      token = getCookieFromBrowser('token');
+    }
     ctx.store.dispatch(removeError());
+    ctx.store.dispatch({
+      type: AUTHENTICATE,
+      payload: { token, fullname: '123', email: '555' },
+    });
+
     let pageProps = {};
 
     if (Component.getInitialProps) {
@@ -67,6 +89,5 @@ class MyApp extends App {
     );
   }
 }
-
 
 export default wrapper.withRedux(MyApp);
