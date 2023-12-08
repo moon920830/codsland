@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -19,7 +19,7 @@ import CardHeader from "/components/Card/CardHeader.js";
 import CardFooter from "/components/Card/CardFooter.js";
 import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import actions from '../redux/actions';
 //others
 import { useSnackbar } from "notistack";
@@ -78,6 +78,14 @@ export default function LoginPage(props) {
   const classes = useStyles();
   const { ...rest } = props;
   const matchesSm = useMediaQuery('(max-width:600px)');
+
+  //redux
+  const token = useSelector((state) => state.authentication.token);
+  useLayoutEffect(() => {
+    if(token != null)
+      Router.push("/");
+  }, []);
+
   const handleSubmit = e => {
     e.preventDefault();
 
@@ -113,6 +121,8 @@ export default function LoginPage(props) {
           },
         } = response;
         setCookie("token", token);
+        setCookie("fullname", fullname);
+        setCookie("email", email);
         sessionStorage.setItem('userToken', token);
         dispatch(actions.removeError());
         dispatch({ type: AUTHENTICATE, payload: { token, fullname, email } });

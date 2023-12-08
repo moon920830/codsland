@@ -68,6 +68,7 @@ import YouTubeIcon from '@material-ui/icons/YouTube';
 import Avatar from '@material-ui/core/Avatar';
 //redux
 import { useSelector } from "react-redux";
+import { BACKEND_URL } from "../AppConfigs.js";
 //rsuite
 import { Calendar, Whisper, Popover, Badge } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -232,9 +233,7 @@ export default function HomeFeed(props) {
               <GridItem xs={3} sm={3} md={3} lg={3} >
                 <Card>
                   <GridContainer justify="center" style={{marginTop: "20px"}}>
-                    <GridItem sm={4}>
-                      <Avatar src='/img/avatar2.jpg' className={classes.logoAvatar} style={{width: "100%", height: "100%"}}  />
-                    </GridItem>
+                    <Avatar src={`${BACKEND_URL}/auth/avatars/${redux_email}`} className={classes.logoAvatar} style={{width: 80, height: 80}} />
                   </GridContainer>
                   <GridContainer justify="center">
                     <h4>{redux_fullname}</h4>
@@ -323,7 +322,7 @@ export default function HomeFeed(props) {
                 <Card className={classes.cardPaddingNoTop}>
                   <GridContainer>
                     <GridItem sm={2}>
-                      <Avatar src='/img/avatar2.jpg' className={classes.logoAvatar} style={{width: "45px", height: "45px", marginTop: "27px"}}  />
+                      <Avatar src={`${BACKEND_URL}/auth/avatars/${redux_email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px", marginTop: "27px"}} />
                     </GridItem>
                     <GridItem sm={10}>
                       <CustomInput
@@ -447,7 +446,7 @@ export default function HomeFeed(props) {
                     <GridItem>
                       <GridContainer>
                         <GridItem sm={1}>
-                          <Avatar src='/img/avatar2.jpg' className={classes.logoAvatar} style={{width: "45px", height: "45px", marginTop: "27px"}}  />
+                          <Avatar src={`${BACKEND_URL}/auth/avatars/${redux_email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px", marginTop: "27px"}} />
                         </GridItem>
                         <GridItem sm={11}>
                           <CustomInput

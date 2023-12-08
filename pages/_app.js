@@ -44,19 +44,23 @@ class MyApp extends App {
     return getCookieFromBrowser('token');
   }
   static async getInitialProps({ Component, ctx }) {
-    let token;
+    let token, fullname, email;
     // Check if running on the server
     if (ctx.req) {
       // Access cookies from the request object on the server
       token = ctx.req.headers.cookie ? getCookie('token', ctx.req) : null;
+      email = ctx.req.headers.cookie ? getCookie('email', ctx.req) : null;
+      fullname = ctx.req.headers.cookie ? getCookie('fullname', ctx.req) : null;
     } else {
       // Access cookies from the document object on the client
       token = getCookieFromBrowser('token');
+      email = getCookieFromBrowser('email');
+      fullname = getCookieFromBrowser('fullname');
     }
     ctx.store.dispatch(removeError());
     ctx.store.dispatch({
       type: AUTHENTICATE,
-      payload: { token, fullname: '123', email: '555' },
+      payload: { token, fullname, email },
     });
 
     let pageProps = {};

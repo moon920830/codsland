@@ -42,6 +42,8 @@ const reauthenticate = token => {
 const deauthenticate = () => {
   return dispatch => {
     removeCookie('token');
+    removeCookie('fullname');
+    removeCookie('email');
     Router.push('/');
     dispatch({ type: DEAUTHENTICATE });
   };

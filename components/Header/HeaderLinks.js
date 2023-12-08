@@ -21,6 +21,7 @@ import Button from "/components/CustomButtons/Button.js";
 //redux
 import { connect } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import actions from '../../redux/actions';
 
 //noti
 import { useSnackbar } from "notistack";
@@ -30,6 +31,7 @@ import styles from "/styles/jss/nextjs-material-kit/components/headerLinksStyle.
 const useStyles = makeStyles(styles);
 
 function HeaderLinks(props) {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const snackbar = useSnackbar();
 
@@ -49,6 +51,11 @@ function HeaderLinks(props) {
     } else {
       return Router.push("/login");
     }
+  }
+
+  const handleLogout = () => {
+    dispatch(actions.deauthenticate());
+    // return Router.push("");
   }
 
   return (
@@ -162,7 +169,7 @@ function HeaderLinks(props) {
           Dashboard
         </Button>
       </ListItem>
-      <ListItem className={classes.listItem}>
+      {props.token == null ? <ListItem className={classes.listItem}>
         <Button
           href=""
           color="transparent"
@@ -172,7 +179,17 @@ function HeaderLinks(props) {
         >
           Log In
         </Button>
-      </ListItem>
+      </ListItem> : <ListItem className={classes.listItem}>
+        <Button
+          href=""
+          color="transparent"
+          target="_blank"
+          className={classes.navLink}
+          onClick={handleLogout}
+        >
+          Log Out
+        </Button>
+      </ListItem>}
       {/* <ListItem className={classes.listItem}>
         <Button
           href="https://www.creative-tim.com/product/nextjs-material-kit?ref=njsmk-navbar"

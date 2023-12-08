@@ -26,6 +26,7 @@ import Badge from "@material-ui/core/Badge";
 import Router from "next/router";
 //redux
 import { useSelector } from "react-redux";
+import { BACKEND_URL } from "../../../AppConfigs.js";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -119,6 +120,7 @@ ElevationScroll.propTypes = {
 export default function ElevateAppBar(props) {
   const classes = useStyles();
   const fullname = useSelector((state) => state.authentication.fullname);
+  const redux_email = useSelector((state) => state.authentication.email);
   return (
     <ElevationScroll {...props}>
       <AppBar color="inherit">
@@ -192,7 +194,8 @@ export default function ElevateAppBar(props) {
               <Grid container alignItems="center">
                 <div style={{ flexGrow: 1 }}></div>
                 <Typography>{fullname}</Typography>
-                <Avatar className={classes.avatar} src={`/img/avatar2.jpg`} />
+                {/* <Avatar className={classes.avatar} src={`/img/avatar2.jpg`} /> */}
+                <Avatar className={classes.avatar} src={`${BACKEND_URL}/auth/avatars/${redux_email}`} />
               </Grid>
             </Grid>
           </Grid>

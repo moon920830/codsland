@@ -172,8 +172,6 @@ export default function Home(props) {
     autoplay: true,
   };
 
-  useCheckTokenValidity();
-
   return (
     <div>
       <Header
