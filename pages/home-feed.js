@@ -22,6 +22,7 @@ import GridItem from "/components/Grid/GridItem.js";
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import MUIButton from '@material-ui/core/Button';
 import Button from "/components/CustomButtons/Button.js";
 import CustomDropdown from "/components/CustomDropdown/CustomDropdown.js";
 import Parallax from "/components/Parallax/Parallax.js";
@@ -111,6 +112,19 @@ const useStyles = makeStyles(theme => {
     },
     cursor: {
       cursor: "pointer"
+    },
+    reportPost: {
+      width: "146px",
+      height: "49px",
+      borderRadius: "18px",
+      background: "#FFF",
+      boxShadow: "0px 6px 16.6px 0px rgba(0, 0, 0, 0.25)",
+    },
+    textCenter: {
+      textAlign: 'center'
+    },
+    enterReason: {
+      marginTop: "21px",
     }
   }
 });
@@ -171,7 +185,8 @@ export default function HomeFeed(props) {
   const [selectedEnabled, setSelectedEnabled] = React.useState("b");
   const [selectTimeModal, setSelectTimeModal] = React.useState(false);
   const [enterDetailsModal, setEnterDetailsModal] = React.useState(false);
-  const [successModal, setSuccessModal] = React.useState(false);
+  const [reportPostModal, setReportPostModal] = React.useState(false);
+  const [createPostModal, setCreatePostModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState(Date());
   const settings = {
     dots: true,
@@ -361,7 +376,7 @@ export default function HomeFeed(props) {
                         <GridItem sm={3}>
                         </GridItem>
                         <GridItem sm={3}>
-                          <Button round color="primary">
+                          <Button round color="primary" onClick={() => {setCreatePostModal(true)}}>
                             Post
                           </Button>
                         </GridItem>
@@ -388,9 +403,12 @@ export default function HomeFeed(props) {
                           <h5>Briansky Alex</h5>
                           <h6 className={classes.cardSubTitle}>12 minutes ago</h6>
                         </GridItem>
-                        <GridItem sm={6}>
-                        </GridItem>
                         <GridItem sm={1}>
+                        </GridItem>
+                        <GridItem sm={3}>
+                        </GridItem>
+                        <GridItem sm={3} style={{display: 'flex', direction: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                          <MUIButton className={classes.reportPost} onClick={() => {setReportPostModal(true)}}>Report Post</MUIButton>
                           <MoreVertOutlinedIcon />
                         </GridItem>
                       </GridContainer>
@@ -726,6 +744,156 @@ export default function HomeFeed(props) {
         </Grid>
         <Grid item xs={1} ></Grid>
       </Grid>
+
+
+      {/* start of report dialog */}
+      <Dialog
+        classes={{
+          root: classes.center,
+          paper: classes.modal
+        }}
+        open={reportPostModal}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setReportPostModal(false)}
+        aria-labelledby="classic-modal-slide-title"
+        aria-describedby="classic-modal-slide-description"
+        maxWidth="sm"
+        fullWidth={true}
+      >
+        <DialogTitle
+          id="classic-modal-slide-title"
+          disableTypography
+          className={classes.modalHeader}
+        >
+          <IconButton
+            className={classes.modalCloseButton}
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            onClick={() => setReportPostModal(false)}
+          >
+            <Close className={classes.modalClose} />
+          </IconButton>
+          <h4 className={classNames(classes.modalTitle, classes.title, classes.textCenter)}>Report This Post</h4>
+        </DialogTitle>
+        <DialogContent
+          id="classic-modal-slide-description"
+          className={classes.modalBody}
+        >
+          <Divider />
+          <GridContainer direction="row">
+            <GridItem>
+              <TextField
+                id="standard-multiline-static"
+                label=""
+                multiline
+                rows={8}
+                placeholder="Enter reason Here"
+                variant="filled"
+                className={classes.enterReason}
+                fullWidth
+              />
+            </GridItem>
+          </GridContainer>
+        </DialogContent>
+        <DialogActions className={classes.modalFooter}>
+          <Grid>
+              <Grid item>
+                <Button round color="primary" onClick={() => {setReportPostModal(false)}}>
+                  Post
+                </Button>
+              </Grid>
+            </Grid>
+        </DialogActions>
+      </Dialog>
+      {/* end of report dialog */}
+      {/* start of create post dialog */}
+      <Dialog
+        classes={{
+          root: classes.center,
+          paper: classes.modal
+        }}
+        open={createPostModal}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setCreatePostModal(false)}
+        aria-labelledby="classic-modal-slide-title"
+        aria-describedby="classic-modal-slide-description"
+        maxWidth="sm"
+        fullWidth={true}
+      >
+        <DialogTitle
+          id="classic-modal-slide-title"
+          disableTypography
+          className={classes.modalHeader}
+        >
+          <IconButton
+            className={classes.modalCloseButton}
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            onClick={() => setCreatePostModal(false)}
+          >
+            <Close className={classes.modalClose} />
+          </IconButton>
+          <h4 className={classNames(classes.modalTitle, classes.title, classes.textCenter)}>Create Post</h4>
+        </DialogTitle>
+        <DialogContent
+          id="classic-modal-slide-description"
+          className={classes.modalBody}
+        >
+          <Divider />
+          <GridContainer direction="col">
+            <GridItem>
+              <TextField
+                id="standard-multiline-static"
+                label=""
+                multiline
+                rows={8}
+                placeholder="What's on Your Mind"
+                className={classes.enterReason}
+                fullWidth
+              />
+            </GridItem>
+            <GridItem style={{marginTop: "12px"}}>
+              <GridContainer>
+                <GridItem sm={11}></GridItem>
+                <GridItem sm={1}>
+                  <SentimentSatisfiedOutlinedIcon />
+                </GridItem>
+              </GridContainer>
+            </GridItem>
+          </GridContainer>
+          <GridContainer direction="row" alignItems="center" style={{borderRadius: "26px", border: "1px solid #9A9A9A", marginLeft: "0px", marginRight: "0px", paddingTop: "16px", paddingBottom: "16px", marginTop: "24px"}}>
+            <GridItem sm={8}>
+              <p style={{fontSize: "16px"}}>Add To Post</p>
+            </GridItem>
+            <GridItem sm={4}>
+              <GridContainer spacing={1} direction="row">
+                <GridItem sm={2}>
+                  <WallpaperOutlinedIcon />
+                </GridItem>
+                <GridItem sm={4}>
+                  <h5>Image</h5>
+                </GridItem>
+                <GridItem sm={2}>
+                  <VideocamOutlinedIcon />
+                </GridItem>
+                <GridItem sm={4}>
+                  <h5>Video</h5>
+                </GridItem>
+              </GridContainer>
+            </GridItem>
+          </GridContainer>
+        </DialogContent>
+        <DialogActions className={classes.modalFooter}>
+          <Button round color="primary" onClick={() => {setCreatePostModal(false)}} fullWidth>
+            Post
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* end of create post dialog */}
     </div>
   );
 }
