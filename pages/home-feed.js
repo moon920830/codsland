@@ -63,7 +63,6 @@ import CustomInput from "/components/CustomInput/CustomInput.js";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
-import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import Avatar from '@material-ui/core/Avatar';
@@ -77,7 +76,7 @@ import 'rsuite/dist/rsuite.min.css';
 import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 
-import { Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from "@material-ui/core";
+import { ButtonBase, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -188,6 +187,8 @@ export default function HomeFeed(props) {
   const [reportPostModal, setReportPostModal] = React.useState(false);
   const [createPostModal, setCreatePostModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState(Date());
+  const refContentText=React.useRef(null);
+  const refContentUpload=React.useRef(null);
   const settings = {
     dots: true,
     infinite: true,
@@ -237,7 +238,10 @@ export default function HomeFeed(props) {
     dots: true,
     autoplay: true,
   };
+  const saveContent=()=>{
+    setCreatePostModal(false);
 
+  }
   return (
     <div>
       <ElevateAppBar />
@@ -854,6 +858,7 @@ export default function HomeFeed(props) {
                 placeholder="What's on Your Mind"
                 className={classes.enterReason}
                 fullWidth
+                inputRef={refContentText}
               />
             </GridItem>
             <GridItem style={{marginTop: "12px"}}>
@@ -865,34 +870,38 @@ export default function HomeFeed(props) {
               </GridContainer>
             </GridItem>
           </GridContainer>
-          <GridContainer direction="row" alignItems="center" style={{borderRadius: "26px", border: "1px solid #9A9A9A", marginLeft: "0px", marginRight: "0px", paddingTop: "16px", paddingBottom: "16px", marginTop: "24px"}}>
-            <GridItem sm={8}>
-              <p style={{fontSize: "16px"}}>Add To Post</p>
-            </GridItem>
-            <GridItem sm={4}>
-              <GridContainer spacing={1} direction="row">
-                <GridItem sm={2}>
-                  <WallpaperOutlinedIcon />
-                </GridItem>
-                <GridItem sm={4}>
-                  <h5>Image</h5>
-                </GridItem>
-                <GridItem sm={2}>
-                  <VideocamOutlinedIcon />
-                </GridItem>
-                <GridItem sm={4}>
-                  <h5>Video</h5>
-                </GridItem>
-              </GridContainer>
-            </GridItem>
-          </GridContainer>
+          <ButtonBase onClick={e=>refContentUpload.current.click()} style={{width:"100%"}} >
+            <GridContainer direction="row" alignItems="center" style={{width:"100%",borderRadius: "26px", border: "1px solid #9A9A9A", marginLeft: "0px", marginRight: "0px", paddingTop: "16px", paddingBottom: "16px", marginTop: "24px"}}>
+              <GridItem sm={8}>
+                <p style={{fontSize: "16px"}}>Add To Post</p>
+              </GridItem>
+              <GridItem sm={4}>
+                <GridContainer spacing={1} direction="row">
+                  <GridItem sm={2}>
+                    <WallpaperOutlinedIcon />
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <h5>Image</h5>
+                  </GridItem>
+                  <GridItem sm={2}>
+                    <VideocamOutlinedIcon />
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <h5>Video</h5>
+                  </GridItem>
+                </GridContainer>
+              </GridItem>
+            </GridContainer>
+          </ButtonBase>
         </DialogContent>
         <DialogActions className={classes.modalFooter}>
-          <Button round color="primary" onClick={() => {setCreatePostModal(false)}} fullWidth>
+          <Button round color="primary" onClick={() => {saveContent()}} fullWidth>
             Post
           </Button>
         </DialogActions>
       </Dialog>
+      <input type="file" ref={refContentUpload} hidden />
+      <input type="file" hidden />
       {/* end of create post dialog */}
     </div>
   );
