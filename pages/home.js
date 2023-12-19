@@ -54,7 +54,8 @@ import Radio from "@material-ui/core/Radio";
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
-
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
 
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 import { Container, IconButton, Typography } from "@material-ui/core";
@@ -636,9 +637,53 @@ export default function Home(props) {
             <GridContainer justify="center">
               <h2 className={classes.title}>Our <span style={{ color: '#2E3192' }}>Pricing & Membership</span></h2>
             </GridContainer>
-            <GridContainer>
-              <GridItem xs={12} sm={12} md={12} lg={12}>
-                <NavPills
+            <Grid container spacing={4} alignContent="center" alignItems="center" justify="center" >
+              <Grid item xs={3} >
+                        <Card elevation={4} >
+                            <CardContent>
+                                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                Daily Member
+                                </Typography>
+                                <Typography variant="h5" component="h2">
+                                7.5 $/day
+                                </Typography>
+                                <Typography className={classes.pos} color="textSecondary">
+                                </Typography>
+                                <Typography style={{marginTop:"5vh"}} variant="body2" component="p">
+                                Able to book an appointment
+                                <br />
+                                Able to cancel or reschedule with 7 or more days' notice
+                                </Typography>
+                            </CardContent>
+                            <CardActions style={{display:'flex',justifyContent:"center"}} >
+                                <Button size="small">Learn More</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={3} >
+                        <Card elevation={4} style={{backgroundColor:"#231D4F",color:"white"}} >
+                            <CardContent>
+                                <Typography className={classes.title} style={{color:'white'}} color="textSecondary" gutterBottom>
+                                Annual Member
+                                </Typography>
+                                <Typography variant="h5" component="h2">
+                                100 $/year
+                                </Typography>
+                                <Typography className={classes.pos} style={{color:"white"}} color="textSecondary">
+                                </Typography>
+                                <Typography style={{marginTop:"5vh"}} variant="body2" component="p">
+                                  Able to post a sharing contents<br/>
+                                Able to book an appointment
+                                <br />
+                                Able to cancel or reschedule appointments 7 or more days in advance
+                                </Typography>
+                            </CardContent>
+                            <CardActions style={{display:'flex',justifyContent:"center"}}>
+                                <Button size="small">Learn More</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                {/* <NavPills
                   color="primary"
                   alignCenter={true}
                   tabs={[
@@ -1057,9 +1102,8 @@ export default function Home(props) {
                       )
                     },
                   ]}
-                />
-              </GridItem>
-            </GridContainer>
+                /> */}
+            </Grid>
             {/* Membership */}
 
             {/* Contact US */}
