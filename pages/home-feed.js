@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // react components for routing our app without refresh
@@ -71,8 +71,12 @@ import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import Avatar from '@material-ui/core/Avatar';
 //redux
-import { useSelector } from "react-redux";
-import { BACKEND_URL } from "../AppConfigs.js";
+import { useSelector, useDispatch } from "react-redux";
+import actions from '../redux/actions';
+import axios from 'axios';
+import { BACKEND_URL } from "../AppConfigs";
+//other
+import { useSnackbar } from "notistack";
 //rsuite
 import { Calendar, Whisper, Popover, Badge } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -185,11 +189,15 @@ function SamplePrevArrow(props) {
 }
 
 export default function HomeFeed(props) {
+  //snackbar
+  const snackbar = useSnackbar();
   //redux
+  const dispatch = useDispatch();
   const redux_email = useSelector((state) => state.authentication.email);
   const redux_fullname = useSelector((state) => state.authentication.fullname);
   //other
   const classes = useStyles();
+  const fileInputRef = useRef(null);
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedEnabled, setSelectedEnabled] = React.useState("b");
@@ -199,7 +207,13 @@ export default function HomeFeed(props) {
   const [createPostModal, setCreatePostModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState(Date());
   const [postTitle, setPostTitle] = useState("");
-  const [uploadEnabled, setUploadEnabled] = useState(false);
+  const [postDescription, setPostDescription] = useState("");
+  const [postCategory, setPostCategory] = useState("");
+  const [postImage, setPostImage] = useState(null);
+  const [uploadEnabled, setUploadEnabled] = useState(0);
+  const [categories, setCategories] = useState({});
+
+
   const refContentText=React.useRef(null);
   const refContentUpload=React.useRef(null);
   const settings = {
@@ -251,10 +265,73 @@ export default function HomeFeed(props) {
     dots: true,
     autoplay: true,
   };
+
+  const handleUpload = (e) => {
+    fileInputRef.current.click();
+  }
+  
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setPostImage(e.target.files[0]);
+    }
+  }
+
   const saveContent=()=>{
     setCreatePostModal(false);
 
+    const formData = new FormData();
+    // if(profileImage != null)
+    //   formData.append('upload', profileImage);
+    formData.append('title', postTitle);
+    formData.append('description', postDescription);
+    formData.append('category', postCategory);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
+    axios
+      .post(`${BACKEND_URL}/shared-contents/save`, formData, config)
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        const {
+          membership_type
+        } = response.data;
+      });
   }
+
+  //component mount
+  useEffect(() => {
+    // axios
+    //   .get(`${BACKEND_URL}/shared-contents/categories`, {})
+    //   .then((response) => {
+    //     //error handler
+    //     console.log(response);
+    //     if (response.data.status == "error") {
+    //       const {
+    //         error
+    //       } = response.data;
+    //       dispatch(actions.createError(error));
+    //       return snackbar.enqueueSnackbar(
+    //         response.data.error ? response.data.error : "Error",
+    //         { variant: "error" }
+    //       );
+    //     }
+    //     console.log(response.data);
+    //     setCategories(response.data);
+    //   });
+  }, []);
+
   return (
     <div>
       <ElevateAppBar />
@@ -868,7 +945,7 @@ export default function HomeFeed(props) {
                 labelText="Post Title"
                 id="title"
                 type="postTitle"
-                onChange={() => {}}
+                onChange={title => {setPostTitle(title)}}
                 formControlProps={{
                   fullWidth: true
                 }}
@@ -882,25 +959,31 @@ export default function HomeFeed(props) {
                 className={classes.enterReason}
                 fullWidth
                 inputRef={refContentText}
+                onChange={description => {setPostDescription(description)}}
               />
               <FormControl className={classes.formControl} fullWidth>
                 <InputLabel id="demo-simple-select-helper-label">Select Category</InputLabel>
                 <Select
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
-                  value={0}
+                  value={postCategory}
                   fullWidth
-                  onChange={() => {}}
+                  onChange={(e) => {setPostCategory(e.target.value)}}
                 >
+                  {/* {categories.map((item, index) => (
+                    <MenuItem value={index}><p style={{fontSize: '16px'}}>{item}</p></MenuItem>
+                  ))} */}
                   <MenuItem value={10}><p style={{fontSize: '16px', fontWeight: '50'}}>Category1</p></MenuItem>
                   <MenuItem value={20}><p style={{fontSize: '16px'}}>Category1</p></MenuItem>
                   <MenuItem value={30}><p style={{fontSize: '16px'}}>Category1</p></MenuItem>
                 </Select>
               </FormControl>
-              {uploadEnabled ? <div style={{width: '100%', height: '128px', backgroundColor:'#F3F3F3', borderRadius: '16px', marginTop: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+              {uploadEnabled !== 0 ? 
+              <div onClick={handleUpload} style={{width: '100%', height: '128px', backgroundColor:'#F3F3F3', borderRadius: '16px', marginTop: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', cursor: 'pointer'}}>
                 <WallpaperOutlinedIcon />
-                <p>Upload Photo/Video</p>
+                <p>Upload {uploadEnabled===1?'Photo':'Video'}</p>
               </div> : null }
+              <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" hidden />
             </GridItem>
             <GridItem style={{marginTop: "12px"}}>
               <GridContainer>
@@ -911,7 +994,6 @@ export default function HomeFeed(props) {
               </GridContainer>
             </GridItem>
           </GridContainer>
-          <ButtonBase style={{width:"100%"}} >
             <GridContainer direction="row" alignItems="center" style={{width:"100%",borderRadius: "26px", border: "1px solid #9A9A9A", marginLeft: "0px", marginRight: "0px", paddingTop: "16px", paddingBottom: "16px", marginTop: "24px"}}>
               <GridItem sm={3}>
                 <p style={{fontSize: "16px"}}>Add To Post</p>
@@ -920,13 +1002,13 @@ export default function HomeFeed(props) {
               </GridItem>
               <GridItem sm={4}>
                 <GridContainer spacing={1} direction="row">
-                  <GridItem sm={2} onClick={() => {setUploadEnabled(true)}}>
+                  <GridItem sm={2} onClick={() => {uploadEnabled!==1?setUploadEnabled(1):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <WallpaperOutlinedIcon />
                   </GridItem>
                   <GridItem sm={4}>
                     <h5>Image</h5>
                   </GridItem>
-                  <GridItem sm={2}>
+                  <GridItem sm={2} onClick={() => {uploadEnabled!==2?setUploadEnabled(2):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <VideocamOutlinedIcon />
                   </GridItem>
                   <GridItem sm={4}>
@@ -935,7 +1017,6 @@ export default function HomeFeed(props) {
                 </GridContainer>
               </GridItem>
             </GridContainer>
-          </ButtonBase>
         </DialogContent>
         <DialogActions className={classes.modalFooter}>
           <Button round color="primary" onClick={() => {saveContent()}} fullWidth>

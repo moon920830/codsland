@@ -8,6 +8,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 // @material-ui/icons
 import Email from "@material-ui/icons/Email";
 import LockOutlined from '@material-ui/icons/LockOutlined';
+import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
 import PhoneIcon from '@material-ui/icons/Phone';
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
@@ -26,13 +27,13 @@ import CardHeader from "/components/Card/CardHeader.js";
 import CardFooter from "/components/Card/CardFooter.js";
 import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
+//redux
 import { useDispatch, useSelector } from 'react-redux';
-// import actions from '../redux/actions';
+import actions from '../redux/actions';
 //others
 import { useSnackbar } from "notistack";
 import axios from 'axios';
-// import { BACKEND_URL } from "../../AppConfigs";
-// import { setCookie, removeCookie } from '../utils/cookie';
+import { BACKEND_URL } from "../../AppConfigs";
 // import { AUTHENTICATE } from '../redux/types/authTypes';
 import Router from "next/router";
 import Datetime from "react-datetime";
@@ -70,7 +71,7 @@ const useStyles = makeStyles((styles) => {
     cursor: {
       cursor: 'pointer'
     },
-    testStyle: {
+    outlinedStyle: {
       '& .MuiOutlinedInput-input' : {
         padding: '9px'
       }
@@ -84,9 +85,14 @@ const useStyles = makeStyles((styles) => {
   // Other styles
 });
 
-export default function LoginPage(props) {
+export default function AnnualMembership(props) {
   const snackbar = useSnackbar();
   const dispatch = useDispatch();
+  //redux
+  const redux_email = useSelector((state) => state.authentication.email);
+  const redux_fullname = decodeURI(useSelector((state) => state.authentication.fullname));
+  const redux_member = decodeURI(useSelector((state) => state.authentication.member));
+  //state
   const [phone, setPhone] = useState('');
   const [confirm, setConfirm] = useState(false);
   const [date, setDate] = useState("");
@@ -94,6 +100,29 @@ export default function LoginPage(props) {
   const [cardNumber, setCardNumber] = useState("");
   const [csv, setCSV] = useState("");
   const [address, setAddress] = useState("");
+
+  //component mount
+  // useEffect(() => {
+  //   const formData = { email : redux_email };
+  //   axios
+  //     .post(`${BACKEND_URL}/members/check`, formData)
+  //     .then((response) => {
+  //       //error handler
+  //       if (response.data.status == "error") {
+  //         const {
+  //           error
+  //         } = response.data;
+  //         dispatch(actions.createError(error));
+  //         return snackbar.enqueueSnackbar(
+  //           response.data.error ? response.data.error : "Error",
+  //           { variant: "error" }
+  //         );
+  //       }
+  //       const {
+  //         membership_type
+  //       } = response.data;
+  //     });
+  // }, []);
 
   
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
@@ -169,49 +198,36 @@ export default function LoginPage(props) {
 
   const handlePurchase = e => {
     setConfirm(false);
-    handleSubmit();
+    handleSubmit(e);
   }
 
-  const handleSubmit = () => {
-    const formData = { phone };
+  const handleSubmit = (e) => {
+    const formData = { date, phone, cardNumber, expireDate, csv, address, type: 'annual' };
     //validation
     if(phone === null || phone === undefined || phone === "")
       return snackbar.enqueueSnackbar("Phone field required", { variant: "error" });
 
     snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
-    return Router.push("/home-feed");
-    // axios
-    //   .post(`${BACKEND_URL}/auth/signin`, formData)
-    //   .then((response) => {
-    //     //error handler
-    //     if (response.data.status == "error") {
-    //       const {
-    //         error
-    //       } = response.data;
-    //       dispatch(actions.createError(error));
-    //       return snackbar.enqueueSnackbar(
-    //         response.data.error ? response.data.error : "Error",
-    //         { variant: "error" }
-    //       );
-    //     }
-    //     //success
-    //     snackbar.enqueueSnackbar("Login Success", { variant: "success" });
-        
-    //     const {
-    //       data: {
-    //         data: { token, fullname, email },
-    //       },
-    //     } = response;
-    //     setCookie("token", token);
-    //     setCookie("fullname", fullname);
-    //     setCookie("email", email);
-    //     sessionStorage.setItem('userToken', token);
-    //     dispatch(actions.removeError());
-    //     dispatch({ type: AUTHENTICATE, payload: { token, fullname, email } });
-    //     return Router.push("/home-feed");
-    //   });
-
-    // dispatch(actions.authenticate({ email, password }, 'login'));
+    axios
+      .post(`${BACKEND_URL}/members/save`, formData)
+      // .post(`/asdf`, formData)
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        //success
+        snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
+        dispatch(actions.removeError());
+        return Router.push("/home-feed");
+      });
   };
   return (
     <GridContainer justify="center">
@@ -220,7 +236,24 @@ export default function LoginPage(props) {
           <KeyboardBackspaceOutlinedIcon  onClick={() => {Router.push("/")}} className={classes.cursor} />
           <h4 onClick={() => {Router.push("/")}} className={classes.cursor} >&nbsp;Back</h4>
         </GridContainer>
-        <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
+        {1 == 2 ?
+        (<GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
+          <GridItem md={9} lg={7} xl={7}>
+            <Card className={classes[cardAnimaton]}>
+              <form className={classes.form}>
+                <CardBody id="card_body_annual">
+                  <GridContainer justify="center" alignItems="center">
+                      <div style={{backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%", width: "120px", height: "120px"}}>
+                        <CheckOutlinedIcon style={{width: "40%", height: "40%", color: "white"}} />
+                      </div>
+                      <h3 style={{textAlign: "center"}}>You have already purchased membership</h3>
+                  </GridContainer>
+                </CardBody>
+              </form>
+            </Card>
+          </GridItem>
+        </GridContainer>) :
+        (<GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]}>
             <form className={classes.form}>
@@ -244,9 +277,43 @@ export default function LoginPage(props) {
                 <h4>You are about to purchase daily membership</h4>
               </CardHeader>
               <CardBody id="card_body_annual">
+                <TextField
+                  className={classes.outlinedStyle}
+                  onChange={() => {return null;}}
+                  placeholder="Name"
+                  fullWidth
+                  variant="outlined"
+                  value={redux_fullname}
+                  InputProps={{
+                    style: {
+                      // Control font or other styles here
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '14px',
+                    },
+                    readOnly: true
+                  }}
+                  style={{marginTop:'30px'}}
+                />
+                <TextField
+                  className={classes.outlinedStyle}
+                  onChange={() => {return null;}}
+                  placeholder="Email"
+                  fullWidth
+                  variant="outlined"
+                  value={redux_email}
+                  InputProps={{
+                    style: {
+                      // Control font or other styles here
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '14px',
+                    },
+                    readOnly: true
+                  }}
+                  style={{marginTop:'30px'}}
+                />
                 <Datetime
-                  id="test_birthday"
-                  inputProps={{ placeholder: "Birthday2", style: {
+                  id="birthday"
+                  inputProps={{ placeholder: "Birthday", style: {
                     width: '100%',
                     padding: '10px 14px', // Adjust padding as needed
                     borderTop: '1px solid #ced4da', // Border color for top
@@ -288,7 +355,7 @@ export default function LoginPage(props) {
                   style={{marginTop:'30px'}}
                 />
                 <TextField
-                  className={classes.testStyle}
+                  className={classes.outlinedStyle}
                   onChange={handleCardNumberChange}
                   placeholder="Card Number"
                   fullWidth
@@ -325,7 +392,7 @@ export default function LoginPage(props) {
                   // style={{display: "flex"}}
                 />
                 <TextField
-                  className={classes.testStyle}
+                  className={classes.outlinedStyle}
                   onChange={handleCSVChange}
                   placeholder="CSV"
                   fullWidth
@@ -340,7 +407,7 @@ export default function LoginPage(props) {
                   style={{marginTop:'30px'}}
                 />
                 <TextField
-                  className={classes.testStyle}
+                  className={classes.outlinedStyle}
                   onChange={handleAddressChange}
                   placeholder="Address"
                   fullWidth
@@ -363,7 +430,8 @@ export default function LoginPage(props) {
             </form>
           </Card>
           </GridItem>
-        </GridContainer>
+        </GridContainer>)
+        }
       </GridItem>
 
       {/* start of dialog */}

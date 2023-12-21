@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect, useLayoutEffect } from 'react';
 // @material-ui/core components
-import { Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Input, Typography } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Input, Typography, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -63,16 +63,50 @@ const useStyles = makeStyles((styles) => {
     },
     cursor: {
       cursor: 'pointer'
-    }
+    },
+    outlinedStyle: {
+      '& .MuiOutlinedInput-input' : {
+        padding: '9px'
+      }
+    },
   }
   // Other styles
 });
 
-export default function LoginPage(props) {
+export default function DailyMembership(props) {
   const snackbar = useSnackbar();
   const dispatch = useDispatch();
+  //redux
+  const redux_email = useSelector((state) => state.authentication.email);
+  const redux_fullname = decodeURI(useSelector((state) => state.authentication.fullname));
+  //state
   const [phone, setPhone] = useState('');
   const [confirm, setConfirm] = useState(false);
+
+  
+  //component mount
+  // useEffect(() => {
+  //   const formData = { email : redux_email };
+  //   axios
+  //     .post(`${BACKEND_URL}/members/check`, formData)
+  //     .then((response) => {
+  //       //error handler
+  //       if (response.data.status == "error") {
+  //         const {
+  //           error
+  //         } = response.data;
+  //         dispatch(actions.createError(error));
+  //         return snackbar.enqueueSnackbar(
+  //           response.data.error ? response.data.error : "Error",
+  //           { variant: "error" }
+  //         );
+  //       }
+  //       const {
+  //         membership_type
+  //       } = response.data;
+  //     });
+  // }, []);
+
   const handlePhoneChange = (e) => {
     setPhone(e.target.value);
   };
@@ -90,45 +124,31 @@ export default function LoginPage(props) {
   }
 
   const handleSubmit = () => {
-    const formData = { phone };
+    const formData = { phone, type: 'daily' };
     //validation
     if(phone === null || phone === undefined || phone === "")
       return snackbar.enqueueSnackbar("Phone field required", { variant: "error" });
 
     snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
-    return Router.push("/home-feed");
-    // axios
-    //   .post(`${BACKEND_URL}/auth/signin`, formData)
-    //   .then((response) => {
-    //     //error handler
-    //     if (response.data.status == "error") {
-    //       const {
-    //         error
-    //       } = response.data;
-    //       dispatch(actions.createError(error));
-    //       return snackbar.enqueueSnackbar(
-    //         response.data.error ? response.data.error : "Error",
-    //         { variant: "error" }
-    //       );
-    //     }
-    //     //success
-    //     snackbar.enqueueSnackbar("Login Success", { variant: "success" });
-        
-    //     const {
-    //       data: {
-    //         data: { token, fullname, email },
-    //       },
-    //     } = response;
-    //     setCookie("token", token);
-    //     setCookie("fullname", fullname);
-    //     setCookie("email", email);
-    //     sessionStorage.setItem('userToken', token);
-    //     dispatch(actions.removeError());
-    //     dispatch({ type: AUTHENTICATE, payload: { token, fullname, email } });
-    //     return Router.push("/home-feed");
-    //   });
-
-    // dispatch(actions.authenticate({ email, password }, 'login'));
+    axios
+      .post(`${BACKEND_URL}/members/save`, formData)
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        //success
+        snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
+        dispatch(actions.removeError());
+        return Router.push("/home-feed");
+      });
   };
   return (
     <GridContainer justify="center">
@@ -137,7 +157,24 @@ export default function LoginPage(props) {
           <KeyboardBackspaceOutlinedIcon  onClick={() => {Router.push("/")}} className={classes.cursor} />
           <h4 onClick={() => {Router.push("/")}} className={classes.cursor} >&nbsp;Back</h4>
         </GridContainer>
-        <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
+        {1 == 2 ?
+        (<GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
+          <GridItem md={9} lg={7} xl={7}>
+            <Card className={classes[cardAnimaton]}>
+              <form className={classes.form}>
+                <CardBody id="card_body_annual">
+                  <GridContainer justify="center" alignItems="center">
+                      <div style={{backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%", width: "120px", height: "120px"}}>
+                        <CheckOutlinedIcon style={{width: "40%", height: "40%", color: "white"}} />
+                      </div>
+                      <h3 style={{textAlign: "center"}}>You have already purchased membership</h3>
+                  </GridContainer>
+                </CardBody>
+              </form>
+            </Card>
+          </GridItem>
+        </GridContainer>) :
+        (<GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]}>
             <form className={classes.form}>
@@ -161,6 +198,40 @@ export default function LoginPage(props) {
                 <h4>You are about to purchase daily membership</h4>
               </CardHeader>
               <CardBody>
+                <TextField
+                  className={classes.outlinedStyle}
+                  onChange={() => {return null;}}
+                  placeholder="Name"
+                  fullWidth
+                  variant="outlined"
+                  value={redux_fullname}
+                  InputProps={{
+                    style: {
+                      // Control font or other styles here
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '14px',
+                    },
+                    readOnly: true
+                  }}
+                  style={{marginTop:'30px'}}
+                />
+                <TextField
+                  className={classes.outlinedStyle}
+                  onChange={() => {return null;}}
+                  placeholder="Email"
+                  fullWidth
+                  variant="outlined"
+                  value={redux_email}
+                  InputProps={{
+                    style: {
+                      // Control font or other styles here
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '14px',
+                    },
+                    readOnly: true
+                  }}
+                  style={{marginTop:'30px'}}
+                />
                 <PhoneInput
                   country={'us'}
                   value={phone}
@@ -175,6 +246,7 @@ export default function LoginPage(props) {
                     ),
                     autoComplete: "off"
                   }}
+                  style={{marginTop:'30px'}}
                 />
                 {/* <CustomInput
                   labelText="Phone"
@@ -202,7 +274,7 @@ export default function LoginPage(props) {
             </form>
           </Card>
           </GridItem>
-        </GridContainer>
+        </GridContainer>)}
       </GridItem>
 
       {/* start of dialog */}
