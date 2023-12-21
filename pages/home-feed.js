@@ -77,6 +77,7 @@ import axios from 'axios';
 import { BACKEND_URL } from "../AppConfigs";
 //other
 import { useSnackbar } from "notistack";
+import { formatDistanceToNow } from 'date-fns';
 //rsuite
 import { Calendar, Whisper, Popover, Badge } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -193,11 +194,13 @@ export default function HomeFeed(props) {
   const snackbar = useSnackbar();
   //redux
   const dispatch = useDispatch();
+  const redux_token = useSelector((state) => state.authentication.token);
   const redux_email = useSelector((state) => state.authentication.email);
   const redux_fullname = useSelector((state) => state.authentication.fullname);
   //other
   const classes = useStyles();
-  const fileInputRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const videoInputRef = useRef(null);
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedEnabled, setSelectedEnabled] = React.useState("b");
@@ -209,9 +212,10 @@ export default function HomeFeed(props) {
   const [postTitle, setPostTitle] = useState("");
   const [postDescription, setPostDescription] = useState("");
   const [postCategory, setPostCategory] = useState("");
-  const [postImage, setPostImage] = useState(null);
+  const [postFile, setPostFile] = useState(null);
   const [uploadEnabled, setUploadEnabled] = useState(0);
   const [categories, setCategories] = useState({});
+  const [posts, setPosts] = useState([]);
 
 
   const refContentText=React.useRef(null);
@@ -267,27 +271,47 @@ export default function HomeFeed(props) {
   };
 
   const handleUpload = (e) => {
-    fileInputRef.current.click();
+    if(postFile != null)
+    {
+      setPostFile(null);
+      return ;
+    }
+    if(uploadEnabled === 1)
+      imageInputRef.current.click();
+    if(uploadEnabled === 2)
+      videoInputRef.current.click();
   }
   
-  const handleFileChange = (e) => {
+  const handleImageChange = (e) => {
     if (e.target.files) {
-      setPostImage(e.target.files[0]);
+      setPostFile(e.target.files[0]);
+    }
+  }
+
+  const handleVideoChange = (e) => {
+    if (e.target.files) {
+      setPostFile(e.target.files[0]);
     }
   }
 
   const saveContent=()=>{
-    setCreatePostModal(false);
-
     const formData = new FormData();
-    // if(profileImage != null)
-    //   formData.append('upload', profileImage);
+    if(postFile != null)
+      formData.append('upload', postFile);
     formData.append('title', postTitle);
     formData.append('description', postDescription);
+    if(uploadEnabled === 0)
+      formData.append('type', 'none');
+    if(uploadEnabled === 1)
+      formData.append('type', 'image');
+    if(uploadEnabled === 2)
+      formData.append('type', 'video');
+    formData.append('content', '');
     formData.append('category', postCategory);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data',
+        'content-type' : 'multipart/form-data',
+        'token' : redux_token
       },
     };
     axios
@@ -304,32 +328,29 @@ export default function HomeFeed(props) {
             { variant: "error" }
           );
         }
-        const {
-          membership_type
-        } = response.data;
+        snackbar.enqueueSnackbar("Success", { variant: "success" });
+        setCreatePostModal(false);
       });
   }
 
   //component mount
   useEffect(() => {
-    // axios
-    //   .get(`${BACKEND_URL}/shared-contents/categories`, {})
-    //   .then((response) => {
-    //     //error handler
-    //     console.log(response);
-    //     if (response.data.status == "error") {
-    //       const {
-    //         error
-    //       } = response.data;
-    //       dispatch(actions.createError(error));
-    //       return snackbar.enqueueSnackbar(
-    //         response.data.error ? response.data.error : "Error",
-    //         { variant: "error" }
-    //       );
-    //     }
-    //     console.log(response.data);
-    //     setCategories(response.data);
-    //   });
+    axios
+      .get(`${BACKEND_URL}/shared-contents/categories`, {}, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setCategories(response.data.data);
+      });
   }, []);
 
   return (
@@ -486,6 +507,108 @@ export default function HomeFeed(props) {
                     <Divider />
                   </GridItem>
                 </GridContainer>
+                {posts.map((post) => {
+                  <Card className={classes.cardPadding}>
+                    <GridContainer direction="column" spacing={2}>
+                      <GridItem>
+                        <GridContainer alignItems="center">
+                          <GridItem sm={1}>
+                            <Avatar src={`${BACKEND_URL}/auth/avatars/${post.author.email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
+                          </GridItem>
+                          <GridItem sm={4}>
+                            <h5>Briansky Alex</h5>
+                            <h6 className={classes.cardSubTitle}>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</h6>
+                          </GridItem>
+                          <GridItem sm={1}>
+                          </GridItem>
+                          <GridItem sm={3}>
+                          </GridItem>
+                          <GridItem sm={3} style={{display: 'flex', direction: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                            <MUIButton className={classes.reportPost} onClick={() => {setReportPostModal(true)}}>Report Post</MUIButton>
+                            <MoreVertOutlinedIcon />
+                          </GridItem>
+                        </GridContainer>
+                      </GridItem>
+                      <GridItem>
+                        <GridContainer>
+                          <GridItem>
+                            <h5>{post.description}</h5>
+                          </GridItem>
+                        </GridContainer>
+                      </GridItem>
+                      <GridItem>
+                        <GridContainer>
+                          <GridItem>
+                            {/* <img src="/img/cross.png" style={{width: "100%", height: "100%"}} /> */}
+                            {post.type === "image" &&
+                            <img src={URL.createObjectURL(post.media)} style={{width: "100%", height: "100%"}} />
+                            }
+
+                            {post.type === "video" &&
+                              <video controls width="100%" height="100%">
+                              <source
+                                src={URL.createObjectURL(post.media)}
+                                // type="video/mp4"
+                              />
+                              Your browser does not support the video tag.
+                            </video>}
+                          </GridItem>
+                        </GridContainer>
+                      </GridItem>
+                      <GridItem>
+                        <GridContainer alignItems="center">
+                          <GridItem sm={2}>
+                            <GridContainer alignItems="center">
+                              <GridItem sm={3}>
+                                <FavoriteOutlinedIcon />
+                              </GridItem>
+                              <GridItem sm={9}>320k</GridItem> 
+                            </GridContainer>
+                          </GridItem>
+                          <GridItem sm={2}>
+                            <GridContainer alignItems="center">
+                              <GridItem sm={3}>
+                                <FavoriteOutlinedIcon />
+                              </GridItem>
+                              <GridItem sm={9}>120</GridItem> 
+                            </GridContainer>
+                          </GridItem>
+                          <GridItem sm={2}>
+                            <GridContainer alignItems="center">
+                              <GridItem sm={3}>
+                                <FavoriteOutlinedIcon />
+                              </GridItem>
+                              <GridItem sm={9}>148</GridItem> 
+                            </GridContainer>
+                          </GridItem>
+                          <GridItem sm={5}></GridItem>
+                          <GridItem sm={1}>
+                            <FavoriteOutlinedIcon />
+                          </GridItem>
+                        </GridContainer>
+                      </GridItem>
+                    </GridContainer>
+                    <GridContainer>
+                      <GridItem>
+                        <GridContainer>
+                          <GridItem sm={1}>
+                            <Avatar src={`${BACKEND_URL}/auth/avatars/${redux_email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px", marginTop: "27px"}} />
+                          </GridItem>
+                          <GridItem sm={11}>
+                            <CustomInput
+                              labelText="Write your comment"
+                              id="comment"
+                              formControlProps={{
+                                fullWidth: true,
+                              }}
+                            />
+                          </GridItem>
+                        </GridContainer>
+                      </GridItem>
+                    </GridContainer>
+                  </Card>
+                })
+                }
                 <Card className={classes.cardPadding}>
                   <GridContainer direction="column" spacing={2}>
                     <GridItem>
@@ -938,14 +1061,13 @@ export default function HomeFeed(props) {
           className={classes.modalBody}
         >
           <Divider />
-          <GridContainer direction="col">
+          <GridContainer direction="column">
             <GridItem>
-              
               <CustomInput
                 labelText="Post Title"
                 id="title"
                 type="postTitle"
-                onChange={title => {setPostTitle(title)}}
+                onChange={e => {setPostTitle(title.target.value)}}
                 formControlProps={{
                   fullWidth: true
                 }}
@@ -959,7 +1081,7 @@ export default function HomeFeed(props) {
                 className={classes.enterReason}
                 fullWidth
                 inputRef={refContentText}
-                onChange={description => {setPostDescription(description)}}
+                onChange={e => {setPostDescription(e.target.value)}}
               />
               <FormControl className={classes.formControl} fullWidth>
                 <InputLabel id="demo-simple-select-helper-label">Select Category</InputLabel>
@@ -970,20 +1092,32 @@ export default function HomeFeed(props) {
                   fullWidth
                   onChange={(e) => {setPostCategory(e.target.value)}}
                 >
-                  {/* {categories.map((item, index) => (
-                    <MenuItem value={index}><p style={{fontSize: '16px'}}>{item}</p></MenuItem>
-                  ))} */}
-                  <MenuItem value={10}><p style={{fontSize: '16px', fontWeight: '50'}}>Category1</p></MenuItem>
-                  <MenuItem value={20}><p style={{fontSize: '16px'}}>Category1</p></MenuItem>
-                  <MenuItem value={30}><p style={{fontSize: '16px'}}>Category1</p></MenuItem>
+                  {Array.isArray(categories) && categories.map((item, index) => (
+                    <MenuItem key={item._id} value={item._id}><p style={{fontSize: '16px'}}>{item.title}</p></MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               {uploadEnabled !== 0 ? 
-              <div onClick={handleUpload} style={{width: '100%', height: '128px', backgroundColor:'#F3F3F3', borderRadius: '16px', marginTop: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', cursor: 'pointer'}}>
-                <WallpaperOutlinedIcon />
-                <p>Upload {uploadEnabled===1?'Photo':'Video'}</p>
+              <div onClick={handleUpload} style={{width: '100%', height: '228px', backgroundColor:'#F3F3F3', borderRadius: '16px', marginTop: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', cursor: 'pointer'}}>
+                {postFile == null && <WallpaperOutlinedIcon />}
+                {postFile == null && <p>Upload {uploadEnabled===1?'Photo':'Video'}</p>}
+
+                
+                {uploadEnabled === 1 && postFile && 
+                <img src={URL.createObjectURL(postFile)} style={{width: "100%", height: "100%"}} />
+                }
+                {uploadEnabled === 2 && postFile && 
+                <video controls width="100%" height="100%">
+                  <source
+                    src={URL.createObjectURL(postFile)}
+                    // type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
+                }
               </div> : null }
-              <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" hidden />
+              <input type="file" ref={imageInputRef} onChange={handleImageChange} accept="image/*" hidden />
+              <input type="file" ref={videoInputRef} onChange={handleVideoChange} accept="video/*" hidden />
             </GridItem>
             <GridItem style={{marginTop: "12px"}}>
               <GridContainer>
@@ -1002,13 +1136,13 @@ export default function HomeFeed(props) {
               </GridItem>
               <GridItem sm={4}>
                 <GridContainer spacing={1} direction="row">
-                  <GridItem sm={2} onClick={() => {uploadEnabled!==1?setUploadEnabled(1):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
+                  <GridItem sm={2} onClick={() => {uploadEnabled!==1?(setUploadEnabled(1), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <WallpaperOutlinedIcon />
                   </GridItem>
                   <GridItem sm={4}>
                     <h5>Image</h5>
                   </GridItem>
-                  <GridItem sm={2} onClick={() => {uploadEnabled!==2?setUploadEnabled(2):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
+                  <GridItem sm={2} onClick={() => {uploadEnabled!==2?(setUploadEnabled(2), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <VideocamOutlinedIcon />
                   </GridItem>
                   <GridItem sm={4}>
