@@ -1,0 +1,395 @@
+import React from "react";
+import { useState, useEffect, useLayoutEffect } from 'react';
+// @material-ui/core components
+import { Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Input, Typography, TextField } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+// @material-ui/icons
+import Email from "@material-ui/icons/Email";
+import LockOutlined from '@material-ui/icons/LockOutlined';
+import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
+import PhoneIcon from '@material-ui/icons/Phone';
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import Icon from "@material-ui/core/Icon";
+import CardMembershipIcon from '@material-ui/icons/CardMembership';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import PaymentIcon from '@material-ui/icons/Payment';
+import ContactsOutlinedIcon from '@material-ui/icons/ContactsOutlined';
+// core components
+import GridContainer from "/components/Grid/GridContainer.js";
+import GridItem from "/components/Grid/GridItem.js";
+import Button from "/components/CustomButtons/Button.js";
+import Card from "/components/Card/Card.js";
+import CardBody from "/components/Card/CardBody.js";
+import CardHeader from "/components/Card/CardHeader.js";
+import CardFooter from "/components/Card/CardFooter.js";
+import CustomInput from "/components/CustomInput/CustomInput.js";
+import Link from 'next/link'
+import { useDispatch, useSelector } from 'react-redux';
+// import actions from '../redux/actions';
+//others
+import { useSnackbar } from "notistack";
+import axios from 'axios';
+// import { BACKEND_URL } from "../../AppConfigs";
+// import { setCookie, removeCookie } from '../utils/cookie';
+// import { AUTHENTICATE } from '../redux/types/authTypes';
+import Router from "next/router";
+import Datetime from "react-datetime";
+
+import styles from "/styles/jss/nextjs-material-kit/pages/loginPage.js";
+import modalStyle from "../../styles/jss/nextjs-material-kit/modalStyle.js";
+import { BackspaceOutlined } from "@material-ui/icons";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+
+
+const useStyles = makeStyles((styles) => {
+  return {
+    ...modalStyle,
+    authlogoNavigation: {
+      position: 'relative',
+      width: '100%',
+      height: '100vh',
+      backgroundImage: "url('/img/auth-bg.jpg')",
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+    },
+    overlay: {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#2E3192',
+      mixBlendMode: 'overlay',
+      zIndex: 1,
+      boxShadow: '1px 0px 1px 1px rgba(0,0,0,0.1)',
+    },
+    cursor: {
+      cursor: 'pointer'
+    },
+    testStyle: {
+      '& .MuiOutlinedInput-input' : {
+        padding: '9px'
+      }
+    },
+    asdf: {
+      '::placeholder' : {
+        color : 'rgba(0,0,0,0.2)'
+      }
+    }
+  }
+  // Other styles
+});
+
+export default function LoginPage(props) {
+  const snackbar = useSnackbar();
+  const dispatch = useDispatch();
+  const [phone, setPhone] = useState('');
+  const [confirm, setConfirm] = useState(false);
+  const [date, setDate] = useState("");
+  const [expireDate, setExpireDate] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [csv, setCSV] = useState("");
+  const [address, setAddress] = useState("");
+
+  
+  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+  setTimeout(function () {
+    setCardAnimation("");
+  }, 700);
+  const classes = useStyles();
+  const { ...rest } = props;
+  const matchesSm = useMediaQuery('(max-width:600px)');
+
+  const handleCardNumberChange = (e) => {
+    setCardNumber(e.target.value);
+  };
+
+  const handleCSVChange = (e) => {
+    setCSV(e.target.value);
+  };
+
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+    console.log(address);
+  };
+
+  const handlePhoneChange = (e) => {
+    setPhone(e.target.value);
+  };
+  
+  const handleDateChange = (e) => {
+    const selectedDate = e._d;
+    if(selectedDate == "" || selectedDate == null || selectedDate == undefined)
+      return ;
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth() + 1; // Adding 1 because months are zero-indexed
+    const day = selectedDate.getDate();
+    const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${
+      day < 10 ? "0" : ""
+    }${day}`;
+    setDate(formattedDate);
+  };
+
+  const handleExpireDateChange = (e) => {
+    const selectedDate = e._d;
+    if(selectedDate == "" || selectedDate == null || selectedDate == undefined)
+      return ;
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth() + 1; // Adding 1 because months are zero-indexed
+    const day = selectedDate.getDate();
+    const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${
+      day < 10 ? "0" : ""
+    }${day}`;
+    setExpireDate(formattedDate);
+  };
+
+  const renderInput = (props, openCalendar, closeCalendar) => (
+    <div className="input-container">
+      <input {...props} style={{
+        color: 'rgba(0, 0, 0, 0.2)',
+        '::placeholder': {
+          color: 'rgba(0, 0, 0, 0.2)', // Color and transparency of the placeholder
+        },
+      }} className={classes.asdf} />
+    </div>
+
+    
+  );
+
+  const renderExpireInput = (props, openCalendar, closeCalendar) => (
+    <div className="input-container">
+      <input {...props} />
+      <ScheduleIcon className="calendar-icon" onClick={openCalendar} />
+    </div>
+  );
+
+  const handlePurchase = e => {
+    setConfirm(false);
+    handleSubmit();
+  }
+
+  const handleSubmit = () => {
+    const formData = { phone };
+    //validation
+    if(phone === null || phone === undefined || phone === "")
+      return snackbar.enqueueSnackbar("Phone field required", { variant: "error" });
+
+    snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
+    return Router.push("/home-feed");
+    // axios
+    //   .post(`${BACKEND_URL}/auth/signin`, formData)
+    //   .then((response) => {
+    //     //error handler
+    //     if (response.data.status == "error") {
+    //       const {
+    //         error
+    //       } = response.data;
+    //       dispatch(actions.createError(error));
+    //       return snackbar.enqueueSnackbar(
+    //         response.data.error ? response.data.error : "Error",
+    //         { variant: "error" }
+    //       );
+    //     }
+    //     //success
+    //     snackbar.enqueueSnackbar("Login Success", { variant: "success" });
+        
+    //     const {
+    //       data: {
+    //         data: { token, fullname, email },
+    //       },
+    //     } = response;
+    //     setCookie("token", token);
+    //     setCookie("fullname", fullname);
+    //     setCookie("email", email);
+    //     sessionStorage.setItem('userToken', token);
+    //     dispatch(actions.removeError());
+    //     dispatch({ type: AUTHENTICATE, payload: { token, fullname, email } });
+    //     return Router.push("/home-feed");
+    //   });
+
+    // dispatch(actions.authenticate({ email, password }, 'login'));
+  };
+  return (
+    <GridContainer justify="center">
+      <GridItem sm={6}>
+        <GridContainer direction="row" alignItems="center">
+          <KeyboardBackspaceOutlinedIcon  onClick={() => {Router.push("/")}} className={classes.cursor} />
+          <h4 onClick={() => {Router.push("/")}} className={classes.cursor} >&nbsp;Back</h4>
+        </GridContainer>
+        <GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
+          <GridItem md={9} lg={7} xl={7}>
+          <Card className={classes[cardAnimaton]}>
+            <form className={classes.form}>
+              <CardHeader color="primary" className={classes.cardHeader}>
+                <Link href="/" >
+                  <a>
+                    <img
+                      src="/img/auth-logo.png"
+                      alt="..."
+                      className={
+                        classes.imgRaised +
+                        " " +
+                        classes.imgRoundedCircle +
+                        " " +
+                        classes.imgFluid
+                      }
+                    />
+                  </a>
+                </Link>
+                <h3>Membership</h3>
+                <h4>You are about to purchase daily membership</h4>
+              </CardHeader>
+              <CardBody id="card_body_annual">
+                <Datetime
+                  id="test_birthday"
+                  inputProps={{ placeholder: "Birthday2", style: {
+                    width: '100%',
+                    padding: '10px 14px', // Adjust padding as needed
+                    borderTop: '1px solid #ced4da', // Border color for top
+                    borderLeft: '1px solid #ced4da', // Border color for left
+                    borderRight: '1px solid #ced4da', // Border color for right
+                    borderBottom: 'none', // Omit bottom border
+                    borderRadius: '4px', // Border radius
+                    outline: 'none',
+                    fontSize: '16px', // Font size
+                    marginTop: '30px',
+                    color: '#333',
+                    '::placeholder': {
+                      color: 'rgba(255, 0, 0, 1)', // Color and transparency of the placeholder
+                    },
+                    placeholderStyle: {
+                      color: 'rgba(255, 0, 0, 0.5)', // Color and transparency of the placeholder
+                    }
+                  }, }}
+                  dateFormat={"YYYY-MM-DD"}
+                  timeFormat={false}
+                  onChange={handleDateChange}
+                  // renderInput={renderInput}
+                  // style={{display: "flex"}}
+                />
+                <PhoneInput
+                  country={'us'}
+                  value={phone}
+                  onChange={phone => setPhone(phone)}
+                  inputStyle={{width: '100%'}}
+                  inputProps={{
+                    type: "",
+                    endAdornment: (
+                      // <InputAdornment position="end">
+                        <PhoneIcon className={classes.inputIconsColor} />
+                      // </InputAdornment>
+                    ),
+                    autoComplete: "off"
+                  }}
+                  style={{marginTop:'30px'}}
+                />
+                <TextField
+                  className={classes.testStyle}
+                  onChange={handleCardNumberChange}
+                  placeholder="Card Number"
+                  fullWidth
+                  variant="outlined"
+                  InputProps={{
+                    style: {
+                      // Control font or other styles here
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '14px',
+                      '::placeholder' : {
+                        display: 'none'
+                      },
+                    },
+                  }}
+                  style={{marginTop:'30px'}}
+                />
+                <Datetime
+                  inputProps={{ placeholder: "Expire Date", style: {
+                    width: '100%',
+                    padding: '10px 14px', // Adjust padding as needed
+                    borderTop: '1px solid #ced4da', // Border color for top
+                    borderLeft: '1px solid #ced4da', // Border color for left
+                    borderRight: '1px solid #ced4da', // Border color for right
+                    borderBottom: 'none', // Omit bottom border
+                    borderRadius: '4px', // Border radius
+                    outline: 'none',
+                    fontSize: '16px', // Font size
+                    marginTop: '30px'
+                  }, }}
+                  dateFormat={"YYYY-MM-DD"}
+                  timeFormat={false}
+                  onChange={handleExpireDateChange}
+                  // renderInput={renderInput}
+                  // style={{display: "flex"}}
+                />
+                <TextField
+                  className={classes.testStyle}
+                  onChange={handleCSVChange}
+                  placeholder="CSV"
+                  fullWidth
+                  variant="outlined"
+                  InputProps={{
+                    style: {
+                      // Control font or other styles here
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '14px'
+                    },
+                  }}
+                  style={{marginTop:'30px'}}
+                />
+                <TextField
+                  className={classes.testStyle}
+                  onChange={handleAddressChange}
+                  placeholder="Address"
+                  fullWidth
+                  variant="outlined"
+                  InputProps={{
+                    style: {
+                      // Control font or other styles here
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '14px'
+                    },
+                  }}
+                  style={{marginTop:'30px'}}
+                />
+              </CardBody>
+              <CardFooter className={classes.cardFooter}>
+                <Button round color="primary" size="lg" onClick={() => {setConfirm(true)}}>
+                  Purchase
+                </Button>
+              </CardFooter>
+            </form>
+          </Card>
+          </GridItem>
+        </GridContainer>
+      </GridItem>
+
+      {/* start of dialog */}
+      <Dialog
+        open={confirm}
+        onClose={() => {setConfirm(false)}}
+        aria-labelledby="responsive-dialog-title"
+        maxWidth="sm"
+        fullWidth={true}
+      >
+        <DialogTitle id="responsive-dialog-title">
+          <h4 className={classes.modalTitle}>Daily Membership</h4>
+        </DialogTitle>
+        <DialogContent>
+          <h5>Are you ok to proceed?</h5>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={() => {setConfirm(false)}} color="default">
+            Disagree
+          </Button>
+          <Button onClick={handlePurchase} color="primary" autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* end of dialog */}
+    </GridContainer>
+);
+}

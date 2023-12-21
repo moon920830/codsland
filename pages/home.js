@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import classNames from "classnames";
 // react components for routing our app without refresh
 import Link from "next/link";
+import Router from "next/router";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Rating from '@material-ui/lab/Rating';
@@ -656,7 +657,7 @@ export default function Home(props) {
                                 </Typography>
                             </CardContent>
                             <CardActions style={{display:'flex',justifyContent:"center"}} >
-                                <Button size="small">Learn More</Button>
+                                <Button color="primary" onClick={() => {Router.push('/memberships/daily')}}>Learn More</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -679,7 +680,7 @@ export default function Home(props) {
                                 </Typography>
                             </CardContent>
                             <CardActions style={{display:'flex',justifyContent:"center"}}>
-                                <Button size="small">Learn More</Button>
+                                <Button color="primary" onClick={() => {Router.push('/memberships/annual')}}>Learn More</Button>
                             </CardActions>
                         </Card>
                     </Grid>

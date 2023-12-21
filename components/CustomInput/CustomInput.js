@@ -29,9 +29,7 @@ export default function CustomInput(props) {
     customValue
   } = props;
   const handleInputChange = (e) => {
-    // console.log('CustomInput onChange:', e.target.value);
     if (onChange) {
-      console.log("ffff");
       onChange(e);
     }
   };

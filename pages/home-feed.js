@@ -62,6 +62,10 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import CustomInput from "/components/CustomInput/CustomInput.js";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
 import Radio from "@material-ui/core/Radio";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
@@ -124,7 +128,14 @@ const useStyles = makeStyles(theme => {
     },
     enterReason: {
       marginTop: "21px",
-    }
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      marginTop: theme.spacing(2),
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
   }
 });
 
@@ -187,6 +198,8 @@ export default function HomeFeed(props) {
   const [reportPostModal, setReportPostModal] = React.useState(false);
   const [createPostModal, setCreatePostModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState(Date());
+  const [postTitle, setPostTitle] = useState("");
+  const [uploadEnabled, setUploadEnabled] = useState(false);
   const refContentText=React.useRef(null);
   const refContentUpload=React.useRef(null);
   const settings = {
@@ -850,16 +863,44 @@ export default function HomeFeed(props) {
           <Divider />
           <GridContainer direction="col">
             <GridItem>
+              
+              <CustomInput
+                labelText="Post Title"
+                id="title"
+                type="postTitle"
+                onChange={() => {}}
+                formControlProps={{
+                  fullWidth: true
+                }}
+              />
               <TextField
                 id="standard-multiline-static"
                 label=""
                 multiline
-                rows={8}
-                placeholder="What's on Your Mind"
+                rows={6}
+                placeholder="Description"
                 className={classes.enterReason}
                 fullWidth
                 inputRef={refContentText}
               />
+              <FormControl className={classes.formControl} fullWidth>
+                <InputLabel id="demo-simple-select-helper-label">Select Category</InputLabel>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={0}
+                  fullWidth
+                  onChange={() => {}}
+                >
+                  <MenuItem value={10}><p style={{fontSize: '16px', fontWeight: '50'}}>Category1</p></MenuItem>
+                  <MenuItem value={20}><p style={{fontSize: '16px'}}>Category1</p></MenuItem>
+                  <MenuItem value={30}><p style={{fontSize: '16px'}}>Category1</p></MenuItem>
+                </Select>
+              </FormControl>
+              {uploadEnabled ? <div style={{width: '100%', height: '128px', backgroundColor:'#F3F3F3', borderRadius: '16px', marginTop: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+                <WallpaperOutlinedIcon />
+                <p>Upload Photo/Video</p>
+              </div> : null }
             </GridItem>
             <GridItem style={{marginTop: "12px"}}>
               <GridContainer>
@@ -870,14 +911,16 @@ export default function HomeFeed(props) {
               </GridContainer>
             </GridItem>
           </GridContainer>
-          <ButtonBase onClick={e=>refContentUpload.current.click()} style={{width:"100%"}} >
+          <ButtonBase style={{width:"100%"}} >
             <GridContainer direction="row" alignItems="center" style={{width:"100%",borderRadius: "26px", border: "1px solid #9A9A9A", marginLeft: "0px", marginRight: "0px", paddingTop: "16px", paddingBottom: "16px", marginTop: "24px"}}>
-              <GridItem sm={8}>
+              <GridItem sm={3}>
                 <p style={{fontSize: "16px"}}>Add To Post</p>
+              </GridItem>
+              <GridItem sm={5}>
               </GridItem>
               <GridItem sm={4}>
                 <GridContainer spacing={1} direction="row">
-                  <GridItem sm={2}>
+                  <GridItem sm={2} onClick={() => {setUploadEnabled(true)}}>
                     <WallpaperOutlinedIcon />
                   </GridItem>
                   <GridItem sm={4}>
