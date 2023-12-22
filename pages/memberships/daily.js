@@ -22,11 +22,11 @@ import CardFooter from "/components/Card/CardFooter.js";
 import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
 import { useDispatch, useSelector } from 'react-redux';
-// import actions from '../redux/actions';
+import actions from '../../redux/actions';
 //others
 import { useSnackbar } from "notistack";
 import axios from 'axios';
-// import { BACKEND_URL } from "../../AppConfigs";
+import { BACKEND_URL } from "../../AppConfigs";
 // import { setCookie, removeCookie } from '../utils/cookie';
 // import { AUTHENTICATE } from '../redux/types/authTypes';
 import Router from "next/router";
