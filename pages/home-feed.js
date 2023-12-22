@@ -13,6 +13,8 @@ import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfie
 import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
 import MoreVertOutlinedIcon from '@material-ui/icons/MoreVertOutlined';
 import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
+import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
+import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 // core components
 import Header from "/components/Header/Header.js";
 import HeaderLinks from "/components/Header/HeaderLinks.js";
@@ -215,7 +217,7 @@ export default function HomeFeed(props) {
   const [postFile, setPostFile] = useState(null);
   const [uploadEnabled, setUploadEnabled] = useState(0);
   const [categories, setCategories] = useState({});
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState({});
 
 
   const refContentText=React.useRef(null);
@@ -300,11 +302,11 @@ export default function HomeFeed(props) {
       formData.append('upload', postFile);
     formData.append('title', postTitle);
     formData.append('description', postDescription);
-    if(uploadEnabled === 0)
+    if(uploadEnabled === 0 || postFile == null)
       formData.append('type', 'none');
-    if(uploadEnabled === 1)
+    else if(uploadEnabled === 1)
       formData.append('type', 'image');
-    if(uploadEnabled === 2)
+    else if(uploadEnabled === 2)
       formData.append('type', 'video');
     formData.append('content', '');
     formData.append('category', postCategory);
@@ -350,6 +352,24 @@ export default function HomeFeed(props) {
           );
         }
         setCategories(response.data.data);
+      });
+
+    axios
+      .get(`${BACKEND_URL}/shared-contents/all`, {}, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        // console.log(response.data.data);
+        setPosts(response.data.data);
       });
   }, []);
 
@@ -507,7 +527,8 @@ export default function HomeFeed(props) {
                     <Divider />
                   </GridItem>
                 </GridContainer>
-                {posts.map((post) => {
+                {Array.isArray(posts) && posts.map((post) => {
+                  return (
                   <Card className={classes.cardPadding}>
                     <GridContainer direction="column" spacing={2}>
                       <GridItem>
@@ -517,7 +538,7 @@ export default function HomeFeed(props) {
                           </GridItem>
                           <GridItem sm={4}>
                             <h5>Briansky Alex</h5>
-                            <h6 className={classes.cardSubTitle}>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</h6>
+                            <h6 className={classes.cardSubTitle}>{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}</h6>
                           </GridItem>
                           <GridItem sm={1}>
                           </GridItem>
@@ -536,31 +557,32 @@ export default function HomeFeed(props) {
                           </GridItem>
                         </GridContainer>
                       </GridItem>
-                      <GridItem>
+                      {post.type !== 'none' && post.media !== undefined && <GridItem>
                         <GridContainer>
                           <GridItem>
-                            {/* <img src="/img/cross.png" style={{width: "100%", height: "100%"}} /> */}
                             {post.type === "image" &&
-                            <img src={URL.createObjectURL(post.media)} style={{width: "100%", height: "100%"}} />
+                            <img src={`${BACKEND_URL}/shared-contents/media/${post._id}`} style={{width: "100%", height: "100%"}} />
                             }
-
                             {post.type === "video" &&
                               <video controls width="100%" height="100%">
                               <source
-                                src={URL.createObjectURL(post.media)}
+                                src={`${BACKEND_URL}/shared-contents/media/${post._id}`}
                                 // type="video/mp4"
                               />
                               Your browser does not support the video tag.
                             </video>}
                           </GridItem>
                         </GridContainer>
-                      </GridItem>
+                      </GridItem>}
                       <GridItem>
                         <GridContainer alignItems="center">
                           <GridItem sm={2}>
                             <GridContainer alignItems="center">
                               <GridItem sm={3}>
-                                <FavoriteOutlinedIcon />
+                                <IconButton color="secondary" style={{padding: '0px'}}>
+                                  <FavoriteOutlinedIcon />
+                                </IconButton>
+                                
                               </GridItem>
                               <GridItem sm={9}>320k</GridItem> 
                             </GridContainer>
@@ -568,7 +590,9 @@ export default function HomeFeed(props) {
                           <GridItem sm={2}>
                             <GridContainer alignItems="center">
                               <GridItem sm={3}>
-                                <FavoriteOutlinedIcon />
+                                <IconButton style={{padding: '0px'}}>
+                                  <SmsOutlinedIcon />
+                                </IconButton>
                               </GridItem>
                               <GridItem sm={9}>120</GridItem> 
                             </GridContainer>
@@ -576,14 +600,18 @@ export default function HomeFeed(props) {
                           <GridItem sm={2}>
                             <GridContainer alignItems="center">
                               <GridItem sm={3}>
-                                <FavoriteOutlinedIcon />
+                                <IconButton style={{padding: '0px'}}>
+                                  <SendOutlinedIcon />
+                                </IconButton>
                               </GridItem>
                               <GridItem sm={9}>148</GridItem> 
                             </GridContainer>
                           </GridItem>
                           <GridItem sm={5}></GridItem>
                           <GridItem sm={1}>
-                            <FavoriteOutlinedIcon />
+                            <IconButton style={{padding: '0px'}}>
+                              <SendOutlinedIcon />
+                            </IconButton>
                           </GridItem>
                         </GridContainer>
                       </GridItem>
@@ -606,7 +634,7 @@ export default function HomeFeed(props) {
                         </GridContainer>
                       </GridItem>
                     </GridContainer>
-                  </Card>
+                  </Card>)
                 })
                 }
                 <Card className={classes.cardPadding}>
@@ -1067,7 +1095,7 @@ export default function HomeFeed(props) {
                 labelText="Post Title"
                 id="title"
                 type="postTitle"
-                onChange={e => {setPostTitle(title.target.value)}}
+                onChange={e => {setPostTitle(e.target.value)}}
                 formControlProps={{
                   fullWidth: true
                 }}

@@ -274,7 +274,7 @@ export default function AnnualMembership(props) {
                   </a>
                 </Link>
                 <h3>Membership</h3>
-                <h4>You are about to purchase daily membership</h4>
+                <h4>You are about to purchase annual membership</h4>
               </CardHeader>
               <CardBody id="card_body_annual">
                 <TextField
@@ -443,7 +443,7 @@ export default function AnnualMembership(props) {
         fullWidth={true}
       >
         <DialogTitle id="responsive-dialog-title">
-          <h4 className={classes.modalTitle}>Daily Membership</h4>
+          <h4 className={classes.modalTitle}>Annual Membership</h4>
         </DialogTitle>
         <DialogContent>
           <h5>Are you ok to proceed?</h5>

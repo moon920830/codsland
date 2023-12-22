@@ -62,6 +62,10 @@ import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 import { Container, IconButton, Typography } from "@material-ui/core";
 //hook
 import { useCheckTokenValidity } from '../redux/hooks.js';
+//redux
+import { useSelector, useDispatch } from "react-redux";
+//other
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles(theme => {
   return {
@@ -120,10 +124,15 @@ function SamplePrevArrow(props) {
 }
 
 export default function Home(props) {
+  //snackbar
+  const snackbar = useSnackbar();
+  
   const classes = useStyles();
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedEnabled, setSelectedEnabled] = React.useState("b");
+
+  const redux_token = useSelector((state) => state.authentication.token);
   const settings = {
     dots: true,
     infinite: true,
@@ -173,6 +182,24 @@ export default function Home(props) {
     dots: true,
     autoplay: true,
   };
+
+  const handleDailyMembership = () => {
+    if(redux_token==null || redux_token==undefined)
+    {
+      return snackbar.enqueueSnackbar("Sign in first", { variant: "info" });
+    } else {
+      return Router.push('/memberships/daily');
+    }
+  }
+
+  const handleAnnualMembership = () => {
+    if(redux_token==null || redux_token==undefined)
+    {
+      return snackbar.enqueueSnackbar("Sign in first", { variant: "info" });
+    } else {
+      return Router.push('/memberships/annual');
+    }
+  }
 
   return (
     <div>
@@ -657,7 +684,7 @@ export default function Home(props) {
                                 </Typography>
                             </CardContent>
                             <CardActions style={{display:'flex',justifyContent:"center"}} >
-                                <Button color="primary" onClick={() => {Router.push('/memberships/daily')}}>Learn More</Button>
+                                <Button color="primary" onClick={handleDailyMembership}>Learn More</Button>
                             </CardActions>
                         </Card>
                     </Grid>
@@ -680,7 +707,7 @@ export default function Home(props) {
                                 </Typography>
                             </CardContent>
                             <CardActions style={{display:'flex',justifyContent:"center"}}>
-                                <Button color="primary" onClick={() => {Router.push('/memberships/annual')}}>Learn More</Button>
+                                <Button color="primary" onClick={handleAnnualMembership}>Learn More</Button>
                             </CardActions>
                         </Card>
                     </Grid>
