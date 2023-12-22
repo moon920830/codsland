@@ -29,7 +29,7 @@ import CustomInput from "/components/CustomInput/CustomInput.js";
 import Link from 'next/link'
 //redux
 import { useDispatch, useSelector } from 'react-redux';
-import actions from '../redux/actions';
+import actions from '../../redux/actions';
 //others
 import { useSnackbar } from "notistack";
 import axios from 'axios';
