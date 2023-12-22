@@ -584,7 +584,7 @@ export default function HomeFeed(props) {
                                 </IconButton>
                                 
                               </GridItem>
-                              <GridItem sm={9}>320k</GridItem> 
+                              <GridItem sm={9}>0</GridItem> 
                             </GridContainer>
                           </GridItem>
                           <GridItem sm={2}>
@@ -594,7 +594,7 @@ export default function HomeFeed(props) {
                                   <SmsOutlinedIcon />
                                 </IconButton>
                               </GridItem>
-                              <GridItem sm={9}>120</GridItem> 
+                              <GridItem sm={9}>0</GridItem> 
                             </GridContainer>
                           </GridItem>
                           <GridItem sm={2}>
@@ -604,7 +604,7 @@ export default function HomeFeed(props) {
                                   <SendOutlinedIcon />
                                 </IconButton>
                               </GridItem>
-                              <GridItem sm={9}>148</GridItem> 
+                              <GridItem sm={9}>0</GridItem> 
                             </GridContainer>
                           </GridItem>
                           <GridItem sm={5}></GridItem>
