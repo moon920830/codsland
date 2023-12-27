@@ -1149,9 +1149,9 @@ export default function Home(props) {
                     <GridItem sm={6} style={{ backgroundColor: "#1D1D1E", borderRadius: "5px", overflow: "hidden" }}>
                       <h3 className={classes.title} style={{ color: "white" }}>Contact Information</h3>
                       <h6 className={classes.title} style={{ color: "white" }}>Say something to start a live chat!</h6>
-                      <GridContainer style={{ color: "white", marginLeft: "0px", marginTop: "100px" }}><PhoneIcon></PhoneIcon><p style={{ marginBottom: "10px" }}>&nbsp;&nbsp;+1012 3456 789</p></GridContainer>
-                      <GridContainer style={{ color: "white", marginLeft: "0px" }}><MailIcon></MailIcon><p style={{ marginBottom: "10px" }}>&nbsp;&nbsp;demo@gmail.com</p></GridContainer>
-                      <GridContainer style={{ color: "white", marginLeft: "0px" }}><RoomIcon></RoomIcon><p style={{ marginBottom: "10px" }}>&nbsp;&nbsp;132 Dartmouth Street Boston, Massachusetts 02156 United States</p></GridContainer>
+                      <GridContainer style={{ color: "white", marginLeft: "0px", marginTop: "100px" }}><PhoneIcon></PhoneIcon><p style={{ marginBottom: "10px" }}>&nbsp;&nbsp;+1 (888) 252-0411</p></GridContainer>
+                      <GridContainer style={{ color: "white", marginLeft: "0px" }}><MailIcon></MailIcon><p style={{ marginBottom: "10px" }}>&nbsp;&nbsp;info@cods.land, info@drdeanhowell.com, support@cods.land</p></GridContainer>
+                      <GridContainer style={{ color: "white", marginLeft: "0px" }}><RoomIcon></RoomIcon><p style={{ marginBottom: "10px" }}>&nbsp;&nbsp;185 Howell Canyon Road, Tonasket, Washington 98855</p></GridContainer>
                       <GridContainer justify="space-between" style={{ color: "white", marginLeft: "0px", marginTop: "150px", marginBottom: "50px", width: "20%" }}>
                         <TwitterIcon ></TwitterIcon>
                         <InstagramIcon></InstagramIcon>
