@@ -24,6 +24,8 @@ import YouTubeIcon from '@material-ui/icons/YouTube';
 import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
 import WallpaperOutlinedIcon from '@material-ui/icons/WallpaperOutlined';
 import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
+import SettingsIcon from '@material-ui/icons/Settings';
+//other
 import Avatar from '@material-ui/core/Avatar';
 import MUIButton from '@material-ui/core/Button';
 import axios from 'axios';
@@ -151,8 +153,6 @@ function SamplePrevArrow(props) {
 }
 
 export default function MyProfile(props) {
-  //redux
-  const redux_fullname = useSelector((state) => state.authentication.fullname);
   //other
   const classes = useStyles();
   const { ...rest } = props;
@@ -163,7 +163,9 @@ export default function MyProfile(props) {
   const [successModal, setSuccessModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState(Date());
   const [categories, setCategories] = useState({});
+  //redux
   const redux_email = useSelector((state) => state.authentication.email);
+  const redux_fullname = useSelector((state) => state.authentication.fullname);
   const redux_token = useSelector((state) => state.authentication.token);
   const [posts, setPosts] = useState({});
   const settings = {
@@ -283,9 +285,16 @@ export default function MyProfile(props) {
 
             <GridContainer style={{minHeight: "60vh"}}>
               {/* <h2 className={classes.title}>MyProfile</h2> */}
-              <GridItem sm={9}>
+              <GridItem sm={12}>
                 <Card className={classes.cardPadding} style={{ backgroundColor: "#170F49", height: "150px" }}>
-
+                  <GridContainer justify="flex-end" style={{marginRight: '0px'}}>
+                    
+                    <Link href="/editprofile">
+                      <div className={classes.cursor} style={{borderRadius: '26px', border: '1px solid rgba(242, 242, 243, 0.37)', background: 'rgba(242, 242, 243, 0.22)', width: '36px', height: '36px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <SettingsIcon style={{color: 'white'}} />
+                      </div>
+                    </Link>
+                  </GridContainer>
                 </Card>
                 <GridContainer style={{ marginTop: "-110px"}}>
                   <GridItem sm={2}>
@@ -293,7 +302,7 @@ export default function MyProfile(props) {
                   </GridItem>
                   <GridItem sm={10}>
                     <GridContainer>
-                      <h3 style={{fontWeight: "bold", color: "white", marginTop: "20px", marginLeft: "10px"}}>Reinhard Van Zry</h3>
+                      <h3 style={{fontWeight: "bold", color: "white", marginTop: "20px", marginLeft: "10px"}}>{redux_fullname}</h3>
                     </GridContainer>
                     <GridContainer justify="space-between" style={{marginTop: "30px", marginLeft: "10px", paddingRight: "30px"}}>
                       <Button round style= {{color: "black"}}>
@@ -317,40 +326,7 @@ export default function MyProfile(props) {
                     </GridContainer>
                   </GridItem>
                 </GridContainer>
-                <Card style={{paddingLeft: "20px"}}>
-                  <GridContainer alignItems="center">
-                    <GridItem sm={1}>
-                      <Avatar src={`${BACKEND_URL}/auth/avatars/${redux_email}`} style={{width: "45px", height: "45px"}} />
-                    </GridItem>
-                    <GridItem sm={8}>
-                      <CustomInput
-                        labelText="share something"
-                        id="email"
-                        formControlProps={{
-                          fullWidth: true,
-                        }}
-                        inputProps={{
-                          type: "email",
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <SentimentSatisfiedOutlinedIcon className={classes.inputIconsColor} />
-                            </InputAdornment>
-                          ),
-                          name: "email"
-                        }}
-                      />
-                    </GridItem>
-                    <GridItem sm={1} style={{marginTop: "10px"}}>
-                      <WallpaperOutlinedIcon style={{marginRight: "10px"}}/>                       
-                      <VideocamOutlinedIcon />
-                    </GridItem>
-                    <GridItem sm={2}>
-                      <Button round color="primary" onClick={() => {setCreatePostModal(true)}}>
-                        Post
-                      </Button>
-                    </GridItem>      
-                  </GridContainer>
-                </Card>
+                
                 {Array.isArray(posts) && posts.map((post) => {
                   return (
                   <Card className={classes.cardPadding}>
@@ -369,8 +345,6 @@ export default function MyProfile(props) {
                           <GridItem sm={3}>
                           </GridItem>
                           <GridItem sm={3} style={{display: 'flex', direction: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                            <MUIButton className={classes.reportPost} onClick={() => {setReportPostModal(true)}}>Report Post</MUIButton>
-                            <MoreVertOutlinedIcon />
                           </GridItem>
                         </GridContainer>
                       </GridItem>
@@ -400,18 +374,17 @@ export default function MyProfile(props) {
                       </GridItem>}
                       <GridItem>
                         <GridContainer alignItems="center">
-                          <GridItem sm={2}>
+                          <GridItem sm={1}>
                             <GridContainer alignItems="center">
                               <GridItem sm={3}>
                                 <IconButton color="secondary" style={{padding: '0px'}}>
                                   <FavoriteOutlinedIcon />
                                 </IconButton>
-                                
                               </GridItem>
                               <GridItem sm={9}>0</GridItem> 
                             </GridContainer>
                           </GridItem>
-                          <GridItem sm={2}>
+                          <GridItem sm={1}>
                             <GridContainer alignItems="center">
                               <GridItem sm={3}>
                                 <IconButton style={{padding: '0px'}}>
@@ -421,7 +394,7 @@ export default function MyProfile(props) {
                               <GridItem sm={9}>0</GridItem> 
                             </GridContainer>
                           </GridItem>
-                          <GridItem sm={2}>
+                          <GridItem sm={1}>
                             <GridContainer alignItems="center">
                               <GridItem sm={3}>
                                 <IconButton style={{padding: '0px'}}>
@@ -432,239 +405,12 @@ export default function MyProfile(props) {
                             </GridContainer>
                           </GridItem>
                           <GridItem sm={5}></GridItem>
-                          <GridItem sm={1}>
-                            <IconButton style={{padding: '0px'}}>
-                              <SendOutlinedIcon />
-                            </IconButton>
-                          </GridItem>
-                        </GridContainer>
-                      </GridItem>
-                    </GridContainer>
-                    <GridContainer>
-                      <GridItem>
-                        <GridContainer>
-                          <GridItem sm={1}>
-                            <Avatar src={`${BACKEND_URL}/auth/avatars/${redux_email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px", marginTop: "27px"}} />
-                          </GridItem>
-                          <GridItem sm={11}>
-                            <CustomInput
-                              labelText="Write your comment"
-                              id="comment"
-                              formControlProps={{
-                                fullWidth: true,
-                              }}
-                            />
-                          </GridItem>
                         </GridContainer>
                       </GridItem>
                     </GridContainer>
                   </Card>)
                 })
                 }
-              </GridItem>
-              <GridItem sm={3}>
-                {/* start of suggested groups */}
-                <Card className={classes.cardPadding}>
-                  <GridContainer direction="column" spacing={3}>
-                    <GridItem>
-                      <GridContainer justify="space-between">
-                        <GridItem sm={8}>
-                          <h6 style={{fontWeight: "bold"}}>Suggested Groups</h6>
-                        </GridItem>
-                        <GridItem sm={3}>
-                          <h6>See all</h6>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse1.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Group Name</h5>
-                              <h6 className={classes.cardSubTitle}>Join by Dims</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse2.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Group Name</h5>
-                              <h6 className={classes.cardSubTitle}>Suggested for you</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse3.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Group Name</h5>
-                              <h6 className={classes.cardSubTitle}>Suggested for you</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse4.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Group Name</h5>
-                              <h6 className={classes.cardSubTitle}>Followed by Andrea</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer justify="center">
-                        <a href="#">View More</a>
-                      </GridContainer>
-                    </GridItem>
-                  </GridContainer>
-                </Card>
-                {/* end of suggested groups */}
-                {/* start of upcoming events */}
-                <Card className={classes.cardPadding}>
-                  <GridContainer direction="column" spacing={3}>
-                    <GridItem>
-                      <GridContainer justify="space-between">
-                        <GridItem sm={8}>
-                          <h6 style={{fontWeight: "bold"}}>Upcoming Event</h6>
-                        </GridItem>
-                        <GridItem sm={3}>
-                          <h6>See all</h6>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse1.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Event Name</h5>
-                              <h6 className={classes.cardSubTitle}>12 Dec to 19 Dec</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse2.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Group Name</h5>
-                              <h6 className={classes.cardSubTitle}>12 Dec to 19 Dec</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse3.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Group Name</h5>
-                              <h6 className={classes.cardSubTitle}>12 Dec to 19 Dec</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer direction="row" justify="space-between">
-                        <GridItem sm={8}>
-                          <GridContainer>
-                            <GridItem sm={4}>
-                              <Avatar src='/img/icons/Ellipse4.png' className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
-                            </GridItem>
-                            <GridItem sm={8}>
-                              <h5>Group Name</h5>
-                              <h6 className={classes.cardSubTitle}>12 Dec to 19 Dec</h6>
-                            </GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem sm={2}>
-                          <GridContainer alignItems="center" style={{height: "100%"}}>
-                            <Link href="/">Join</Link>
-                          </GridContainer>
-                        </GridItem>
-                      </GridContainer>
-                    </GridItem>
-                    <GridItem>
-                      <GridContainer justify="center">
-                        <a href="#">View More</a>
-                      </GridContainer>
-                    </GridItem>
-                  </GridContainer>
-                </Card>
-                {/* end of upcoming events */}
               </GridItem>
             </GridContainer>
             {/* Membership */}

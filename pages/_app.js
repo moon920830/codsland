@@ -58,6 +58,7 @@ class MyApp extends App {
       fullname = getCookieFromBrowser('fullname');
     }
     ctx.store.dispatch(removeError());
+    fullname = decodeURIComponent(fullname);
     ctx.store.dispatch({
       type: AUTHENTICATE,
       payload: { token, fullname, email },

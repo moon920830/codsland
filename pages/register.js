@@ -12,7 +12,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import PersonOutlinedIcon from '@material-ui/icons/PersonOutlined';
 import Close from "@material-ui/icons/Close";
 import Email from "@material-ui/icons/Email";
 import LockOutlined from "@material-ui/icons/LockOutlined";

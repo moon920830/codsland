@@ -44,6 +44,15 @@ function HeaderLinks(props) {
     }
   }
 
+  const handleProducts = () => {
+    if(props.token==null || props.token==undefined)
+    {
+      return snackbar.enqueueSnackbar("Sign in first", { variant: "info" });
+    } else {
+      return Router.push("/products");
+    }
+  }
+
   const handleLogin = () => {
     if(!(props.token==null || props.token==undefined))
     {
@@ -128,19 +137,15 @@ function HeaderLinks(props) {
           </a>
         </Button>
       </ListItem>
-      <ListItem className={classes.listItem}>
+      <ListItem className={classes.listItem}>        
         <Button
-          // href="https://www.creative-tim.com/product/nextjs-material-kit-pro?ref=njsmk-navbar"
+          href=""
           color="transparent"
           target="_blank"
           className={classes.navLink}
+          onClick={handleProducts}
         >
-          <a
-            href="#product_section"
-            style={{color:"inherit"}}
-            >
-            Products
-          </a>
+          Products
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>

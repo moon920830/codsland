@@ -16,6 +16,7 @@ import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
 import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
 import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
+import AddIcon from '@material-ui/icons/Add';
 // core components
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -204,8 +205,6 @@ export default function Products(props) {
   //redux
   const dispatch = useDispatch();
   const redux_token = useSelector((state) => state.authentication.token);
-  const redux_email = useSelector((state) => state.authentication.email);
-  const redux_fullname = useSelector((state) => state.authentication.fullname);
   //other
   const classes = useStyles();
   const imageInputRef = useRef(null);
@@ -213,18 +212,15 @@ export default function Products(props) {
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedEnabled, setSelectedEnabled] = React.useState("");
-  const [selectTimeModal, setSelectTimeModal] = React.useState(false);
-  const [enterDetailsModal, setEnterDetailsModal] = React.useState(false);
-  const [reportPostModal, setReportPostModal] = React.useState(false);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
   const [createPostModal, setCreatePostModal] = React.useState(false);
-  const [selectedDate, setSelectedDate] = useState(Date());
   const [postTitle, setPostTitle] = useState("");
   const [postDescription, setPostDescription] = useState("");
   const [postCategory, setPostCategory] = useState("");
+  const [postPrice, setPostPrice] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
   const [postFile, setPostFile] = useState(null);
-  const [uploadEnabled, setUploadEnabled] = useState(0);
-  const [categories, setCategories] = useState({});
-  const [posts, setPosts] = useState({});
 
 
   const refContentText=React.useRef(null);
@@ -279,52 +275,127 @@ export default function Products(props) {
     autoplay: true,
   };
 
-  const handleUpload = (e) => {
-    if(postFile != null)
-    {
-      setPostFile(null);
-      return ;
-    }
-    if(uploadEnabled === 1)
-      imageInputRef.current.click();
-    if(uploadEnabled === 2)
-      videoInputRef.current.click();
+
+  //component mount
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/shop/categories`, {}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setCategories(response.data.data);
+      });
+    axios
+      .get(`${BACKEND_URL}/shop/cart/count`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setCartCount(response.data.data);
+      });
+    axios
+      .post(`${BACKEND_URL}/shop/products/page`, {
+        page:0,
+        pagesize:5
+      }) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setProducts(response.data.data.pagedata);
+        console.log(response.data.data.pagedata);
+      });
+  }, []);
+
+  function handleAddToCart(product) {
+    axios
+      .post(`${BACKEND_URL}/shop/cart`, {
+        product:product
+      }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+
+
+        axios
+          .get(`${BACKEND_URL}/shop/cart/count`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+          .then((response) => {
+            //error handler
+            if (response.data.status == "error") {
+              const {
+                error
+              } = response.data;
+              dispatch(actions.createError(error));
+              return snackbar.enqueueSnackbar(
+                response.data.error ? response.data.error : "Error",
+                { variant: "error" }
+              );
+            }
+            setCartCount(response.data.data);
+          });
+      });
   }
   
+  const handleUpload = (e) => {
+    imageInputRef.current.click();
+  }
+
   const handleImageChange = (e) => {
     if (e.target.files) {
       setPostFile(e.target.files[0]);
     }
   }
 
-  const handleVideoChange = (e) => {
-    if (e.target.files) {
-      setPostFile(e.target.files[0]);
-    }
-  }
-
-  const saveContent=()=>{
+  const handleProductUpload = () => {
     const formData = new FormData();
     if(postFile != null)
-      formData.append('upload', postFile);
+      formData.append('image', postFile);
     formData.append('title', postTitle);
     formData.append('description', postDescription);
-    if(uploadEnabled === 0 || postFile == null)
-      formData.append('type', 'none');
-    else if(uploadEnabled === 1)
-      formData.append('type', 'image');
-    else if(uploadEnabled === 2)
-      formData.append('type', 'video');
-    formData.append('content', '');
     formData.append('category', postCategory);
+    formData.append('price', postPrice);
     const config = {
       headers: {
         'content-type' : 'multipart/form-data',
-        'token' : redux_token
+        // 'token' : redux_token
       },
     };
     axios
-      .post(`${BACKEND_URL}/shared-contents/save`, formData, config)
+      .post(`${BACKEND_URL}/shop/products`, formData, config)
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -341,44 +412,6 @@ export default function Products(props) {
         setCreatePostModal(false);
       });
   }
-
-  //component mount
-  useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/shared-contents/categories`, {}, {headers: {token:redux_token}})
-      .then((response) => {
-        //error handler
-        if (response.data.status == "error") {
-          const {
-            error
-          } = response.data;
-          dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
-        }
-        setCategories(response.data.data);
-      });
-
-    axios
-      .get(`${BACKEND_URL}/shared-contents/all`, {}, {headers: {token:redux_token}})
-      .then((response) => {
-        //error handler
-        if (response.data.status == "error") {
-          const {
-            error
-          } = response.data;
-          dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
-        }
-        // console.log(response.data.data);
-        setPosts(response.data.data);
-      });
-  }, []);
 
   return (
     <div>
@@ -418,14 +451,14 @@ export default function Products(props) {
                         label="All"
                       />
                     </GridItem>
-                    {Array.from({length: 15}).map((value) => (
-                      <GridItem>
+                    {categories.map((value) => (
+                      <GridItem key={value._id}>
                         <FormControlLabel
                           control={
                             <Radio
-                              // checked={selectedEnabled === "Bread"}
-                              onChange={() => setSelectedEnabled("Bread")}
-                              value="Bread"
+                              checked={selectedEnabled === value.title}
+                              onChange={() => setSelectedEnabled(value.title)}
+                              value={value.title}
                               name="radio button enabled"
                               aria-label="B"
                               icon={
@@ -444,7 +477,7 @@ export default function Products(props) {
                             label: classes.label,
                             root: classes.labelRoot
                           }}
-                          label="Bread"
+                          label={value.title}
                         />
                       </GridItem>
                     ))}
@@ -454,22 +487,26 @@ export default function Products(props) {
               <GridItem xs={9} sm={9} md={9} lg={9}>
                 <Card className={classes.cardPaddingNoTop}>
                   <GridContainer>
-                    <ProductCard />
-                    <ProductCard />
-                    <ProductCard />
-                    <ProductCard />
-                    <ProductCard />
-                    <ProductCard />
+                    {products.map((value) => (
+                      <ProductCard key={value._id} title={value.title} description={value.description} price={value.price} categoryTitle={value.category.title} id={value._id} handleAddToCart={handleAddToCart} image={value.image} />
+                    ))}
                   </GridContainer>
                 </Card>
               </GridItem>
             </GridContainer>
             {/* Membership */}
-            <Badge badgeContent={4} color="secondary" style={{position: 'fixed', bottom : 20, right : 60}}>
-              <Fab color="primary" aria-label="add">
-                  <ShoppingCartOutlinedIcon />    
-              </Fab>
+            <Fab color="secondary" aria-label="add"  style={{position: 'fixed', bottom : 100, right : 60}}>
+                <AddIcon onClick={() => {setCreatePostModal(true)}} />
+            </Fab>
+            <Badge badgeContent={cartCount} color="secondary" style={{position: 'fixed', bottom : 20, right : 60}}>
+              <Link href="/products/cart">
+                <Fab color="primary" aria-label="add">
+                    <ShoppingCartOutlinedIcon />
+                    {/* onClick={() => {setCreatePostModal(true)}} */}
+                </Fab>
+              </Link>
             </Badge>
+
 
             {/* Footer */}
 
@@ -530,68 +567,6 @@ export default function Products(props) {
       </Grid>
 
 
-      {/* start of report dialog */}
-      <Dialog
-        classes={{
-          root: classes.center,
-          paper: classes.modal
-        }}
-        open={reportPostModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setReportPostModal(false)}
-        aria-labelledby="classic-modal-slide-title"
-        aria-describedby="classic-modal-slide-description"
-        maxWidth="sm"
-        fullWidth={true}
-      >
-        <DialogTitle
-          id="classic-modal-slide-title"
-          disableTypography
-          className={classes.modalHeader}
-        >
-          <IconButton
-            className={classes.modalCloseButton}
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={() => setReportPostModal(false)}
-          >
-            <Close className={classes.modalClose} />
-          </IconButton>
-          <h4 className={classNames(classes.modalTitle, classes.title, classes.textCenter)}>Report This Post</h4>
-        </DialogTitle>
-        <DialogContent
-          id="classic-modal-slide-description"
-          className={classes.modalBody}
-        >
-          <Divider />
-          <GridContainer direction="row">
-            <GridItem>
-              <TextField
-                id="standard-multiline-static"
-                label=""
-                multiline
-                rows={8}
-                placeholder="Enter reason Here"
-                variant="filled"
-                className={classes.enterReason}
-                fullWidth
-              />
-            </GridItem>
-          </GridContainer>
-        </DialogContent>
-        <DialogActions className={classes.modalFooter}>
-          <Grid>
-              <Grid item>
-                <Button round color="primary" onClick={() => {setReportPostModal(false)}}>
-                  Post
-                </Button>
-              </Grid>
-            </Grid>
-        </DialogActions>
-      </Dialog>
-      {/* end of report dialog */}
       {/* start of create post dialog */}
       <Dialog
         classes={{
@@ -621,7 +596,7 @@ export default function Products(props) {
           >
             <Close className={classes.modalClose} />
           </IconButton>
-          <h4 className={classNames(classes.modalTitle, classes.title, classes.textCenter)}>Create Post</h4>
+          <h4 className={classNames(classes.modalTitle, classes.title, classes.textCenter)}>Create Product</h4>
         </DialogTitle>
         <DialogContent
           id="classic-modal-slide-description"
@@ -631,10 +606,17 @@ export default function Products(props) {
           <GridContainer direction="column">
             <GridItem>
               <CustomInput
-                labelText="Post Title"
+                labelText="Title"
                 id="title"
-                type="postTitle"
                 onChange={e => {setPostTitle(e.target.value)}}
+                formControlProps={{
+                  fullWidth: true
+                }}
+              />
+              <CustomInput
+                labelText="Price"
+                id="price"
+                onChange={e => {setPostPrice(e.target.value)}}
                 formControlProps={{
                   fullWidth: true
                 }}
@@ -664,63 +646,21 @@ export default function Products(props) {
                   ))}
                 </Select>
               </FormControl>
-              {uploadEnabled !== 0 ? 
               <div onClick={handleUpload} style={{width: '100%', height: '228px', backgroundColor:'#F3F3F3', borderRadius: '16px', marginTop: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', cursor: 'pointer'}}>
                 {postFile == null && <WallpaperOutlinedIcon />}
-                {postFile == null && <p>Upload {uploadEnabled===1?'Photo':'Video'}</p>}
+                {postFile == null && <p>Upload Image</p>}
 
                 
-                {uploadEnabled === 1 && postFile && 
+                {postFile && 
                 <img src={URL.createObjectURL(postFile)} style={{width: "100%", height: "100%"}} />
                 }
-                {uploadEnabled === 2 && postFile && 
-                <video controls width="100%" height="100%">
-                  <source
-                    src={URL.createObjectURL(postFile)}
-                    // type="video/mp4"
-                  />
-                  Your browser does not support the video tag.
-                </video>
-                }
-              </div> : null }
+              </div>
               <input type="file" ref={imageInputRef} onChange={handleImageChange} accept="image/*" hidden />
-              <input type="file" ref={videoInputRef} onChange={handleVideoChange} accept="video/*" hidden />
-            </GridItem>
-            <GridItem style={{marginTop: "12px"}}>
-              <GridContainer>
-                <GridItem sm={11}></GridItem>
-                <GridItem sm={1}>
-                  <SentimentSatisfiedOutlinedIcon />
-                </GridItem>
-              </GridContainer>
             </GridItem>
           </GridContainer>
-            <GridContainer direction="row" alignItems="center" style={{width:"100%",borderRadius: "26px", border: "1px solid #9A9A9A", marginLeft: "0px", marginRight: "0px", paddingTop: "16px", paddingBottom: "16px", marginTop: "24px"}}>
-              <GridItem sm={3}>
-                <p style={{fontSize: "16px"}}>Add To Post</p>
-              </GridItem>
-              <GridItem sm={5}>
-              </GridItem>
-              <GridItem sm={4}>
-                <GridContainer spacing={1} direction="row">
-                  <GridItem sm={2} onClick={() => {uploadEnabled!==1?(setUploadEnabled(1), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
-                    <WallpaperOutlinedIcon />
-                  </GridItem>
-                  <GridItem sm={4}>
-                    <h5>Image</h5>
-                  </GridItem>
-                  <GridItem sm={2} onClick={() => {uploadEnabled!==2?(setUploadEnabled(2), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
-                    <VideocamOutlinedIcon />
-                  </GridItem>
-                  <GridItem sm={4}>
-                    <h5>Video</h5>
-                  </GridItem>
-                </GridContainer>
-              </GridItem>
-            </GridContainer>
         </DialogContent>
         <DialogActions className={classes.modalFooter}>
-          <Button round color="primary" onClick={() => {saveContent()}} fullWidth>
+          <Button round color="primary" onClick={() => {handleProductUpload()}} fullWidth>
             Post
           </Button>
         </DialogActions>
