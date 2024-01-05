@@ -15,22 +15,16 @@ import MoreVertOutlinedIcon from '@material-ui/icons/MoreVertOutlined';
 import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
 import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
 import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
-import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 // core components
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import MUIButton from '@material-ui/core/Button';
-import Fab from '@material-ui/core/Fab';
-import Badge from '@material-ui/core/Badge';
-import { ButtonBase, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from "@material-ui/core";
-import Slide from "@material-ui/core/Slide";
-// components
 import Header from "/components/Header/Header.js";
 import HeaderLinks from "/components/Header/HeaderLinks.js";
 import Footer from "/components/Footer/Footer.js";
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+import MUIButton from '@material-ui/core/Button';
 import Button from "/components/CustomButtons/Button.js";
 import CustomDropdown from "/components/CustomDropdown/CustomDropdown.js";
 import Parallax from "/components/Parallax/Parallax.js";
@@ -80,22 +74,21 @@ import YouTubeIcon from '@material-ui/icons/YouTube';
 import Avatar from '@material-ui/core/Avatar';
 //redux
 import { useSelector, useDispatch } from "react-redux";
-import actions from '../../redux/actions';
+import actions from '../redux/actions';
 import axios from 'axios';
-import { BACKEND_URL } from "../../AppConfigs";
+import { BACKEND_URL } from "../AppConfigs";
 //other
 import { useSnackbar } from "notistack";
 import { formatDistanceToNow } from 'date-fns';
-import ProductList from "./productList.js";
 //rsuite
-import { Calendar, Whisper, Popover } from 'rsuite';
+import { Calendar, Whisper, Popover, Badge } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
 //style
-import modalStyle from "../../styles/jss/nextjs-material-kit/modalStyle.js";
+import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
-import basicStyles from "/styles/jss/nextjs-material-kit/pages/componentsSections/basicsStyle.js";
-//next
-import Router from "next/router";
+
+import { ButtonBase, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from "@material-ui/core";
+import Slide from "@material-ui/core/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
@@ -105,7 +98,6 @@ import Close from "@material-ui/icons/Close";
 const useStyles = makeStyles(theme => {
   return {
     ...styles,
-    ...basicStyles,
     ...modalStyle,
     slideCard: {
       backgroundColor: "#F5F5F5",
@@ -199,7 +191,7 @@ function SamplePrevArrow(props) {
   );
 }
 
-export default function Products(props) {
+export default function HomeFeed(props) {
   //snackbar
   const snackbar = useSnackbar();
   //redux
@@ -213,9 +205,19 @@ export default function Products(props) {
   const videoInputRef = useRef(null);
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
-
+  const [selectedEnabled, setSelectedEnabled] = React.useState("b");
+  const [selectTimeModal, setSelectTimeModal] = React.useState(false);
+  const [enterDetailsModal, setEnterDetailsModal] = React.useState(false);
+  const [reportPostModal, setReportPostModal] = React.useState(false);
+  const [createPostModal, setCreatePostModal] = React.useState(false);
+  const [selectedDate, setSelectedDate] = useState(Date());
+  const [postTitle, setPostTitle] = useState("");
+  const [postDescription, setPostDescription] = useState("");
+  const [postCategory, setPostCategory] = useState("");
+  const [postFile, setPostFile] = useState(null);
+  const [uploadEnabled, setUploadEnabled] = useState(0);
+  const [categories, setCategories] = useState({});
+  const [posts, setPosts] = useState({});
 
 
   const refContentText=React.useRef(null);
@@ -270,11 +272,73 @@ export default function Products(props) {
     autoplay: true,
   };
 
+  const handleUpload = (e) => {
+    if(postFile != null)
+    {
+      setPostFile(null);
+      return ;
+    }
+    if(uploadEnabled === 1)
+      imageInputRef.current.click();
+    if(uploadEnabled === 2)
+      videoInputRef.current.click();
+  }
+  
+  const handleImageChange = (e) => {
+    if (e.target.files) {
+      setPostFile(e.target.files[0]);
+    }
+  }
+
+  const handleVideoChange = (e) => {
+    if (e.target.files) {
+      setPostFile(e.target.files[0]);
+    }
+  }
+
+  const saveContent=()=>{
+    const formData = new FormData();
+    if(postFile != null)
+      formData.append('upload', postFile);
+    formData.append('title', postTitle);
+    formData.append('description', postDescription);
+    if(uploadEnabled === 0 || postFile == null)
+      formData.append('type', 'none');
+    else if(uploadEnabled === 1)
+      formData.append('type', 'image');
+    else if(uploadEnabled === 2)
+      formData.append('type', 'video');
+    formData.append('content', '');
+    formData.append('category', postCategory);
+    const config = {
+      headers: {
+        'content-type' : 'multipart/form-data',
+        'token' : redux_token
+      },
+    };
+    axios
+      .post(`${BACKEND_URL}/shared-contents/save`, formData, config)
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        snackbar.enqueueSnackbar("Success", { variant: "success" });
+        setCreatePostModal(false);
+      });
+  }
 
   //component mount
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/shop/cart`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .get(`${BACKEND_URL}/shared-contents/categories`, {}, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -287,57 +351,27 @@ export default function Products(props) {
             { variant: "error" }
           );
         }
-        setProducts(response.data.data);
-        const total = response.data.data.reduce((sum, value) => sum + value.product.price*value.count, 0)
-        setTotal(total);
+        setCategories(response.data.data);
+      });
+
+    axios
+      .get(`${BACKEND_URL}/shared-contents/all`, {}, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        // console.log(response.data.data);
+        setPosts(response.data.data);
       });
   }, []);
-
-  const handleDeleteProduct = (id, index) => {
-    axios
-      .delete(`${BACKEND_URL}/shop/cart/${id}`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
-      .then((response) => {
-        //error handler
-        if (response.data.status == "error") {
-          const {
-            error
-          } = response.data;
-          dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
-        }
-
-        let dummy_products = [...products];
-        dummy_products.splice(index, 1);
-        setProducts(dummy_products);
-      });
-  }
-
-  const handleTotalChange = (change) => {
-    let result = total*1.0+change*1.0;
-    setTotal(result.toFixed(2));
-  }
-
-  const handlePurchase = () => {
-    Router.push("/dummy-success");
-    // axios
-    //   .post(`${BACKEND_URL}/shop/orders/save`, {}, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
-    //   .then((response) => {
-    //     //error handler
-    //     if (response.data.status == "error") {
-    //       const {
-    //         error
-    //       } = response.data;
-    //       dispatch(actions.createError(error));
-    //       return snackbar.enqueueSnackbar(
-    //         response.data.error ? response.data.error : "Error",
-    //         { variant: "error" }
-    //       );
-    //     }
-    //   });
-  }
 
   return (
     <div>
@@ -346,23 +380,18 @@ export default function Products(props) {
         <div className={classes.sections}>
           <Container maxWidth={false} style={{ maxWidth: "80%", paddingTop: "30px" }} >
             <GridContainer>
-              <GridItem xs={9} sm={9} md={9} lg={9} >
-                <Card style={{paddingTop: '10px',paddingBottom: '10px',}}>
-                  {products.map((value, index) => {
-                    return (<ProductList count={value.count} handleTotalChange={handleTotalChange} id={value._id} key={value._id} product={value.product} handleDeleteProduct={handleDeleteProduct} index={index} />)
-                  })}
-                </Card>
-              </GridItem>
-              <GridItem xs={3} sm={3} md={3} lg={3}>
-                <Card className={classes.cardPaddingNoTop}>
-                  <GridContainer justify="center">
-                      <h3 className={classes.title} style={{ color: "#2E3192" }}>Total :</h3>
-                      <h3 className={classes.title} style={{ color: "#2E3192" }}>&nbsp;${total}</h3>
-                  </GridContainer>
-                  <GridContainer justify="center" alignItems="center">
-                    <Button round color="primary" onClick={handlePurchase}>
-                      Purchase
-                    </Button>
+              <GridItem xs={12} sm={12} md={12} lg={12} >
+                <Card>
+                  <GridContainer justify="center" alignItems="center" direction="column" style={{marginTop: '20px', marginBottom: '20px'}}>
+                    <div style={{backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%", width: "120px", height: "120px"}}>
+                      <CheckOutlinedIcon style={{width: "40%", height: "40%", color: "white"}} />
+                    </div>
+                    <h3 style={{textAlign: "center"}}>Order has been placed successfully</h3>
+                    <Link href="/products">
+                      <Button round color="primary" size="lg">
+                        Products
+                      </Button>
+                    </Link>
                   </GridContainer>
                 </Card>
               </GridItem>
@@ -426,8 +455,6 @@ export default function Products(props) {
         </Grid>
         <Grid item xs={1} ></Grid>
       </Grid>
-
-
     </div>
   );
 }

@@ -92,6 +92,7 @@ export default function AnnualMembership(props) {
   const redux_email = useSelector((state) => state.authentication.email);
   const redux_fullname = decodeURI(useSelector((state) => state.authentication.fullname));
   const redux_member = decodeURI(useSelector((state) => state.authentication.member));
+  const redux_token = useSelector((state) => state.authentication.token);
   //state
   const [phone, setPhone] = useState('');
   const [confirm, setConfirm] = useState(false);
@@ -102,27 +103,27 @@ export default function AnnualMembership(props) {
   const [address, setAddress] = useState("");
 
   //component mount
-  // useEffect(() => {
-  //   const formData = { email : redux_email };
-  //   axios
-  //     .post(`${BACKEND_URL}/members/check`, formData)
-  //     .then((response) => {
-  //       //error handler
-  //       if (response.data.status == "error") {
-  //         const {
-  //           error
-  //         } = response.data;
-  //         dispatch(actions.createError(error));
-  //         return snackbar.enqueueSnackbar(
-  //           response.data.error ? response.data.error : "Error",
-  //           { variant: "error" }
-  //         );
-  //       }
-  //       const {
-  //         membership_type
-  //       } = response.data;
-  //     });
-  // }, []);
+  useEffect(() => {
+    const formData = { email : redux_email };
+    axios
+      .post(`${BACKEND_URL}/members/check`, {}, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        const membership = response.data.data;
+        if(Array.isArray(membership) && membership.length != 0)
+          Router.push('/already-purchased');
+      });
+  }, []);
 
   
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");

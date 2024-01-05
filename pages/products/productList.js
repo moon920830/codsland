@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 //components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -9,19 +9,19 @@ import CardHeader from "/components/Card/CardHeader.js";
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
-
+//@material-ui/core components
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-//@material-ui/core components
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from "@material-ui/core/styles";
 //custom
 import Rating from '@material-ui/lab/Rating';
 import { Divider } from '@material-ui/core';
 import { BACKEND_URL } from "../../AppConfigs";
+import axios from 'axios';
 
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 const useStyles = makeStyles(theme => {
@@ -43,24 +43,79 @@ export default function ProductList(props) {
   const classes = useStyles();
   const [quantity, setQuantity] = useState(1);
 
+  useEffect(() => {
+    setQuantity(props.count);
+  }, []);
+
   const handleQuantityChange = (e) => {
-    console.log('qwer');
-    setQuantity(e.target.value*1);
+    axios
+      .post(`${BACKEND_URL}/shop/cart/${props.product._id}/count`, {
+        count: (e.target.value*1)
+      }, {}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setQuantity(e.target.value*1);
+      });
   }
 
   const handleMinus = (e) => {
     let q = quantity;
     let new_q = (q-1 >= 1 ? (q-1) : 1);
     props.handleTotalChange((new_q-q)*props.product.price);
-    setQuantity(new_q);
+
+    axios
+      .post(`${BACKEND_URL}/shop/cart/${props.product._id}/count`, {
+        count: new_q
+      }, {}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setQuantity(new_q);
+      });
   }
 
   const handlePlus = (e) => {
     let q = quantity;
     let new_q = q+1;
-    // console.log((new_q-q)*props.product.price);
     props.handleTotalChange((new_q-q)*props.product.price);
-    setQuantity(new_q);
+
+    axios
+      .post(`${BACKEND_URL}/shop/cart/${props.id}/count`, {
+        count: new_q
+      }, {}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setQuantity(new_q);
+      });
   }
 
   return (
