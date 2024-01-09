@@ -119,6 +119,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CancelIcon from '@material-ui/icons/Cancel';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
 import Close from "@material-ui/icons/Close";
@@ -131,25 +132,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 
-function createData(name, calories, date, fat, carbs, protein, status, action) {
-  return { name, calories, date, fat, carbs, protein, status, action };
+function createData(id, image, title, date, price, quantity, total_price, status, action) {
+  return { id, image, title, date, price, quantity, total_price, status, action };
 }
-
-const rows = [
-  createData('Cupcake', 'Cupcake', '2002-09-25', 3.7, 67, 4.3, 'shipped', 'cancel'),
-  createData('Donut', 'Donut', '2002-09-25', 25.0, 51, 4.9, 'shipped', 'cancel'),
-  createData('Eclair', 'Eclair', '2002-09-25', 16.0, 24, 6.0, 'shipped', 'cancel'),
-  createData('Frozen yoghurt', 'Frozen yoghurt', '2002-09-25', 6.0, 24, 4.0, 'shipped', 'cancel'),
-  createData('Gingerbread', 'Gingerbread', '2002-09-25', 16.0, 49, 3.9, 'shipped', 'cancel'),
-  createData('Honeycomb', 'Honeycomb', '2002-09-25', 3.2, 87, 6.5, 'shipped', 'cancel'),
-  createData('Ice cream sandwich', 'Ice cream sandwich', '2002-09-25', 9.0, 37, 4.3, 'shipped', 'cancel'),
-  createData('Jelly Bean', 'Jelly Bean', '2002-09-25', 0.0, 94, 0.0, 'shipped', 'cancel'),
-  createData('KitKat', 'KitKat', '2002-09-25', 26.0, 65, 7.0, 'shipped', 'cancel'),
-  createData('Lollipop', 'Lollipop', '2002-09-25', 0.2, 98, 0.0, 'shipped', 'cancel'),
-  createData('Marshmallow', 'Marshmallow', '2002-09-25', 0, 81, 2.0, 'shipped', 'cancel'),
-  createData('Nougat', 'Nougat', '2002-09-25', 19.0, 9, 37.0, 'shipped', 'cancel'),
-  createData('Oreo', 'Oreo', '2002-09-25', 18.0, 63, 4.0, 'shipped', 'cancel'),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -185,7 +170,6 @@ const headCells = [
   { id: 'quantity', numeric: true, disablePadding: false, label: 'Quantity' },
   { id: 't_price', numeric: true, disablePadding: false, label: 'Total Price' },
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
-  { id: 'action', numeric: false, disablePadding: false, label: 'Action' },
 ];
 
 function EnhancedTableHead(props) {
@@ -209,7 +193,7 @@ function EnhancedTableHead(props) {
           <TableCell
             key={headCell.id}
             // align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
+            padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -282,11 +266,18 @@ const EnhancedTableToolbar = (props) => {
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        <div style={{display: 'flex'}}>
+          <Tooltip title="Cancel">
+            <IconButton aria-label="cancel" onClick={props.handleCancel}>
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton aria-label="delete" onClick={props.handleDelete}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
       ) : (
         <Tooltip title="Filter list">
           <IconButton aria-label="filter list">
@@ -407,6 +398,50 @@ export default function EnhancedTable (props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [displayType, setDisplayType] = useState("All");
+  const [rows, setRows] = useState([]);
+
+  //component mount
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/shop/orders`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        const dummy_rows = response.data.data;
+        const result_rows = [];
+        dummy_rows.forEach(row => {
+          row.products.forEach(product => {
+            result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel'));
+          })
+        });
+        setRows(result_rows);
+      });
+  }, []);
+
+
+  const handleCancel = () => {
+    
+  }
+
+  const handleDelete = () => {
+    const dummy_selected = selected.map(item => item.split('*')[0]);
+    const dummy_rows = rows;
+    dummy_rows = dummy_rows.filter(row => {
+      const flag = dummy_selected.includes(row.image);
+      return !flag;
+    });
+    setRows(dummy_rows);
+    setSelected([]);
+  }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -416,19 +451,19 @@ export default function EnhancedTable (props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.image+'*'+n.date);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -456,7 +491,7 @@ export default function EnhancedTable (props) {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -476,22 +511,22 @@ export default function EnhancedTable (props) {
 
               <GridItem sm={3}>
                 <Card style={{ padding: '20px' }}>
-                <Button color="primary" variant={displayType === "All" ? "contained" : ''} className={classes.fabButton} onClick={() => {setDisplayType("All")}}>
+                <Button color="primary" variant={displayType === "All" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("All")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>All</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Purchased" ? "contained" : ''} className={classes.fabButton} onClick={() => {setDisplayType("Purchased")}}>
+                <Button color="primary" variant={displayType === "Purchased" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Purchased")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Purchased</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Accepted" ? "contained" : ''} className={classes.fabButton} onClick={() => {setDisplayType("Accepted")}}>
+                <Button color="primary" variant={displayType === "Accepted" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Accepted")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Accepted</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Shipping" ? "contained" : ''} className={classes.fabButton} onClick={() => {setDisplayType("Shipping")}}>
+                <Button color="primary" variant={displayType === "Shipping" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Shipping")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Shipping</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Completed" ? "contained" : ''} className={classes.fabButton} onClick={() => {setDisplayType("Completed")}}>
+                <Button color="primary" variant={displayType === "Completed" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Completed")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Completed</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Canceled" ? "contained" : ''} className={classes.fabButton} onClick={() => {setDisplayType("Canceled")}}>
+                <Button color="primary" variant={displayType === "Canceled" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Canceled")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Canceled</p>
                 </Button>
                   
@@ -501,7 +536,7 @@ export default function EnhancedTable (props) {
                 <Card>
                   <div className={classes.root}>
                     <Paper className={classes.paper}>
-                      <EnhancedTableToolbar numSelected={selected.length} />
+                      <EnhancedTableToolbar handleCancel={handleCancel} handleDelete={handleDelete} numSelected={selected.length} />
                       <TableContainer>
                         <Table
                           className={classes.table}
@@ -522,17 +557,17 @@ export default function EnhancedTable (props) {
                             {stableSort(rows, getComparator(order, orderBy))
                               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                               .map((row, index) => {
-                                const isItemSelected = isSelected(row.name);
+                                const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
                                   <TableRow
                                     hover
-                                    onClick={(event) => handleClick(event, row.name)}
+                                    onClick={(event) => handleClick(event, row.id)}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
-                                    key={row.name}
+                                    key={row.id}
                                     selected={isItemSelected}
                                   >
                                     <TableCell padding="checkbox">
@@ -542,15 +577,14 @@ export default function EnhancedTable (props) {
                                       />
                                     </TableCell>
                                     <TableCell component="th" id={labelId} scope="row" padding="none">                                  
-                                      <img src={`${BACKEND_URL}/shop/products/65960b99d915821a1b2a0263/image`} alt="..." style={{ width: "50px", height: "50px"}}></img>
+                                      <img src={`${BACKEND_URL}/shop/products/${row.image}/image`} alt="..." style={{ width: "50px", height: "50px"}}></img>
                                     </TableCell>
-                                    <TableCell align="left">{row.calories}</TableCell>
-                                    <TableCell align="left">{row.date}</TableCell>
-                                    <TableCell align="left">{row.fat}</TableCell>
-                                    <TableCell align="left">{row.carbs}</TableCell>
-                                    <TableCell align="left">{row.protein}</TableCell>
+                                    <TableCell align="left">{row.title}</TableCell>
+                                    <TableCell align="left">{new Date(row.date).toLocaleString()}</TableCell>
+                                    <TableCell align="left">{row.price}</TableCell>
+                                    <TableCell align="left">{row.quantity}</TableCell>
+                                    <TableCell align="left">{row.total_price}</TableCell>
                                     <TableCell align="left"><Badge color="warning" size="medium"><p style={{fontSize: '12px'}}>{row.status}</p></Badge></TableCell>
-                                    <TableCell align="left">{row.action}</TableCell>
                                   </TableRow>
                                 );
                               })}

@@ -84,7 +84,7 @@ function ResetPasswordPage(props) {
   const handleSubmit = e => {
     e.preventDefault();
 
-    axios.post(`${BACKEND_URL}/auth/check-otp`,{
+    axios.post(`${BACKEND_URL}/auth/verify-otp`,{
       otp:otp,
     }).then(response=>{
       if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
@@ -157,7 +157,7 @@ function ResetPasswordPage(props) {
                 <Button type="submit" round color="primary" size="lg">
                   Verify
                 </Button>
-                <p>Didn't Receive? <Link href="/login">Resent</Link></p>
+                <p>Didn't Receive? <Link href="/login">Resend</Link></p>
               </CardFooter>
             </form>
           </Card>

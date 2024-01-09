@@ -7,6 +7,7 @@ import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
 import Rating from '@material-ui/lab/Rating';
 // @material-ui/icons
+import NavigationIcon from '@material-ui/icons/Navigation';
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 import WallpaperOutlinedIcon from '@material-ui/icons/WallpaperOutlined';
 import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
@@ -541,6 +542,11 @@ export default function Products(props) {
               </GridItem>
             </GridContainer>
             {/* Membership */}
+            <Link href="/products/order">
+              <Fab color="primary" aria-label="add"  style={{position: 'fixed', bottom : 180, right : 60}}>
+                <NavigationIcon />
+              </Fab>
+            </Link>
             <Fab color="secondary" aria-label="add"  style={{position: 'fixed', bottom : 100, right : 60}}>
                 <AddIcon onClick={() => {setCreatePostModal(true)}} />
             </Fab>

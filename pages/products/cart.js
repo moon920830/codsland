@@ -89,6 +89,9 @@ import { BACKEND_URL } from "../../AppConfigs";
 import Datetime from "react-datetime";
 import { useSnackbar } from "notistack";
 import { formatDistanceToNow } from 'date-fns';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import PayComponent from './PayComponent.js';
 import ProductList from "./productList.js";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
@@ -106,6 +109,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 import Close from "@material-ui/icons/Close";
+
+const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
 
 const useStyles = makeStyles(theme => {
   return {
@@ -209,7 +214,7 @@ function SamplePrevArrow(props) {
   );
 }
 
-export default function Products(props) {
+export default function Cart(props) {
   //snackbar
   const snackbar = useSnackbar();
   //redux
@@ -231,6 +236,7 @@ export default function Products(props) {
   const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [createPostModal, setCreatePostModal] = React.useState(false);
+  const [clientSecret, setClientSecret]=useState(null);
 
 
 
@@ -347,6 +353,22 @@ export default function Products(props) {
         const total = response.data.data.reduce((sum, value) => sum + value.product.price*value.count, 0)
         setTotal(total);
       });
+
+    
+    axios.get(`${BACKEND_URL}/test/payment-intent`)
+      .then(response=>{
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setClientSecret(response.data.clientSecret)
+      })
   }, []);
 
   const handleDeleteProduct = (id, index, change) => {
@@ -377,24 +399,31 @@ export default function Products(props) {
     setTotal(result.toFixed(2));
   }
 
-  const handlePurchase = () => {
+  const handlePurchase = (result) => {
     setCreatePostModal(false);
-    // Router.push("/dummy-success");
-    // axios
-    //   .post(`${BACKEND_URL}/shop/orders/save`, {}, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
-    //   .then((response) => {
-    //     //error handler
-    //     if (response.data.status == "error") {
-    //       const {
-    //         error
-    //       } = response.data;
-    //       dispatch(actions.createError(error));
-    //       return snackbar.enqueueSnackbar(
-    //         response.data.error ? response.data.error : "Error",
-    //         { variant: "error" }
-    //       );
-    //     }
-    //   });
+    axios
+      .post(`${BACKEND_URL}/shop/orders/save`, {
+        result,
+        email,
+        phone,
+        date,
+        location
+      }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        Router.push("/dummy-success");
+        // snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
+      });
   }
 
   return (
@@ -546,10 +575,19 @@ export default function Products(props) {
                 }}
               />
               <PhoneInput
+                isValid={(value, country) => {
+                  if (value.match(/12345/)) {
+                    return 'Invalid value: '+value+', '+country.name;
+                  } else if (value.match(/1234/)) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                }}
                 style={{marginTop: '30px'}}
                 country={'us'}
                 value={phone}
-                onChange={phone => setPhone(phone)}
+                onChange={(phone, data) => {setPhone(phone);}}
                 inputStyle={{width: '100%'}}
                 placeholder="Phone"
                 inputProps={{
@@ -582,6 +620,7 @@ export default function Products(props) {
                     color: 'rgba(255, 0, 0, 0.5)', // Color and transparency of the placeholder
                   }
                 }, }}
+                value={date}
                 dateFormat={"YYYY-MM-DD"}
                 timeFormat={false}
                 onChange={handleDateChange}
@@ -612,14 +651,20 @@ export default function Products(props) {
                   <li key={suggestion.place_id}>{suggestion.display_name}</li>
                 ))}
               </ul>
+              {clientSecret&&(
+                
+              <Elements stripe={stripePromise} options={{clientSecret:clientSecret}} >
+                <PayComponent handlePurchase={handlePurchase} email={email} phone={phone} date={date} location={location} />
+              </Elements>
+              )}
             </GridItem>
           </GridContainer>
         </DialogContent>
-        <DialogActions className={classes.modalFooter}>
+        {/* <DialogActions className={classes.modalFooter}>
           <Button round color="primary" onClick={() => {handlePurchase()}} fullWidth>
             Purchase
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
       {/* end of create post dialog */}
     </div>
