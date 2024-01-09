@@ -96,15 +96,15 @@ function NewPasswordPage(props) {
       return snackbar.enqueueSnackbar("Type password",{variant:"error"});
     }
     
-    // axios.post(`${BACKEND_URL}/reset-password`,{
-    //   otp:props.otp,
-    //   password:password,
-    // }).then(response=>{
-    //   if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
-    //   snackbar.enqueueSnackbar("Success",{variant:"success"});
+    axios.post(`${BACKEND_URL}/auth/reset-password`,{
+      otp:props.otp,
+      password:password,
+    }).then(response=>{
+      if(response.data.status=="error") return snackbar.enqueueSnackbar(response.data.error?response.data.error:"Error",{variant:"error"});
+      snackbar.enqueueSnackbar("Success",{variant:"success"});
 
-    //   return Router.push("/reset-success")
-    // });
+      return Router.push("/reset-success")
+    });
   };
   return (
     <GridContainer sm={12}>
