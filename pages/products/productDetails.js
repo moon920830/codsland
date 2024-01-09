@@ -7,7 +7,6 @@ import Link from "next/link";
 import { makeStyles } from "@material-ui/core/styles";
 import Rating from '@material-ui/lab/Rating';
 // @material-ui/icons
-import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 import WallpaperOutlinedIcon from '@material-ui/icons/WallpaperOutlined';
@@ -18,6 +17,7 @@ import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
 import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
 import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
+import AddIcon from '@material-ui/icons/Add';
 // core components
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -25,8 +25,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MUIButton from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Badge from '@material-ui/core/Badge';
-import { ButtonBase, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from "@material-ui/core";
-import Slide from "@material-ui/core/Slide";
 // components
 import Header from "/components/Header/Header.js";
 import HeaderLinks from "/components/Header/HeaderLinks.js";
@@ -37,6 +35,7 @@ import Button from "/components/CustomButtons/Button.js";
 import CustomDropdown from "/components/CustomDropdown/CustomDropdown.js";
 import Parallax from "/components/Parallax/Parallax.js";
 import Info from "/components/Typography/Info.js";
+import ProductCard from "../../pages/products/productCard.js";
 // sections for this page
 import SectionBasics from "/pages-sections/Components-Sections/SectionBasics.js";
 import SectionNavbars from "/pages-sections/Components-Sections/SectionNavbars.js";
@@ -86,12 +85,9 @@ import actions from '../../redux/actions';
 import axios from 'axios';
 import { BACKEND_URL } from "../../AppConfigs";
 //other
-import Datetime from "react-datetime";
 import { useSnackbar } from "notistack";
+import Router, {useRouter} from "next/router";
 import { formatDistanceToNow } from 'date-fns';
-import ProductList from "./productList.js";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
 //rsuite
 import { Calendar, Whisper, Popover } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -99,8 +95,9 @@ import 'rsuite/dist/rsuite.min.css';
 import modalStyle from "../../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 import basicStyles from "/styles/jss/nextjs-material-kit/pages/componentsSections/basicsStyle.js";
-//next
-import Router from "next/router";
+
+import { ButtonBase, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from "@material-ui/core";
+import Slide from "@material-ui/core/Slide";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
@@ -156,11 +153,6 @@ const useStyles = makeStyles(theme => {
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
-    outlinedStyle: {
-      '& .MuiOutlinedInput-input' : {
-        padding: '9px'
-      }
-    },
   }
 });
 
@@ -215,23 +207,21 @@ export default function Products(props) {
   //redux
   const dispatch = useDispatch();
   const redux_token = useSelector((state) => state.authentication.token);
-  const redux_email = useSelector((state) => state.authentication.email);
-  const redux_fullname = useSelector((state) => state.authentication.fullname);
   //other
   const classes = useStyles();
   const imageInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [date, setDate] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [location, setLocation] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [selectedEnabled, setSelectedEnabled] = React.useState("All");
+  const [product, setProduct] = useState([]);
   const [createPostModal, setCreatePostModal] = React.useState(false);
-
+  const [postTitle, setPostTitle] = useState("");
+  const [postDescription, setPostDescription] = useState("");
+  const [postCategory, setPostCategory] = useState("");
+  const [postPrice, setPostPrice] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
+  const [postFile, setPostFile] = useState(null);
 
 
   const refContentText=React.useRef(null);
@@ -286,51 +276,16 @@ export default function Products(props) {
     autoplay: true,
   };
 
-  const renderInput = (props, openCalendar, closeCalendar) => (
-    <div className="input-container">
-      <input {...props} />
-      {/* <CalendarTodayIcon className="calendar-icon" onClick={openCalendar} /> */}
-    </div>
-  );
 
-  const handlePhoneChange = (e) => {
-    setPhone(e.target.value);
-  };
+  
+  const router = useRouter();
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  }
-
-  const handleLocationChange = async (input) => {
-    setLocation(input);
-
-    // Fetch suggestions from your geocoding service
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${input}`
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      setSuggestions(data);
-    }
-  };
-
-  const handleDateChange = (e) => {
-    const selectedDate = e._d;
-    const year = selectedDate.getFullYear();
-    const month = selectedDate.getMonth() + 1; // Adding 1 because months are zero-indexed
-    const day = selectedDate.getDate();
-    const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${
-      day < 10 ? "0" : ""
-    }${day}`;
-    console.log(formattedDate);
-    setDate(formattedDate);
-  };
+  
 
   //component mount
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/shop/cart`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .get(`${BACKEND_URL}/shop/products/${router.query.id}`, {}) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -343,15 +298,16 @@ export default function Products(props) {
             { variant: "error" }
           );
         }
-        setProducts(response.data.data);
-        const total = response.data.data.reduce((sum, value) => sum + value.product.price*value.count, 0)
-        setTotal(total);
+        setProduct(response.data.data);
+        console.log(response.data.data);
       });
   }, []);
 
-  const handleDeleteProduct = (id, index, change) => {
+  function handleAddToCart(product) {
     axios
-      .delete(`${BACKEND_URL}/shop/cart/${id}`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .post(`${BACKEND_URL}/shop/cart`, {
+        product:product
+      }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -365,36 +321,90 @@ export default function Products(props) {
           );
         }
 
-        let dummy_products = [...products];
-        dummy_products.splice(index, 1);
-        setProducts(dummy_products);
-        handleTotalChange(change*(-1));
+
+        axios
+          .get(`${BACKEND_URL}/shop/cart/count`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+          .then((response) => {
+            //error handler
+            if (response.data.status == "error") {
+              const {
+                error
+              } = response.data;
+              dispatch(actions.createError(error));
+              return snackbar.enqueueSnackbar(
+                response.data.error ? response.data.error : "Error",
+                { variant: "error" }
+              );
+            }
+            setCartCount(response.data.data);
+          });
       });
   }
 
-  const handleTotalChange = (change) => {
-    let result = total*1.0+change*1.0;
-    setTotal(result.toFixed(2));
+  const handleDisplayAll = () => {
+    axios
+      .post(`${BACKEND_URL}/shop/products/page`, {
+        page:0,
+        pagesize:5
+      }) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setProducts(response.data.data.pagedata);
+      });
+    setSelectedEnabled("All");
+  }
+  
+  const handleUpload = (e) => {
+    imageInputRef.current.click();
   }
 
-  const handlePurchase = () => {
-    setCreatePostModal(false);
-    // Router.push("/dummy-success");
-    // axios
-    //   .post(`${BACKEND_URL}/shop/orders/save`, {}, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
-    //   .then((response) => {
-    //     //error handler
-    //     if (response.data.status == "error") {
-    //       const {
-    //         error
-    //       } = response.data;
-    //       dispatch(actions.createError(error));
-    //       return snackbar.enqueueSnackbar(
-    //         response.data.error ? response.data.error : "Error",
-    //         { variant: "error" }
-    //       );
-    //     }
-    //   });
+  const handleImageChange = (e) => {
+    if (e.target.files) {
+      setPostFile(e.target.files[0]);
+    }
+  }
+
+  const handleProductUpload = () => {
+    const formData = new FormData();
+    if(postFile != null)
+      formData.append('image', postFile);
+    formData.append('title', postTitle);
+    formData.append('description', postDescription);
+    formData.append('category', postCategory);
+    formData.append('price', postPrice);
+    const config = {
+      headers: {
+        'content-type' : 'multipart/form-data',
+        // 'token' : redux_token
+      },
+    };
+    axios
+      .post(`${BACKEND_URL}/shop/products`, formData, config)
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        snackbar.enqueueSnackbar("Success", { variant: "success" });
+        setCreatePostModal(false);
+      });
   }
 
   return (
@@ -403,34 +413,26 @@ export default function Products(props) {
       <div className={classNames(classes.mainRaised, classes.greyBackground)}>
         <div className={classes.sections}>
           <Container maxWidth={false} style={{ maxWidth: "80%", paddingTop: "30px" }} >
-            <GridContainer direction="row" alignItems="center" style={{paddingLeft: '15px'}}>
+            <GridContainer direction="row" alignItems="center" style={{paddingLeft: '10px'}}>
               <KeyboardBackspaceOutlinedIcon  onClick={() => {Router.push("/products")}} className={classes.cursor} />
               <h5 onClick={() => {Router.push("/products")}} className={classes.cursor} >&nbsp;Back</h5>
             </GridContainer>
             <GridContainer>
-              <GridItem xs={9} sm={9} md={9} lg={9} >
-                <Card style={{paddingTop: '10px',paddingBottom: '10px',}}>
-                  {products.map((value, index) => {
-                    return (<ProductList count={value.count} handleTotalChange={handleTotalChange} id={value._id} key={value._id} product={value.product} handleDeleteProduct={handleDeleteProduct} index={index} />)
-                  })}
+              <GridItem xs={3} sm={3} md={3} lg={3} >
+                <Card style={{padding: '20px'}}>
+                  <img src={`${BACKEND_URL}/shop/products/${router.query.id}/image`} alt="..." style={{ width: "auto", height: "auto"}}></img>
                 </Card>
               </GridItem>
-              <GridItem xs={3} sm={3} md={3} lg={3}>
-                <Card className={classes.cardPaddingNoTop}>
-                  <GridContainer justify="center">
-                      <h3 className={classes.title} style={{ color: "#2E3192" }}>Total :</h3>
-                      <h3 className={classes.title} style={{ color: "#2E3192" }}>&nbsp;${total}</h3>
-                  </GridContainer>
-                  <GridContainer justify="center" alignItems="center">
-                    <Button round color="primary" onClick={() => {setCreatePostModal(true)}}>
-                      Purchase
-                    </Button>
-                  </GridContainer>
+              <GridItem xs={9} sm={9} md={9} lg={9} >
+                <Card style={{padding: '20px', minHeight: '40vh'}}>
+                  <h4 style={{ color: "#170F49", fontSize: '40px' }}>{product.title}</h4>
+                  <Rating name="read-only" value={4} readOnly  style={{marginTop: '15px'}} />
+                  <p style={{ color: "#170F49", fontSize: '30px', marginTop: '20px' }}>${product.price}</p>
+                  <p style={{ color: "#170F49", fontSize: '20px', marginTop: '20px' }}>{product.description}</p>
                 </Card>
               </GridItem>
             </GridContainer>
             {/* Membership */}
-
             {/* Footer */}
 
             <GridContainer justify="space-between" style={{ marginTop: "100px" }}>
@@ -488,140 +490,6 @@ export default function Products(props) {
         </Grid>
         <Grid item xs={1} ></Grid>
       </Grid>
-
-      {/* start of create post dialog */}
-      <Dialog
-        classes={{
-          root: classes.center,
-          paper: classes.modal
-        }}
-        open={createPostModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setCreatePostModal(false)}
-        aria-labelledby="classic-modal-slide-title"
-        aria-describedby="classic-modal-slide-description"
-        maxWidth="sm"
-        fullWidth={true}
-      >
-        <DialogTitle
-          id="classic-modal-slide-title"
-          disableTypography
-          className={classes.modalHeader}
-        >
-          <IconButton
-            className={classes.modalCloseButton}
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={() => setCreatePostModal(false)}
-          >
-            <Close className={classes.modalClose} />
-          </IconButton>
-          <h4 className={classNames(classes.modalTitle, classes.title, classes.textCenter)}>Enter details</h4>
-        </DialogTitle>
-        <DialogContent
-          id="classic-modal-slide-description"
-          className={classes.modalBody}
-        >
-          <Divider />
-          <GridContainer direction="column">
-            <GridItem>
-              <TextField
-                className={classes.outlinedStyle}
-                onChange={handleEmailChange}
-                placeholder="Email"
-                fullWidth
-                variant="outlined"
-                InputProps={{
-                  style: {
-                    // Control font or other styles here
-                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                    fontSize: '14px',
-                    marginTop: '30px',
-                    '::placeholder' : {
-                      display: 'none'
-                    },
-                  },
-                }}
-              />
-              <PhoneInput
-                style={{marginTop: '30px'}}
-                country={'us'}
-                value={phone}
-                onChange={phone => setPhone(phone)}
-                inputStyle={{width: '100%'}}
-                placeholder="Phone"
-                inputProps={{
-                  type: "",
-                  endAdornment: (
-                    // <InputAdornment position="end">
-                      <PhoneIcon className={classes.inputIconsColor} />
-                    // </InputAdornment>
-                  ),
-                  autoComplete: "off"
-                }}
-              />
-              <Datetime
-                inputProps={{ placeholder: "Shipping Date", style: {
-                  width: '100%',
-                  padding: '9px', // Adjust padding as needed
-                  borderTop: '1px solid #ced4da', // Border color for top
-                  borderLeft: '1px solid #ced4da', // Border color for left
-                  borderRight: '1px solid #ced4da', // Border color for right
-                  borderBottom: 'none', // Omit bottom border
-                  borderRadius: '4px', // Border radius
-                  outline: 'none',
-                  fontSize: '16px', // Font size
-                  marginTop: '30px',
-                  color: '#333',
-                  '::placeholder': {
-                    color: 'rgba(255, 0, 0, 1)', // Color and transparency of the placeholder
-                  },
-                  placeholderStyle: {
-                    color: 'rgba(255, 0, 0, 0.5)', // Color and transparency of the placeholder
-                  }
-                }, }}
-                dateFormat={"YYYY-MM-DD"}
-                timeFormat={false}
-                onChange={handleDateChange}
-                renderInput={renderInput}
-                // style={{display: "flex"}}
-              />
-              <TextField
-                className={classes.outlinedStyle}
-                onChange={(e) => handleLocationChange(e.target.value)}
-                placeholder="Address"
-                fullWidth
-                value={location}
-                variant="outlined"
-                InputProps={{
-                  style: {
-                    // Control font or other styles here
-                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                    fontSize: '14px',
-                    marginTop: '30px',
-                    '::placeholder' : {
-                      display: 'none'
-                    },
-                  },
-                }}
-              />
-              <ul>
-                {suggestions.map((suggestion) => (
-                  <li key={suggestion.place_id}>{suggestion.display_name}</li>
-                ))}
-              </ul>
-            </GridItem>
-          </GridContainer>
-        </DialogContent>
-        <DialogActions className={classes.modalFooter}>
-          <Button round color="primary" onClick={() => {handlePurchase()}} fullWidth>
-            Purchase
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* end of create post dialog */}
     </div>
   );
 }

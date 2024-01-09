@@ -13,10 +13,11 @@ import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutline
 //@material-ui/core components
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from "@material-ui/core/styles";
-//custom
+//other
 import Rating from '@material-ui/lab/Rating';
 import classNames from "classnames";
 import { BACKEND_URL } from "../../AppConfigs";
+import Router from "next/router";
 
 const useStyles = makeStyles(theme => {
   return {
@@ -45,7 +46,7 @@ export default function productCard(props) {
               <Badge color="warning" size="medium">{props.categoryTitle}</Badge>
             </div>
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }} >
-              <img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "auto", height: "25vh"}}></img>
+              <img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "auto", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id}}) }}></img>
             </div>
             <h3 className={classes.title} style={{ color: "#2E3192" }}>{props.title}</h3>
             <p className={classes.ellipsis}>{props.description}</p>

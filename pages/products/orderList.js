@@ -5,6 +5,7 @@ import GridItem from "/components/Grid/GridItem.js";
 import Card from "/components/Card/Card.js";
 import CardBody from "/components/Card/CardBody.js";
 import CardHeader from "/components/Card/CardHeader.js";
+import Badge from "/components/Badge/Badge.js";
 //icon
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
@@ -128,7 +129,7 @@ export default function ProductList(props) {
             {/* <img src="/img/airbuds.png" alt="..." style={{ width: "auto", height: "25vh"}}></img> */}
           </div>
         </GridItem>
-        <GridItem sm={7}>
+        <GridItem sm={6}>
           <GridContainer direction="column" justify="space-between" style={{height: '100%'}}>
             <div>
               <h3 className={classes.title} style={{ color: "#2E3192" }}>{props.product.title}</h3>
@@ -138,36 +139,22 @@ export default function ProductList(props) {
           </GridContainer>
           
         </GridItem>
-        <GridItem sm={3} style={{paddingRight: '30px', paddingTop: '10px', paddingBottom: '10px'}}>
+        <GridItem sm={2} style={{paddingRight: '30px', paddingTop: '10px', paddingBottom: '10px'}}>
+          <GridContainer direction="column" justify="space-between" style={{height: '100%', paddingRight: '15px'}}>
+            <div style={{display:'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
+              <h4 className={classes.price} style={{ color: "#2E3192" }}>${props.product.price}</h4>
+              <h4 className={classes.price} style={{ color: "#2E3192" }}>(${(props.product.price*quantity).toFixed(2)})</h4>
+            </div>
+          </GridContainer>
+        </GridItem>
+        <GridItem sm={2} style={{paddingRight: '30px', paddingTop: '10px', paddingBottom: '10px'}}>
           <GridContainer direction="column" justify="space-between" style={{height: '100%', paddingRight: '15px'}}>
             <div style={{display:'flex', justifyContent: 'flex-end'}}>
-              <DeleteOutlineOutlinedIcon className={classes.cursor} onClick={() => {props.handleDeleteProduct(props.id, props.index, props.product.price*quantity)}} />
+              <Badge color="warning" size="medium">canceled</Badge>
             </div>
             <div style={{display:'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
               <h4 className={classes.price} style={{ color: "#2E3192" }}>${props.product.price}</h4>
               <h4 className={classes.price} style={{ color: "#2E3192" }}>(${(props.product.price*quantity).toFixed(2)})</h4>
-              <TextField
-                // type="number"
-                style={{width: '115px'}}
-                value={quantity}
-                onChange={handleQuantityChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconButton onClick={handleMinus} edge="start">
-                        <RemoveIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handlePlus} edge="end">
-                        <AddIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
             </div>
           </GridContainer>
         </GridItem>

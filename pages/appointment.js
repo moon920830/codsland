@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // react components for routing our app without refresh
@@ -18,6 +18,8 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "/components/CustomButtons/Button.js";
+import CustomButton from "@material-ui/core/Button";
+import Fab from '@material-ui/core/Fab';
 import CustomDropdown from "/components/CustomDropdown/CustomDropdown.js";
 import Parallax from "/components/Parallax/Parallax.js";
 import Info from "/components/Typography/Info.js";
@@ -61,13 +63,21 @@ import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 //redux
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import actions from '../redux/actions';
 //rsuite
 import { Calendar, Whisper, Popover, Badge } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
-
+//styles
 import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
+//other
+import Router from "next/router";
+import { useSnackbar } from "notistack";
+import axios from 'axios';
+import { BACKEND_URL } from "../AppConfigs";
+import { isWithinInterval, subDays } from "date-fns";
+import LocationMap from './appointment/LocationMap.js';
 
 import { Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Input, Typography } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
@@ -135,18 +145,76 @@ function SamplePrevArrow(props) {
   );
 }
 
+function isWithinXDays(date1, date2, x) {
+  const firstDate = new Date(date1);
+  const secondDate = new Date(date2);
+
+  const xDaysAgo = subDays(secondDate, x);
+
+  return isWithinInterval(firstDate, { start: xDaysAgo, end: secondDate });
+}
+
 export default function Appointment(props) {
+  const snackbar = useSnackbar();
+  const dispatch = useDispatch();
   //redux
   const redux_fullname = useSelector((state) => state.authentication.fullname);
+  const redux_token = useSelector((state) => state.authentication.token);
   //other
   const classes = useStyles();
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedEnabled, setSelectedEnabled] = React.useState("b");
   const [selectTimeModal, setSelectTimeModal] = React.useState(false);
+  const [selectLocationModal, setSelectLocationModal] = React.useState(false);
   const [enterDetailsModal, setEnterDetailsModal] = React.useState(false);
   const [successModal, setSuccessModal] = React.useState(false);
+  const [choiceModal, setChoiceModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState(Date());
+  const [membership, setMembership] = useState({});
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+
+  //component did mount
+  useEffect(() => {
+    axios
+      .post(`${BACKEND_URL}/members/check`, {}, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setMembership(response.data.data[0]);
+        console.log(response.data.data);
+      });
+  }, []);
+
+  const times = [
+    '8:00',
+    '8:30',
+    '9:00',
+    '9:30',
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
+    '17:00',
+    '17:30',
+  ];
+
   const settings = {
     dots: true,
     infinite: true,
@@ -198,7 +266,22 @@ export default function Appointment(props) {
   };
 
 
+  const handleLocationSelect = (location) => {
+    setSelectedLocation(location);
+    // You can perform additional actions with the selected location data
+  };
+
   function handleSetAppointment(date) {
+    // if(1) {
+
+    //   const formattedDate = date.toLocaleDateString('en-US', {
+    //     day: 'numeric',
+    //     month: 'long',
+    //     year: 'numeric',
+    //   });
+    //   setSelectedDate(formattedDate);
+    //   return setChoiceModal(true);
+    // }
 
     const formattedDate = date.toLocaleDateString('en-US', {
       day: 'numeric',
@@ -211,12 +294,92 @@ export default function Appointment(props) {
 
   function handleSelectTime() {
     setSelectTimeModal(false);
+    setSelectLocationModal(true);
+  }
+
+  function handleSelectLocation() {
+    setSelectLocationModal(false);
     setEnterDetailsModal(true);
   }
 
   function handleEnterDetails() {
     setEnterDetailsModal(false);
     setSuccessModal(true);
+  }
+
+  function getTodoList(date) {
+    const day = date.getDate();
+  
+    switch (day) {
+      case 10:
+        return { time: '10:30 am - 11:00 am', title: 'Meeting' };
+      case 15:
+        return { time: '09:30 pm - 10:30 pm', title: 'Products Introduction Meeting' };
+      default:
+        return undefined;
+    }
+  }
+
+  function renderCell(date) {
+    const displayList = getTodoList(date);
+
+    // <li>
+    //   <Whisper
+    //     placement="top"
+    //     trigger="click"
+    //     speaker={
+    //       <Popover>
+    //         {list.map((item, index) => (
+    //           <p key={index}>
+    //             <b>{item.time}</b> - {item.title}
+    //           </p>
+    //         ))}
+    //       </Popover>
+    //     }
+    //   >
+    //     <a>{moreCount} more</a>
+    //   </Whisper>
+    // </li>
+
+      return (
+        (displayList === undefined) ?
+        (<div></div>)
+        :
+        (<ul className="calendar-todo-list" style={{paddingLeft: '0px'}}>
+          <li style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
+            <Badge /> <b>{displayList.time}</b>
+          </li>
+          <li style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
+            <Badge /> {displayList.title}
+          </li>
+        </ul>)
+      );
+
+    return null;
+  }
+
+  const handleRescheduleAppointment = () => {
+    if(Object.keys(membership).length != 0 && membership.type == 'annual') {
+      // const date = new Date();
+      // if(isWithinXDays(selectedDate, date, 5))
+      //   return snackbar.enqueueSnackbar("You can only cancel until 5 days prior to service", { variant: "error" });
+      setChoiceModal(false);
+      return setSelectTimeModal(true);
+    }
+    setChoiceModal(false);
+    return setSelectTimeModal(true);    // const date = new Date();
+    // if(isWithinXDays(selectedDate, date, 7))
+    //   return snackbar.enqueueSnackbar("You can only cancel until 7 days prior to service", { variant: "error" });
+  }
+
+  const handleCancelAppointment = () => {
+    if(Object.keys(membership).length != 0 && membership.type == 'annual') {
+      // const date = new Date();
+      // if(isWithinXDays(selectedDate, date, 7))
+      //   return snackbar.enqueueSnackbar("You can only cancel until 7 days prior to service", { variant: "error" });
+      return setChoiceModal(false);
+    }
+    snackbar.enqueueSnackbar("You haven't purchased annual membership", { variant: "error" });
   }
 
   return (
@@ -227,6 +390,7 @@ export default function Appointment(props) {
           <Container maxWidth={false} style={{ maxWidth: "80%" }} >
             <GridContainer justify="center">
               <h2 className={classes.title}>Appointment</h2>
+                {/* start of select time modal */}
                 <Dialog
                   classes={{
                     root: classes.center,
@@ -268,30 +432,16 @@ export default function Appointment(props) {
                         </GridContainer>
                       </GridItem>
                       <GridItem>
-                        <GridContainer justify="center">
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                        </GridContainer>
-                      </GridItem>
-                      <GridItem>
-                        <GridContainer justify="center">
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                        </GridContainer>
-                      </GridItem>
-                      <GridItem>
-                        <GridContainer justify="center">
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
-                          <GridItem sm={2}>9:30</GridItem>
+                        <GridContainer justify="space-between">
+                          {times.map((value) => (
+                            <GridItem sm={3} style={{marginBottom: '20px'}}>
+                              <GridContainer justify="center">
+                                <Fab variant="outlined" color="default">
+                                  <p style={{cursor:'pointer', textAlign: 'center', width: 'fit-content'}}>{value}</p>
+                                </Fab>
+                              </GridContainer>
+                            </GridItem>
+                          ))}
                         </GridContainer>
                       </GridItem>
                     </GridContainer>
@@ -299,16 +449,72 @@ export default function Appointment(props) {
                   <DialogActions className={classes.modalFooter}>
                     <Grid container justify="center">
                         <Grid item>
-                          <Button round onClick={() => setSelectTimeModal(false)}>
+                          <Button round onClick={() => setSelectTimeModal(false)} style={{marginRight: '10px'}}>
                             Cancel
                           </Button>
                           <Button round color="primary" onClick={handleSelectTime}>
-                            Get Appointment
+                            Select
                           </Button>
                         </Grid>
                       </Grid>
                   </DialogActions>
                 </Dialog>
+                {/* end of select time modal */}
+                {/* start of select location modal */}
+                <Dialog
+                  classes={{
+                    root: classes.center,
+                    paper: classes.modal
+                  }}
+                  open={selectLocationModal}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={() => setSelectLocationModal(false)}
+                  aria-labelledby="classic-modal-slide-title"
+                  aria-describedby="classic-modal-slide-description"
+                  maxWidth="sm"
+                  fullWidth={true}
+                >
+                  <DialogTitle
+                    id="classic-modal-slide-title"
+                    disableTypography
+                    className={classes.modalHeader}
+                  >
+                    <IconButton
+                      className={classes.modalCloseButton}
+                      key="close"
+                      aria-label="Close"
+                      color="inherit"
+                      onClick={() => setSelectLocationModal(false)}
+                    >
+                      <Close className={classes.modalClose} />
+                    </IconButton>
+                    <h4 className={classes.modalTitle}>Select Location</h4>
+                  </DialogTitle>
+                  <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                  >
+                    <GridContainer direction="column" spacing={3}>
+                      <GridItem>
+                        <h1>Select a Location</h1>
+                      </GridItem>
+                    </GridContainer>
+                  </DialogContent>
+                  <DialogActions className={classes.modalFooter}>
+                    <Grid container justify="center">
+                        <Grid item>
+                          <Button round onClick={() => setSelectLocationModal(false)} style={{marginRight: '10px'}}>
+                            Cancel
+                          </Button>
+                          <Button round color="primary" onClick={handleSelectLocation}>
+                            Select
+                          </Button>
+                        </Grid>
+                      </Grid>
+                  </DialogActions>
+                </Dialog>
+                {/* end of select location modal */}
                 {/* start of details modal */}
                 <Dialog
                   classes={{
@@ -433,7 +639,7 @@ export default function Appointment(props) {
                   open={successModal}
                   TransitionComponent={Transition}
                   keepMounted
-                  onClose={() => setSelectTimeModal(false)}
+                  onClose={() => setSuccessModal(false)}
                   aria-labelledby="classic-modal-slide-title"
                   aria-describedby="classic-modal-slide-description"
                   maxWidth="sm"
@@ -477,6 +683,58 @@ export default function Appointment(props) {
                   </DialogActions>
                 </Dialog>
                 {/* end of success modal */}
+                {/* start of choice modal */}
+                <Dialog
+                  classes={{
+                    root: classes.center,
+                    paper: classes.modal
+                  }}
+                  open={choiceModal}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={() => setChoiceModal(false)}
+                  aria-labelledby="classic-modal-slide-title"
+                  aria-describedby="classic-modal-slide-description"
+                  maxWidth="sm"
+                  fullWidth={true}
+                >
+                  <DialogTitle
+                    id="classic-modal-slide-title"
+                    disableTypography
+                    className={classes.modalHeader}
+                  >
+                    <IconButton
+                      className={classes.modalCloseButton}
+                      key="close"
+                      aria-label="Close"
+                      color="inherit"
+                      onClick={() => setChoiceModal(false)}
+                    >
+                      <Close className={classes.modalClose} />
+                    </IconButton>
+                    <h4 className={classes.modalTitle}>Select Your Choice</h4>
+                  </DialogTitle>
+                  <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                  >
+                    <GridContainer justify="center" alignItems="center" direction="column">
+                      <Button round color="primary" onClick={handleRescheduleAppointment}>
+                        Reschedule
+                      </Button>
+                      <Button round color="primary" onClick={handleCancelAppointment}>
+                        Cancel
+                      </Button>
+                    </GridContainer>
+                  </DialogContent>
+                  <DialogActions className={classes.modalFooter}>
+                    <Grid container justify="center">
+                        <Grid item>
+                        </Grid>
+                      </Grid>
+                  </DialogActions>
+                </Dialog>
+                {/* end of choice modal */}
             </GridContainer>
             <GridContainer>
               <GridItem xs={12} sm={12} md={12} lg={12}>
@@ -489,7 +747,7 @@ export default function Appointment(props) {
                       tabContent: (
                         <GridContainer>
                           <GridItem sm={12}>
-                            <Calendar bordered onSelect={handleSetAppointment} />
+                            <Calendar bordered onSelect={handleSetAppointment} renderCell={renderCell} />
                           </GridItem>
                         </GridContainer>
                       )

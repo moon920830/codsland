@@ -10,6 +10,7 @@ import {ThemeProvider,createMuiTheme} from '@material-ui/core/styles'
 import { CssBaseline } from "@material-ui/core";
 import { getCookieFromBrowser,getCookie } from '../utils/cookie';
 import { AUTHENTICATE } from '../redux/types/authTypes';
+import 'leaflet/dist/leaflet.css';
 // import DateFnsUtils from "@date-io/date-fns";
 const theme=createMuiTheme({
   typography:{

@@ -211,7 +211,7 @@ export default function Products(props) {
   const videoInputRef = useRef(null);
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedEnabled, setSelectedEnabled] = React.useState("");
+  const [selectedEnabled, setSelectedEnabled] = React.useState("All");
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [createPostModal, setCreatePostModal] = React.useState(false);
@@ -369,6 +369,52 @@ export default function Products(props) {
           });
       });
   }
+
+  const handleDisplayAll = () => {
+    axios
+      .post(`${BACKEND_URL}/shop/products/page`, {
+        page:0,
+        pagesize:5
+      }) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setProducts(response.data.data.pagedata);
+      });
+    setSelectedEnabled("All");
+  }
+
+  const handleDisplayByCategory = (id, title) => {
+    axios
+      .post(`${BACKEND_URL}/shop/categories/${id}/products/page`, {
+        page:0,
+        pagesize:5
+      }) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setProducts(response.data.data.pagedata);
+      });
+    setSelectedEnabled(title);
+  }
   
   const handleUpload = (e) => {
     imageInputRef.current.click();
@@ -428,7 +474,7 @@ export default function Products(props) {
                         control={
                           <Radio
                             checked={selectedEnabled === "All"}
-                            onChange={() => setSelectedEnabled("All")}
+                            onChange={() => handleDisplayAll()}
                             value="All"
                             name="radio button enabled"
                             aria-label="B"
@@ -457,7 +503,7 @@ export default function Products(props) {
                           control={
                             <Radio
                               checked={selectedEnabled === value.title}
-                              onChange={() => setSelectedEnabled(value.title)}
+                              onChange={() => handleDisplayByCategory(value._id, value.title)}
                               value={value.title}
                               name="radio button enabled"
                               aria-label="B"
