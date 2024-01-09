@@ -1,7 +1,10 @@
 // components/LocationMap.js
 
 import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+if (typeof window !== 'undefined') {
+  // import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+  const { MapContainer, TileLayer, Marker, Popup } = require('react-leaflet');
+}
 
 const LocationMap = ({ onLocationSelect }) => {
   const [position, setPosition] = useState([37.7749, -122.4194]);
