@@ -307,6 +307,11 @@ export default function Cart(props) {
     setEmail(e.target.value);
   }
 
+  const handleLocationClick = (new_location) => {
+    setLocation(new_location);
+    setSuggestions([]);
+  }
+
   const handleLocationChange = async (input) => {
     setLocation(input);
 
@@ -648,7 +653,7 @@ export default function Cart(props) {
               />
               <ul>
                 {suggestions.map((suggestion) => (
-                  <li key={suggestion.place_id}>{suggestion.display_name}</li>
+                  <li key={suggestion.place_id} style={{cursor: 'pointer'}} onClick={() => handleLocationClick(suggestion.display_name)}>{suggestion.display_name}</li>
                 ))}
               </ul>
               {clientSecret&&(

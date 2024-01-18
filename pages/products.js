@@ -18,6 +18,15 @@ import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
 import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import AddIcon from '@material-ui/icons/Add';
+
+// import IconButton from '@mui/material/IconButton';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+// import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+// import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+// import LastPageIcon from '@mui/icons-material/LastPage';
+import LastPageIcon from '@material-ui/icons/LastPage';
 // core components
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -102,6 +111,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 import Close from "@material-ui/icons/Close";
+import CustomPaginationActionsTable from "./products/CustomPaginationActionsTable.js";
 
 const useStyles = makeStyles(theme => {
   return {
@@ -222,6 +232,7 @@ export default function Products(props) {
   const [postPrice, setPostPrice] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const [postFile, setPostFile] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
 
   const refContentText=React.useRef(null);
@@ -313,8 +324,8 @@ export default function Products(props) {
       });
     axios
       .post(`${BACKEND_URL}/shop/products/page`, {
-        page:0,
-        pagesize:5
+        page: 0,
+        pagesize: 6
       }) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
@@ -329,7 +340,6 @@ export default function Products(props) {
           );
         }
         setProducts(response.data.data.pagedata);
-        console.log(response.data.data.pagedata);
       });
   }, []);
 
@@ -375,7 +385,7 @@ export default function Products(props) {
     axios
       .post(`${BACKEND_URL}/shop/products/page`, {
         page:0,
-        pagesize:5
+        pagesize:6
       }) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
@@ -459,6 +469,7 @@ export default function Products(props) {
         setCreatePostModal(false);
       });
   }
+ 
 
   return (
     <div>
@@ -538,6 +549,15 @@ export default function Products(props) {
                       <ProductCard key={value._id} title={value.title} description={value.description} price={value.price} categoryTitle={value.category.title} id={value._id} handleAddToCart={handleAddToCart} image={value.image} />
                     ))}
                   </GridContainer>
+                  
+                  
+
+
+
+
+
+                  
+                  <CustomPaginationActionsTable row_length={products.length} />
                 </Card>
               </GridItem>
             </GridContainer>

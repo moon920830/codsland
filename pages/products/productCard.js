@@ -46,7 +46,7 @@ export default function productCard(props) {
               <Badge color="warning" size="medium">{props.categoryTitle}</Badge>
             </div>
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }} >
-              <img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "auto", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id}}) }}></img>
+              <img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "15vw", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id}}) }}></img>
             </div>
             <h3 className={classes.title} style={{ color: "#2E3192" }}>{props.title}</h3>
             <p className={classes.ellipsis}>{props.description}</p>
