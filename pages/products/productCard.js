@@ -18,6 +18,8 @@ import Rating from '@material-ui/lab/Rating';
 import classNames from "classnames";
 import { BACKEND_URL } from "../../AppConfigs";
 import Router from "next/router";
+const { convert } = require('html-to-text');
+
 
 const useStyles = makeStyles(theme => {
   return {
@@ -29,6 +31,14 @@ const useStyles = makeStyles(theme => {
       textOverflow: 'ellipsis',
       display: '-webkit-box',
       WebkitLineClamp: 2, // Adjust the number of lines to fit your desired height
+      WebkitBoxOrient: 'vertical',
+      height: '40px'
+    },
+    titleEllipsis: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: '-webkit-box',
+      WebkitLineClamp: 1, // Adjust the number of lines to fit your desired height
       WebkitBoxOrient: 'vertical',
       height: '40px'
     }
@@ -43,13 +53,15 @@ export default function productCard(props) {
           <CardBody>
             <div style={{position:'absolute', right: '0', top: '0px'}}>
               {/* <Button color="warning">{props.categoryTitle}</Button> */}
-              <Badge color="warning" size="medium">{props.categoryTitle}</Badge>
+              {props.category && props.category.title && <Badge color="warning" size="medium">{props.category.title}</Badge>}
             </div>
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }} >
-              <img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "15vw", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id}}) }}></img>
+              {(props.value && props.value.image_url) ?
+              (<img src={props.value.image_url} alt="..." style={{ width: "15vw", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id}}) }}></img>) : 
+              (<img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "15vw", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id}}) }}></img>)}
             </div>
-            <h3 className={classes.title} style={{ color: "#2E3192" }}>{props.title}</h3>
-            <p className={classes.ellipsis}>{props.description}</p>
+            <h3 className={classes.title + " " + classes.titleEllipsis} style={{ color: "#2E3192" }}>{props.title}</h3>
+            <p className={classes.ellipsis}>{convert(props.description)}</p>
             <Rating name="read-only" value={4} readOnly />
             <Grid container direction="row" justify="space-between" alignItems="flex-end">
               <h2 className={classes.title} style={{ color: "#2E3192" }}>${props.price}</h2>

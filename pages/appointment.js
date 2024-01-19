@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // react components for routing our app without refresh
@@ -178,11 +178,14 @@ export default function Appointment(props) {
   const [enterDetailsModal, setEnterDetailsModal] = React.useState(false);
   const [successModal, setSuccessModal] = React.useState(false);
   const [choiceModal, setChoiceModal] = React.useState(false);
-  const [selectedDate, setSelectedDate] = useState(Date());
+  const [selectedDate, setSelectedDate] = useState("");
   const [membership, setMembership] = useState({});
   const [treatType, setTreatType] = useState("One");
   const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+
+  
+  const refSelectedDate=useRef("");
 
 
   //component did mount
@@ -202,7 +205,6 @@ export default function Appointment(props) {
           );
         }
         setMembership(response.data.data[0]);
-        console.log(response.data.data);
       });
   }, []);
 
@@ -293,6 +295,7 @@ export default function Appointment(props) {
       month: 'long',
       year: 'numeric',
     });
+    console.log(formattedDate);
     setSelectedDate(formattedDate);
     setEnterDetailsModal(true);
   }
@@ -452,10 +455,10 @@ export default function Appointment(props) {
                       </GridItem>
                       <GridItem>
                         <GridContainer justify="space-between">
-                          {times.map((value) => (
-                            <GridItem sm={3} style={{marginBottom: '20px'}}>
+                          {times.map((value, index) => (
+                            <GridItem key={"fab_"+index} sm={3} style={{marginBottom: '20px'}}>
                               <GridContainer justify="center">
-                                <Fab variant="outlined" color="default">
+                                <Fab variant="extended" color="default">
                                   <p style={{cursor:'pointer', textAlign: 'center', width: 'fit-content'}}>{value}</p>
                                 </Fab>
                               </GridContainer>
@@ -528,9 +531,13 @@ export default function Appointment(props) {
                         <CustomInput
                           labelText="Date"
                           id="time"
-                          customValue={selectedDate}
                           formControlProps={{
                             fullWidth: true,
+                          }}
+                          inputProps={{
+                            name: "time",
+                            inputRef:refSelectedDate,
+                            value: selectedDate
                           }}
                         />
                         <FormControl className={classes.formControl} fullWidth>

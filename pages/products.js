@@ -351,6 +351,7 @@ export default function Products(props) {
         else {
           setProducts(response.data.data.pagedata);
           setTotalCount(response.data.data && response.data.data.totalNumbers);
+          console.log(response.data.data.pagedata);
         }
       });
   }, []);
@@ -638,7 +639,7 @@ export default function Products(props) {
                   <Card className={classes.cardPaddingNoTop + " " + classes.minHeightForCard}>
                     <GridContainer>
                       {products.map((value) => (
-                        <ProductCard key={value._id} title={value.title} description={value.description} price={value.price} categoryTitle={value.category.title} id={value._id} handleAddToCart={handleAddToCart} image={value.image} />
+                        <ProductCard key={value._id} title={value.title} value={value} description={value.description} price={value.price} category={value.category} id={value._id} handleAddToCart={handleAddToCart} image={value.image} />
                       ))}
                     </GridContainer>
                     <CustomPaginationActionsTable handleRowsPerPageChangeFromParent={handleRowsPerPageChange} handlePageChangeFromParent={handlePageChange} row_length={totalCount} />
