@@ -355,7 +355,11 @@ export default function Cart(props) {
           );
         }
         setProducts(response.data.data);
-        const total = response.data.data.reduce((sum, value) => sum + value.product.price*value.count, 0)
+        console.log(response.data.data);
+        const total = response.data.data.reduce((sum, value) => {
+          if(value.product && value.product.price)
+            return sum + value.product.price*value.count;
+        }, 0)
         setTotal(total);
       });
 
