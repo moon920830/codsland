@@ -18,6 +18,7 @@ import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
 import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import AddIcon from '@material-ui/icons/Add';
+import BlockIcon from '@material-ui/icons/Block';
 
 // import IconButton from '@mui/material/IconButton';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
@@ -135,6 +136,9 @@ const useStyles = makeStyles(theme => {
       paddingLeft: "20px",
       paddingRight: "20px",
     },
+    minHeightForCard: {
+      minHeight: '80vh'
+    },
     cardSubTitle: {
       opacity:"0.5",
       fontSize: "13px"
@@ -233,6 +237,8 @@ export default function Products(props) {
   const [cartCount, setCartCount] = useState(0);
   const [postFile, setPostFile] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(6);
 
 
   const refContentText=React.useRef(null);
@@ -299,12 +305,13 @@ export default function Products(props) {
             error
           } = response.data;
           dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
+          snackbar.enqueueSnackbar(
             response.data.error ? response.data.error : "Error",
             { variant: "error" }
           );
+        } else {
+          setCategories(response.data.data);
         }
-        setCategories(response.data.data);
       });
     axios
       .get(`${BACKEND_URL}/shop/cart/count`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
@@ -315,17 +322,19 @@ export default function Products(props) {
             error
           } = response.data;
           dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
+          snackbar.enqueueSnackbar(
             response.data.error ? response.data.error : "Error",
             { variant: "error" }
           );
         }
-        setCartCount(response.data.data);
+        else {
+          setCartCount(response.data.data);
+        }
       });
     axios
       .post(`${BACKEND_URL}/shop/products/page`, {
-        page: 0,
-        pagesize: 6
+        page: page,
+        pagesize: rowsPerPage
       }) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
@@ -334,12 +343,15 @@ export default function Products(props) {
             error
           } = response.data;
           dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
+          snackbar.enqueueSnackbar(
             response.data.error ? response.data.error : "Error",
             { variant: "error" }
           );
         }
-        setProducts(response.data.data.pagedata);
+        else {
+          setProducts(response.data.data.pagedata);
+          setTotalCount(response.data.data && response.data.data.totalNumbers);
+        }
       });
   }, []);
 
@@ -382,6 +394,8 @@ export default function Products(props) {
   }
 
   const handleDisplayAll = () => {
+    setPage(0);
+    setRowsPerPage(6);
     axios
       .post(`${BACKEND_URL}/shop/products/page`, {
         page:0,
@@ -400,15 +414,18 @@ export default function Products(props) {
           );
         }
         setProducts(response.data.data.pagedata);
+        setTotalCount(response.data.data && response.data.data.totalNumbers);
       });
     setSelectedEnabled("All");
   }
 
   const handleDisplayByCategory = (id, title) => {
+    setPage(0);
+    setRowsPerPage(6);
     axios
       .post(`${BACKEND_URL}/shop/categories/${id}/products/page`, {
         page:0,
-        pagesize:5
+        pagesize:6
       }) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
@@ -423,6 +440,7 @@ export default function Products(props) {
           );
         }
         setProducts(response.data.data.pagedata);
+        setTotalCount(response.data.data && response.data.data.totalNumbers);
       });
     setSelectedEnabled(title);
   }
@@ -469,6 +487,54 @@ export default function Products(props) {
         setCreatePostModal(false);
       });
   }
+
+  const handlePageChange = (new_page) => {
+    setPage(new_page);
+
+    axios
+      .post(`${BACKEND_URL}/shop/products/page`, {
+        page: new_page,
+        pagesize: rowsPerPage
+      }) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setProducts(response.data.data.pagedata);
+      });
+  }
+
+  const handleRowsPerPageChange = (new_rows_per_page) => {
+    setRowsPerPage(new_rows_per_page);
+
+    axios
+      .post(`${BACKEND_URL}/shop/products/page`, {
+        page: page,
+        pagesize: new_rows_per_page
+      }) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setProducts(response.data.data.pagedata);
+      });
+  }
  
 
   return (
@@ -478,45 +544,29 @@ export default function Products(props) {
         <div className={classes.sections}>
           <Container maxWidth={false} style={{ maxWidth: "80%", paddingTop: "30px" }} >
             <GridContainer>
-              <GridItem xs={3} sm={3} md={3} lg={3} >
-                <Card>
-                  <GridContainer direction="column" style={{paddingLeft: '15px'}}>
-                    <GridItem>
-                      <FormControlLabel
-                        control={
-                          <Radio
-                            checked={selectedEnabled === "All"}
-                            onChange={() => handleDisplayAll()}
-                            value="All"
-                            name="radio button enabled"
-                            aria-label="B"
-                            icon={
-                              <FiberManualRecord className={classes.radioUnchecked} />
-                            }
-                            checkedIcon={
-                              <FiberManualRecord className={classes.radioChecked} />
-                            }
-                            classes={{
-                              checked: classes.radio,
-                              root: classes.radioRoot
-                            }}
-                          />
-                        }
-                        classes={{
-                          label: classes.label,
-                          root: classes.labelRoot
-                        }}
-                        label="All"
-                      />
-                    </GridItem>
-                    {categories.map((value) => (
-                      <GridItem key={value._id}>
+              {(categories && categories.length==0) ?
+              (
+                <GridItem md={3} lg={3} xl={3} className={classes.minHeightForCard}>
+                  <GridContainer style={{height: '100%'}} justify="center" alignItems="center" direction="column">
+                      <div style={{backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%", width: "120px", height: "120px"}}>
+                        <BlockIcon style={{width: "40%", height: "40%", color: "white"}} />
+                      </div>
+                      <h3 style={{textAlign: "center"}}>No categories to display</h3>
+                  </GridContainer>
+                </GridItem>
+              )
+              :
+              (
+                <GridItem xs={3} sm={3} md={3} lg={3} >
+                  <Card className={classes.minHeightForCard}>
+                    <GridContainer direction="column" style={{paddingLeft: '15px'}}>
+                      <GridItem>
                         <FormControlLabel
                           control={
                             <Radio
-                              checked={selectedEnabled === value.title}
-                              onChange={() => handleDisplayByCategory(value._id, value.title)}
-                              value={value.title}
+                              checked={selectedEnabled === "All"}
+                              onChange={() => handleDisplayAll()}
+                              value="All"
                               name="radio button enabled"
                               aria-label="B"
                               icon={
@@ -535,31 +585,66 @@ export default function Products(props) {
                             label: classes.label,
                             root: classes.labelRoot
                           }}
-                          label={value.title}
+                          label="All"
                         />
                       </GridItem>
-                    ))}
+                      {categories.map((value) => (
+                        <GridItem key={value._id}>
+                          <FormControlLabel
+                            control={
+                              <Radio
+                                checked={selectedEnabled === value.title}
+                                onChange={() => handleDisplayByCategory(value._id, value.title)}
+                                value={value.title}
+                                name="radio button enabled"
+                                aria-label="B"
+                                icon={
+                                  <FiberManualRecord className={classes.radioUnchecked} />
+                                }
+                                checkedIcon={
+                                  <FiberManualRecord className={classes.radioChecked} />
+                                }
+                                classes={{
+                                  checked: classes.radio,
+                                  root: classes.radioRoot
+                                }}
+                              />
+                            }
+                            classes={{
+                              label: classes.label,
+                              root: classes.labelRoot
+                            }}
+                            label={value.title}
+                          />
+                        </GridItem>
+                      ))}
+                    </GridContainer>
+                  </Card>
+                </GridItem>
+              )
+              }
+              
+              {(products && products.length==0) ? (
+                <GridItem md={9} lg={9} xl={9} className={classes.minHeightForCard}>
+                  <GridContainer style={{height: '100%'}} justify="center" alignItems="center" direction="column">
+                      <div style={{backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%", width: "120px", height: "120px"}}>
+                        <BlockIcon style={{width: "40%", height: "40%", color: "white"}} />
+                      </div>
+                      <h3 style={{textAlign: "center"}}>No products to display</h3>
                   </GridContainer>
-                </Card>
-              </GridItem>
-              <GridItem xs={9} sm={9} md={9} lg={9}>
-                <Card className={classes.cardPaddingNoTop}>
-                  <GridContainer>
-                    {products.map((value) => (
-                      <ProductCard key={value._id} title={value.title} description={value.description} price={value.price} categoryTitle={value.category.title} id={value._id} handleAddToCart={handleAddToCart} image={value.image} />
-                    ))}
-                  </GridContainer>
-                  
-                  
-
-
-
-
-
-                  
-                  <CustomPaginationActionsTable row_length={products.length} />
-                </Card>
-              </GridItem>
+                </GridItem>
+              ) : (
+                <GridItem xs={9} sm={9} md={9} lg={9}>
+                  <Card className={classes.cardPaddingNoTop + " " + classes.minHeightForCard}>
+                    <GridContainer>
+                      {products.map((value) => (
+                        <ProductCard key={value._id} title={value.title} description={value.description} price={value.price} categoryTitle={value.category.title} id={value._id} handleAddToCart={handleAddToCart} image={value.image} />
+                      ))}
+                    </GridContainer>
+                    <CustomPaginationActionsTable handleRowsPerPageChangeFromParent={handleRowsPerPageChange} handlePageChangeFromParent={handlePageChange} row_length={totalCount} />
+                  </Card>
+                </GridItem>
+              )}
             </GridContainer>
             {/* Membership */}
             <Link href="/products/order">

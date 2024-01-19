@@ -26,22 +26,22 @@ const useStyles1 = makeStyles((theme) =>
 function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
+  const { count, page, rowsPerPage, onChangePage } = props;
 
   const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
+    onChangePage(event, 0);
   };
 
   const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
+    onChangePage(event, page - 1);
   };
 
   const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
+    onChangePage(event, page + 1);
   };
 
   const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
   return (
@@ -78,17 +78,21 @@ const useStyles2 = makeStyles({
   table: {
     minWidth: 500,
   },
+  tdStyle: {
+    borderWidth: '0px'
+  }
 });
 
 export default function CustomPaginationActionsTable(props) {
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(6);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.row_length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    props.handlePageChangeFromParent(newPage);
   };
 
   const handleChangeRowsPerPage = (
@@ -96,17 +100,19 @@ export default function CustomPaginationActionsTable(props) {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    props.handleRowsPerPageChangeFromParent(parseInt(event.target.value, 10));
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
       <Table className={classes.table} aria-label="custom pagination table">
         <TableBody>
         </TableBody>
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              className={classes.tdStyle}
+              rowsPerPageOptions={[6, 12, 18, { label: 'All', value: -1 }]}
               colSpan={3}
               count={props.row_length}
               rowsPerPage={rowsPerPage}
@@ -115,8 +121,8 @@ export default function CustomPaginationActionsTable(props) {
                 inputProps: { 'aria-label': 'rows per page' },
                 native: true,
               }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}
             />
           </TableRow>

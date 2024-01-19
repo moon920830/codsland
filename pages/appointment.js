@@ -9,6 +9,9 @@ import Rating from '@material-ui/lab/Rating';
 // @material-ui/icons
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 // core components
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
 import Header from "/components/Header/Header.js";
 import HeaderLinks from "/components/Header/HeaderLinks.js";
 import Footer from "/components/Footer/Footer.js";
@@ -96,7 +99,12 @@ const useStyles = makeStyles(theme => {
       width: "90%",
       marginLeft: "auto",
       marginRight: "auto"
-    }
+    },
+    outlinedStyle: {
+      '& .MuiOutlinedInput-input' : {
+        padding: '9px'
+      }
+    },
   }
 });
 
@@ -172,7 +180,9 @@ export default function Appointment(props) {
   const [choiceModal, setChoiceModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState(Date());
   const [membership, setMembership] = useState({});
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [treatType, setTreatType] = useState("One");
+  const [location, setLocation] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
 
   //component did mount
@@ -266,11 +276,6 @@ export default function Appointment(props) {
   };
 
 
-  const handleLocationSelect = (location) => {
-    setSelectedLocation(location);
-    // You can perform additional actions with the selected location data
-  };
-
   function handleSetAppointment(date) {
     // if(1) {
 
@@ -289,22 +294,17 @@ export default function Appointment(props) {
       year: 'numeric',
     });
     setSelectedDate(formattedDate);
-    setSelectTimeModal(true);
+    setEnterDetailsModal(true);
   }
 
   function handleSelectTime() {
     setSelectTimeModal(false);
-    setSelectLocationModal(true);
-  }
-
-  function handleSelectLocation() {
-    setSelectLocationModal(false);
-    setEnterDetailsModal(true);
+    setSuccessModal(true);
   }
 
   function handleEnterDetails() {
     setEnterDetailsModal(false);
-    setSuccessModal(true);
+    setSelectTimeModal(true);
   }
 
   function getTodoList(date) {
@@ -380,6 +380,25 @@ export default function Appointment(props) {
       return setChoiceModal(false);
     }
     snackbar.enqueueSnackbar("You haven't purchased annual membership", { variant: "error" });
+  }
+
+  const handleLocationChange = async (input) => {
+    setLocation(input);
+
+    // Fetch suggestions from your geocoding service
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${input}`
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      setSuggestions(data);
+    }
+  };
+
+  const handleLocationClick = (new_location) => {
+    setLocation(new_location);
+    setSuggestions([]);
   }
 
   return (
@@ -460,61 +479,6 @@ export default function Appointment(props) {
                   </DialogActions>
                 </Dialog>
                 {/* end of select time modal */}
-                {/* start of select location modal */}
-                <Dialog
-                  classes={{
-                    root: classes.center,
-                    paper: classes.modal
-                  }}
-                  open={selectLocationModal}
-                  TransitionComponent={Transition}
-                  keepMounted
-                  onClose={() => setSelectLocationModal(false)}
-                  aria-labelledby="classic-modal-slide-title"
-                  aria-describedby="classic-modal-slide-description"
-                  maxWidth="sm"
-                  fullWidth={true}
-                >
-                  <DialogTitle
-                    id="classic-modal-slide-title"
-                    disableTypography
-                    className={classes.modalHeader}
-                  >
-                    <IconButton
-                      className={classes.modalCloseButton}
-                      key="close"
-                      aria-label="Close"
-                      color="inherit"
-                      onClick={() => setSelectLocationModal(false)}
-                    >
-                      <Close className={classes.modalClose} />
-                    </IconButton>
-                    <h4 className={classes.modalTitle}>Select Location</h4>
-                  </DialogTitle>
-                  <DialogContent
-                    id="classic-modal-slide-description"
-                    className={classes.modalBody}
-                  >
-                    <GridContainer direction="column" spacing={3}>
-                      <GridItem>
-                        <h1>Select a Location</h1>
-                      </GridItem>
-                    </GridContainer>
-                  </DialogContent>
-                  <DialogActions className={classes.modalFooter}>
-                    <Grid container justify="center">
-                        <Grid item>
-                          <Button round onClick={() => setSelectLocationModal(false)} style={{marginRight: '10px'}}>
-                            Cancel
-                          </Button>
-                          <Button round color="primary" onClick={handleSelectLocation}>
-                            Select
-                          </Button>
-                        </Grid>
-                      </Grid>
-                  </DialogActions>
-                </Dialog>
-                {/* end of select location modal */}
                 {/* start of details modal */}
                 <Dialog
                   classes={{
@@ -524,7 +488,7 @@ export default function Appointment(props) {
                   open={enterDetailsModal}
                   TransitionComponent={Transition}
                   keepMounted
-                  onClose={() => setSelectTimeModal(false)}
+                  onClose={() => setEnterDetailsModal(false)}
                   aria-labelledby="classic-modal-slide-title"
                   aria-describedby="classic-modal-slide-description"
                   maxWidth="sm"
@@ -544,75 +508,71 @@ export default function Appointment(props) {
                     >
                       <Close className={classes.modalClose} />
                     </IconButton>
-                    <h4 className={classes.modalTitle}>Enter Appointment Details</h4>
+                    <h4 className={classNames(classes.modalTitle, classes.title, classes.textCenter)}>Enter details</h4>
                   </DialogTitle>
                   <DialogContent
                     id="classic-modal-slide-description"
                     className={classes.modalBody}
                   >
+                    <Divider />
                     <GridContainer>
-                      <GridItem sm={6}>
-                        <h5>Patient Name</h5>
+                      <GridItem>
                         <CustomInput
-                          labelText=""
+                          labelText="Patient Name"
                           id="name"
                           customValue={redux_fullname}
                           formControlProps={{
                             fullWidth: true,
                           }}
                         />
-                      </GridItem>
-                      <GridItem sm={6}>
-                        <h5>Length of appointment</h5>
-                        
-                        <TextField
-                          id="standard-select-currency"
-                          select
-                          value="ONE"
-                          style={{paddingTop:"27px"}}
-                          // label="Select"
-                          // onChange={handleChange}
-                          // helperText="Please select your currency"
-                        >
-                          <MenuItem value="ONE">
-                            10 Mins(brief introduction)
-                          </MenuItem>
-                          <MenuItem value="TWO">
-                            20 Mins(child treatment, first visit)
-                          </MenuItem>
-                        </TextField>
-                      </GridItem>
-                    </GridContainer>
-                    <GridContainer>
-                      <GridItem sm={6}>
-                        <h5>Appointment at</h5>
                         <CustomInput
-                          labelText=""
+                          labelText="Date"
                           id="time"
                           customValue={selectedDate}
                           formControlProps={{
                             fullWidth: true,
                           }}
                         />
-                      </GridItem>
-                      <GridItem sm={6}>
-                        <h5>Payment Option</h5>
+                        <FormControl className={classes.formControl} fullWidth>
+                          <InputLabel id="demo-simple-select-helper-label">Select Category</InputLabel>
+                          <Select
+                            labelId="demo-simple-select-helper-label"
+                            id="demo-simple-select-helper"
+                            value={treatType}
+                            fullWidth
+                            onChange={(e) => {setTreatType(e.target.value)}}
+                          >
+                            {/* {Array.isArray(categories) && categories.map((item, index) => (
+                              <MenuItem key={item._id} value={item._id}><p style={{fontSize: '16px'}}>{item.title}</p></MenuItem>
+                            ))} */}
+                            <MenuItem value="One"><p style={{fontSize: '16px'}}>First</p></MenuItem>
+                            <MenuItem value="Two"><p style={{fontSize: '16px'}}>Second</p></MenuItem>
+                          </Select>
+                        </FormControl>
                         <TextField
-                          id="standard-select-currency"
-                          select
-                          value="ONE"
-                          style={{paddingTop:"27px"}}
-                          // label="Select"
-                          // onChange={handleChange}
-                          // helperText="Please select your currency"
-                        >
-                          <MenuItem value="ONE">
-                            Payment Now
-                          </MenuItem>
-                          <MenuItem value="TWO">
-                            Divide Pay in 10 years
-                          </MenuItem>
-                        </TextField>
+                          className={classes.outlinedStyle}
+                          onChange={(e) => handleLocationChange(e.target.value)}
+                          placeholder="Address"
+                          fullWidth
+                          value={location}
+                          variant="outlined"
+                          InputProps={{
+                            style: {
+                              // Control font or other styles here
+                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '14px',
+                              marginTop: '30px',
+                              '::placeholder' : {
+                                display: 'none'
+                              },
+                            },
+                          }}
+                        />
+                        <ul>
+                          {suggestions.map((suggestion) => (
+                            <li key={suggestion.place_id} style={{cursor: 'pointer'}} onClick={() => handleLocationClick(suggestion.display_name)}>{suggestion.display_name}</li>
+                          ))}
+                        </ul>
                       </GridItem>
                     </GridContainer>
                   </DialogContent>
