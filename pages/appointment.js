@@ -3,12 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import classNames from "classnames";
 // react components for routing our app without refresh
 import Link from "next/link";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Rating from '@material-ui/lab/Rating';
 // @material-ui/icons
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 // core components
+import { makeStyles } from "@material-ui/core/styles";
+import Rating from '@material-ui/lab/Rating';
+import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
@@ -100,11 +100,21 @@ const useStyles = makeStyles(theme => {
       marginLeft: "auto",
       marginRight: "auto"
     },
-    outlinedStyle: {
+    selectOutlinedStyle: {
       '& .MuiOutlinedInput-input' : {
-        padding: '9px'
+        padding: '9px',
       }
     },
+    outlinedStyle: {
+      marginTop: '30px',
+      '& .MuiOutlinedInput-input' : {
+        padding: '9px',
+      }
+    },
+    tooltipStyle: {
+      maxWidth: 500,
+      fontSize: '14px'
+    }
   }
 });
 
@@ -183,6 +193,8 @@ export default function Appointment(props) {
   const [treatType, setTreatType] = useState("One");
   const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [appointmentTypes, setAppointmentTypes] = useState([]);
+  const [tooltipText, setTooltipText] = useState("");
 
   
   const refSelectedDate=useRef("");
@@ -199,12 +211,36 @@ export default function Appointment(props) {
             error
           } = response.data;
           dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
+          snackbar.enqueueSnackbar(
             response.data.error ? response.data.error : "Error",
             { variant: "error" }
           );
+        } else {
+          setMembership(response.data.data[0]);
         }
-        setMembership(response.data.data[0]);
+      });
+    axios
+      .get(`${BACKEND_URL}/appointments/appointment-types`, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        } else {
+          console.log(response.data.data);
+          setAppointmentTypes(response.data.data);
+          if(response.data.data && response.data.data.length) {
+            const currentTreatType = response.data.data[0];
+            setTreatType(currentTreatType._id);
+            setTooltipText("Price: $" + currentTreatType.price + " Time: " + currentTreatType.length + "minutes");
+          }
+        }
       });
   }, []);
 
@@ -404,6 +440,13 @@ export default function Appointment(props) {
     setSuggestions([]);
   }
 
+  const handleSetTreatType = (type) => {
+    setTreatType(type);
+
+    const currentTreatType = appointmentTypes.find(item => item._id == type);
+    setTooltipText("Price: $" + currentTreatType.price + " Time: " + currentTreatType.length + "minutes");
+  }
+
   return (
     <div>
       <ElevateAppBar />
@@ -520,43 +563,67 @@ export default function Appointment(props) {
                     <Divider />
                     <GridContainer>
                       <GridItem>
-                        <CustomInput
-                          labelText="Patient Name"
-                          id="name"
-                          customValue={redux_fullname}
-                          formControlProps={{
-                            fullWidth: true,
-                          }}
-                        />
-                        <CustomInput
-                          labelText="Date"
-                          id="time"
-                          formControlProps={{
-                            fullWidth: true,
-                          }}
-                          inputProps={{
-                            name: "time",
-                            inputRef:refSelectedDate,
-                            value: selectedDate
-                          }}
-                        />
-                        <FormControl className={classes.formControl} fullWidth>
-                          <InputLabel id="demo-simple-select-helper-label">Select Category</InputLabel>
-                          <Select
-                            labelId="demo-simple-select-helper-label"
-                            id="demo-simple-select-helper"
-                            value={treatType}
-                            fullWidth
-                            onChange={(e) => {setTreatType(e.target.value)}}
-                          >
-                            {/* {Array.isArray(categories) && categories.map((item, index) => (
-                              <MenuItem key={item._id} value={item._id}><p style={{fontSize: '16px'}}>{item.title}</p></MenuItem>
-                            ))} */}
-                            <MenuItem value="One"><p style={{fontSize: '16px'}}>First</p></MenuItem>
-                            <MenuItem value="Two"><p style={{fontSize: '16px'}}>Second</p></MenuItem>
-                          </Select>
-                        </FormControl>
                         <TextField
+                          label="Patient Name"
+                          className={classes.outlinedStyle}
+                          placeholder="Patient Name"
+                          fullWidth
+                          variant="outlined"
+                          defaultValue={redux_fullname}
+                          InputProps={{
+                            readOnly: "true",
+                            style: {
+                              // Control font or other styles here
+                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '14px',
+                              '::placeholder' : {
+                                display: 'none'
+                              },
+                            },
+                          }}
+                        />
+                        <TextField
+                          label="Appointment Date"
+                          className={classes.outlinedStyle}
+                          placeholder="Appointment Date"
+                          fullWidth
+                          variant="outlined"
+                          defaultValue={selectedDate}
+                          InputProps={{
+                            readOnly: "true",
+                            value: selectedDate,
+                            style: {
+                              // Control font or other styles here
+                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '14px',
+                              // marginTop: '30px',
+                              '::placeholder' : {
+                                display: 'none'
+                              },
+                            },
+                          }}
+                        />
+                        <Tooltip title={tooltipText} placement="bottom-end" classes={{ tooltip: classes.tooltipStyle }}>
+                          <FormControl style={{marginTop: '30px'}} variant="outlined" className={classes.formControl} fullWidth>
+                            <InputLabel id="demo-simple-select-helper-label">Appointment Types</InputLabel>
+                            <Select
+                            className={classes.selectOutlinedStyle}
+                              label="Appointment Type"
+                              labelId="demo-simple-select-helper-label"
+                              id="demo-simple-select-helper"
+                              value={treatType}
+                              fullWidth
+                              
+                              onChange={(e) => {handleSetTreatType(e.target.value)}}
+                            >
+                              {Array.isArray(appointmentTypes) && appointmentTypes.map((item, index) => (
+                                <MenuItem key={item._id} value={item._id}><p style={{fontSize: '16px'}}>{item.title}</p></MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Tooltip>
+                        <TextField
+                          label="Address"
                           className={classes.outlinedStyle}
                           onChange={(e) => handleLocationChange(e.target.value)}
                           placeholder="Address"
@@ -568,7 +635,6 @@ export default function Appointment(props) {
                               // Control font or other styles here
                               fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
                               fontSize: '14px',
-                              marginTop: '30px',
                               '::placeholder' : {
                                 display: 'none'
                               },
