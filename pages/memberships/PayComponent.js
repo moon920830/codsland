@@ -48,7 +48,6 @@ export default function CheckoutForm(props) {
   }, [stripe]);
 
   const handleSubmit = async (e) => {
-    alert()
     e.preventDefault();
 
     if (!stripe || !elements) {

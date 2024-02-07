@@ -97,6 +97,7 @@ import { BACKEND_URL } from "../AppConfigs";
 //other
 import { useSnackbar } from "notistack";
 import { formatDistanceToNow } from 'date-fns';
+import Router from "next/router";
 //rsuite
 import { Calendar, Whisper, Popover } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -297,7 +298,7 @@ export default function Products(props) {
   //component mount
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/shop/categories`, {}) //, {headers: {token:redux_token}}
+      .get(`${BACKEND_URL}/shop/categories`, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -305,10 +306,25 @@ export default function Products(props) {
             error
           } = response.data;
           dispatch(actions.createError(error));
-          snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
+
+          if(response.data.error == "NOT_MEMBER") {
+            snackbar.enqueueSnackbar("Purchase membership please",
+              { variant: "error" }
+            );
+            Router.push('/home');
+          }
+          else if (response.data.error == "EXPIRED") {
+            snackbar.enqueueSnackbar("Membership expired. Please purchase membership again.",
+              { variant: "error" }
+            );
+            Router.push('/home');
+          }
+          else {
+            snackbar.enqueueSnackbar(
+              response.data.error ? response.data.error : "Error",
+              { variant: "error" }
+            );
+          }
         } else {
           setCategories(response.data.data);
         }
@@ -322,10 +338,13 @@ export default function Products(props) {
             error
           } = response.data;
           dispatch(actions.createError(error));
-          snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
+          
+          if(!(response.data.error == "NOT_MEMBER" || response.data.error == "EXPIRED")) {
+            snackbar.enqueueSnackbar(
+              response.data.error ? response.data.error : "Error",
+              { variant: "error" }
+            );
+          }
         }
         else {
           setCartCount(response.data.data);
@@ -335,7 +354,7 @@ export default function Products(props) {
       .post(`${BACKEND_URL}/shop/products/page`, {
         page: page,
         pagesize: rowsPerPage
-      }) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -343,10 +362,12 @@ export default function Products(props) {
             error
           } = response.data;
           dispatch(actions.createError(error));
-          snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
+          if(!(response.data.error == "NOT_MEMBER" || response.data.error == "EXPIRED")) {
+            snackbar.enqueueSnackbar(
+              response.data.error ? response.data.error : "Error",
+              { variant: "error" }
+            );
+          }
         }
         else {
           setProducts(response.data.data.pagedata);
@@ -401,7 +422,7 @@ export default function Products(props) {
       .post(`${BACKEND_URL}/shop/products/page`, {
         page:0,
         pagesize:6
-      }) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -427,7 +448,7 @@ export default function Products(props) {
       .post(`${BACKEND_URL}/shop/categories/${id}/products/page`, {
         page:0,
         pagesize:6
-      }) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -467,7 +488,7 @@ export default function Products(props) {
     const config = {
       headers: {
         'content-type' : 'multipart/form-data',
-        // 'token' : redux_token
+        'token' : redux_token
       },
     };
     axios
@@ -496,7 +517,7 @@ export default function Products(props) {
       .post(`${BACKEND_URL}/shop/products/page`, {
         page: new_page,
         pagesize: rowsPerPage
-      }) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -520,7 +541,7 @@ export default function Products(props) {
       .post(`${BACKEND_URL}/shop/products/page`, {
         page: page,
         pagesize: new_rows_per_page
-      }) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {

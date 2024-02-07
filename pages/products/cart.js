@@ -364,7 +364,7 @@ export default function Cart(props) {
       });
 
     
-    axios.get(`${BACKEND_URL}/test/payment-intent`)
+    axios.get(`${BACKEND_URL}/test/payment-intent`, {headers: {token:redux_token}})
       .then(response=>{
         if (response.data.status == "error") {
           const {

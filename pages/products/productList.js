@@ -52,7 +52,7 @@ export default function ProductList(props) {
     axios
       .post(`${BACKEND_URL}/shop/cart/${props.product._id}/count`, {
         count: (e.target.value*1)
-      }, {}) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -77,7 +77,7 @@ export default function ProductList(props) {
     axios
       .post(`${BACKEND_URL}/shop/cart/${props.product._id}/count`, {
         count: new_q
-      }, {}) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -102,7 +102,7 @@ export default function ProductList(props) {
     axios
       .post(`${BACKEND_URL}/shop/cart/${props.id}/count`, {
         count: new_q
-      }, {}) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {

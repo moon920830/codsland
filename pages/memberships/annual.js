@@ -128,8 +128,8 @@ export default function AnnualMembership(props) {
           );
         }
         const membership = response.data.data;
-        // if(Array.isArray(membership) && membership.length != 0)
-        //   Router.push('/already-purchased');
+        if(Array.isArray(membership) && membership.length != 0)
+          Router.push('/already-purchased');
       });
 
     axios.post(`${BACKEND_URL}/members/start-payment`, {type: '2'})
@@ -233,14 +233,14 @@ export default function AnnualMembership(props) {
   }
 
   const handleSubmit = (e) => {
-    const formData = { date, phone, type: 'annual' };
+    const formData = { date, phone, type: 'annual', period: 365 };
     //validation
     if(phone === null || phone === undefined || phone === "")
       return snackbar.enqueueSnackbar("Phone field required", { variant: "error" });
 
     snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
     axios
-      .post(`${BACKEND_URL}/members/save`, formData)
+      .post(`${BACKEND_URL}/members/save`, formData, {headers: {token:redux_token}})
       // .post(`/asdf`, formData)
       .then((response) => {
         //error handler
@@ -287,7 +287,6 @@ export default function AnnualMembership(props) {
         (<GridContainer justify="center" alignItems="center" style={{height: '100%'}}>
           <GridItem md={9} lg={7} xl={7}>
           <Card className={classes[cardAnimaton]}>
-            <form className={classes.form}>
               <CardHeader color="primary" className={classes.cardHeader}>
                 <Link href="/" >
                   <a>
@@ -392,7 +391,6 @@ export default function AnnualMembership(props) {
                 </Elements>
                 )}
               </CardBody>
-            </form>
           </Card>
           </GridItem>
         </GridContainer>)

@@ -285,7 +285,7 @@ export default function Products(props) {
   //component mount
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/shop/products/${router.query.id}`, {}) //, {headers: {token:redux_token}}
+      .get(`${BACKEND_URL}/shop/products/${router.query.id}`, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -346,7 +346,7 @@ export default function Products(props) {
       .post(`${BACKEND_URL}/shop/products/page`, {
         page:0,
         pagesize:5
-      }) //, {headers: {token:redux_token}}
+      }, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -385,7 +385,7 @@ export default function Products(props) {
     const config = {
       headers: {
         'content-type' : 'multipart/form-data',
-        // 'token' : redux_token
+        'token' : redux_token
       },
     };
     axios
