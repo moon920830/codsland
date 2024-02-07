@@ -34,6 +34,9 @@ import actions from '../../redux/actions';
 import { useSnackbar } from "notistack";
 import axios from 'axios';
 import { BACKEND_URL } from "../../AppConfigs";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import PayComponent from './PayComponent.js';
 // import { AUTHENTICATE } from '../redux/types/authTypes';
 import Router from "next/router";
 import Datetime from "react-datetime";
@@ -43,6 +46,8 @@ import modalStyle from "../../styles/jss/nextjs-material-kit/modalStyle.js";
 import { BackspaceOutlined } from "@material-ui/icons";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+
+const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
 
 
 const useStyles = makeStyles((styles) => {
@@ -97,10 +102,13 @@ export default function AnnualMembership(props) {
   const [phone, setPhone] = useState('');
   const [confirm, setConfirm] = useState(false);
   const [date, setDate] = useState("");
-  const [expireDate, setExpireDate] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [csv, setCSV] = useState("");
-  const [address, setAddress] = useState("");
+  const [clientSecret, setClientSecret]=useState(null);
+  //card
+  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+  setTimeout(function () {
+    setCardAnimation("");
+  }, 700);
+  const classes = useStyles();
 
   //component mount
   useEffect(() => {
@@ -120,36 +128,54 @@ export default function AnnualMembership(props) {
           );
         }
         const membership = response.data.data;
-        if(Array.isArray(membership) && membership.length != 0)
-          Router.push('/already-purchased');
+        // if(Array.isArray(membership) && membership.length != 0)
+        //   Router.push('/already-purchased');
       });
+
+    axios.post(`${BACKEND_URL}/members/start-payment`, {type: '2'})
+      .then(response=>{
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setClientSecret(response.data.data.clientSecret);
+      })
   }, []);
 
-  
-  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
-  setTimeout(function () {
-    setCardAnimation("");
-  }, 700);
-  const classes = useStyles();
-  const { ...rest } = props;
-  const matchesSm = useMediaQuery('(max-width:600px)');
 
-  const handleCardNumberChange = (e) => {
-    setCardNumber(e.target.value);
-  };
+  const checkValidation = () => {
+    if(phone === null || phone === undefined || phone === "")
+    {
+      snackbar.enqueueSnackbar("Phone field required", { variant: "error" });
+      return false;
+    }
+    if (phone.match(/12345/)) {
+      snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
+      return false;
+    } else if (phone.match(/1234/)) {
+      snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
+      return false;
+    }
 
-  const handleCSVChange = (e) => {
-    setCSV(e.target.value);
-  };
-
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-    console.log(address);
-  };
-
-  const handlePhoneChange = (e) => {
-    setPhone(e.target.value);
-  };
+    
+    if(date === null || date === undefined || date === "")
+    {
+      snackbar.enqueueSnackbar("Birthday field required", { variant: "error" });
+      return false;
+    }
+    const regex = /^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+    if (!regex.test(date)) {
+      snackbar.enqueueSnackbar("Enter valid birthday please", { variant: "error" });
+      return false;
+    }
+    return true;
+  }
   
   const handleDateChange = (e) => {
     const selectedDate = e._d;
@@ -202,8 +228,12 @@ export default function AnnualMembership(props) {
     handleSubmit(e);
   }
 
+  const handlePaymentSuccess = (result) => {
+    setConfirm(true);
+  }
+
   const handleSubmit = (e) => {
-    const formData = { date, phone, cardNumber, expireDate, csv, address, type: 'annual' };
+    const formData = { date, phone, type: 'annual' };
     //validation
     if(phone === null || phone === undefined || phone === "")
       return snackbar.enqueueSnackbar("Phone field required", { variant: "error" });
@@ -353,81 +383,15 @@ export default function AnnualMembership(props) {
                     ),
                     autoComplete: "off"
                   }}
-                  style={{marginTop:'30px'}}
+                  style={{marginTop:'30px', marginBottom:'30px'}}
                 />
-                <TextField
-                  className={classes.outlinedStyle}
-                  onChange={handleCardNumberChange}
-                  placeholder="Card Number"
-                  fullWidth
-                  variant="outlined"
-                  InputProps={{
-                    style: {
-                      // Control font or other styles here
-                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                      fontSize: '14px',
-                      '::placeholder' : {
-                        display: 'none'
-                      },
-                    },
-                  }}
-                  style={{marginTop:'30px'}}
-                />
-                <Datetime
-                  inputProps={{ placeholder: "Expire Date", style: {
-                    width: '100%',
-                    padding: '10px 14px', // Adjust padding as needed
-                    borderTop: '1px solid #ced4da', // Border color for top
-                    borderLeft: '1px solid #ced4da', // Border color for left
-                    borderRight: '1px solid #ced4da', // Border color for right
-                    borderBottom: 'none', // Omit bottom border
-                    borderRadius: '4px', // Border radius
-                    outline: 'none',
-                    fontSize: '16px', // Font size
-                    marginTop: '30px'
-                  }, }}
-                  dateFormat={"YYYY-MM-DD"}
-                  timeFormat={false}
-                  onChange={handleExpireDateChange}
-                  // renderInput={renderInput}
-                  // style={{display: "flex"}}
-                />
-                <TextField
-                  className={classes.outlinedStyle}
-                  onChange={handleCSVChange}
-                  placeholder="CSV"
-                  fullWidth
-                  variant="outlined"
-                  InputProps={{
-                    style: {
-                      // Control font or other styles here
-                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                      fontSize: '14px'
-                    },
-                  }}
-                  style={{marginTop:'30px'}}
-                />
-                <TextField
-                  className={classes.outlinedStyle}
-                  onChange={handleAddressChange}
-                  placeholder="Address"
-                  fullWidth
-                  variant="outlined"
-                  InputProps={{
-                    style: {
-                      // Control font or other styles here
-                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                      fontSize: '14px'
-                    },
-                  }}
-                  style={{marginTop:'30px'}}
-                />
+                {clientSecret&&(
+                
+                <Elements stripe={stripePromise} options={{clientSecret:clientSecret}} >
+                  <PayComponent handlePurchase={handlePaymentSuccess} checkValidation={checkValidation} />
+                </Elements>
+                )}
               </CardBody>
-              <CardFooter className={classes.cardFooter}>
-                <Button round color="primary" size="lg" onClick={() => {setConfirm(true)}}>
-                  Purchase
-                </Button>
-              </CardFooter>
             </form>
           </Card>
           </GridItem>

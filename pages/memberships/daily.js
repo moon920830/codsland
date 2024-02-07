@@ -27,6 +27,9 @@ import actions from '../../redux/actions';
 import { useSnackbar } from "notistack";
 import axios from 'axios';
 import { BACKEND_URL } from "../../AppConfigs";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import PayComponent from './PayComponent.js';
 // import { setCookie, removeCookie } from '../utils/cookie';
 // import { AUTHENTICATE } from '../redux/types/authTypes';
 import Router from "next/router";
@@ -37,6 +40,8 @@ import { BackspaceOutlined } from "@material-ui/icons";
 
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+
+const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
 
 const useStyles = makeStyles((styles) => {
   return {
@@ -76,6 +81,7 @@ const useStyles = makeStyles((styles) => {
 export default function DailyMembership(props) {
   const snackbar = useSnackbar();
   const dispatch = useDispatch();
+  const classes = useStyles();
   //redux
   const redux_email = useSelector((state) => state.authentication.email);
   const redux_fullname = decodeURI(useSelector((state) => state.authentication.fullname));
@@ -83,6 +89,12 @@ export default function DailyMembership(props) {
   //state
   const [phone, setPhone] = useState('');
   const [confirm, setConfirm] = useState(false);
+  const [clientSecret, setClientSecret]=useState(null);
+  //card
+  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+  setTimeout(function () {
+    setCardAnimation("");
+  }, 700);
 
   
   //component mount
@@ -103,28 +115,53 @@ export default function DailyMembership(props) {
           );
         }
         const membership = response.data.data;
-        if(Array.isArray(membership) && membership.length != 0)
-          Router.push('/already-purchased');
+        // if(Array.isArray(membership) && membership.length != 0)
+        //   Router.push('/already-purchased');
       });
+
+    axios.post(`${BACKEND_URL}/members/start-payment`, {type: '1'})
+      .then(response=>{
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setClientSecret(response.data.data.clientSecret);
+      })
   }, []);
 
-  const handlePhoneChange = (e) => {
-    setPhone(e.target.value);
-  };
-  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
-  setTimeout(function () {
-    setCardAnimation("");
-  }, 700);
-  const classes = useStyles();
-  const { ...rest } = props;
-  const matchesSm = useMediaQuery('(max-width:600px)');
 
-  const handlePurchase = e => {
+  const handlePurchase = result => {
     setConfirm(false);
-    handleSubmit();
+    handleSubmit(result);
   }
 
-  const handleSubmit = () => {
+  const handlePaymentSuccess = (result) => {
+    setConfirm(true);
+  }
+
+  const checkValidation = () => {
+    if(phone === null || phone === undefined || phone === "")
+    {
+      snackbar.enqueueSnackbar("Phone field required", { variant: "error" });
+      return false;
+    }
+    if (phone.match(/12345/)) {
+      snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
+      return false;
+    } else if (phone.match(/1234/)) {
+      snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
+      return false;
+    }
+    return true;
+  }
+
+  const handleSubmit = (result) => {
     const formData = { phone, type: 'daily' };
     //validation
     if(phone === null || phone === undefined || phone === "")
@@ -247,31 +284,15 @@ export default function DailyMembership(props) {
                     ),
                     autoComplete: "off"
                   }}
-                  style={{marginTop:'30px'}}
+                  style={{marginTop:'30px', marginBottom:'30px'}}
                 />
-                {/* <CustomInput
-                  labelText="Phone"
-                  id="phone"
-                  formControlProps={{
-                    fullWidth: true
-                  }}
-                  onChange={handlePhoneChange}
-                  inputProps={{
-                    type: "",
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <PhoneIcon className={classes.inputIconsColor} />
-                      </InputAdornment>
-                    ),
-                    autoComplete: "off"
-                  }}
-                /> */}
+                {clientSecret&&(
+                
+                <Elements stripe={stripePromise} options={{clientSecret:clientSecret}} >
+                  <PayComponent handlePurchase={handlePaymentSuccess} checkValidation={checkValidation} />
+                </Elements>
+                )}
               </CardBody>
-              <CardFooter className={classes.cardFooter}>
-                <Button round color="primary" size="lg" onClick={() => {setConfirm(true)}}>
-                  Purchase
-                </Button>
-              </CardFooter>
             </form>
           </Card>
           </GridItem>
