@@ -95,6 +95,7 @@ import PayComponent from './PayComponent.js';
 import ProductList from "./productList.js";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import AddressAutocomplete from './cart/AddressAutocomplete.js';
 //rsuite
 import { Calendar, Whisper, Popover } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -660,6 +661,7 @@ export default function Cart(props) {
                   <li key={suggestion.place_id} style={{cursor: 'pointer'}} onClick={() => handleLocationClick(suggestion.display_name)}>{suggestion.display_name}</li>
                 ))}
               </ul>
+              <AddressAutocomplete />
               {clientSecret&&(
                 
               <Elements stripe={stripePromise} options={{clientSecret:clientSecret}} >
