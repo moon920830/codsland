@@ -95,7 +95,7 @@ import PayComponent from './PayComponent.js';
 import ProductList from "./productList.js";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import AddressAutocomplete from './cart/AddressAutocomplete.js';
+import AutocompleteInput from './cart/AutocompleteInput.js';
 //rsuite
 import { Calendar, Whisper, Popover } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
@@ -167,6 +167,14 @@ const useStyles = makeStyles(theme => {
         padding: '9px'
       }
     },
+    smallFont: {
+      fontFamily: 'Apple-System,Arial,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,STXihei,sans-serif',
+      fontSize: '14px',
+      cursor: 'pointer'
+    },
+    noPadding: {
+      padding: '0px'
+    }
   }
 });
 
@@ -238,6 +246,7 @@ export default function Cart(props) {
   const [suggestions, setSuggestions] = useState([]);
   const [createPostModal, setCreatePostModal] = React.useState(false);
   const [clientSecret, setClientSecret]=useState(null);
+  const [addressContainer, setAddressContainer]=useState({});
 
 
 
@@ -299,6 +308,10 @@ export default function Cart(props) {
       {/* <CalendarTodayIcon className="calendar-icon" onClick={openCalendar} /> */}
     </div>
   );
+
+  const handleAddressContainerChange = (addressObject) => {
+    setAddressContainer(addressObject);
+  }
 
   const handlePhoneChange = (e) => {
     setPhone(e.target.value);
@@ -417,7 +430,11 @@ export default function Cart(props) {
         email,
         phone,
         date,
-        location
+        location,
+        street: addressContainer.street,
+        city: addressContainer.city,
+        state: addressContainer.state,
+        country: addressContainer.country,
       }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
@@ -435,6 +452,17 @@ export default function Cart(props) {
         // snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
       });
   }
+
+
+  const handleSelectAddress = (place) => {
+    // Retrieve additional information from the place object
+    const street = place.address_components.find(component => component.types.includes('route'))?.long_name || '';
+    const state = place.address_components.find(component => component.types.includes('administrative_area_level_1'))?.long_name || '';
+    const zip = place.address_components.find(component => component.types.includes('postal_code'))?.long_name || '';
+
+    // Do something with the retrieved information
+    console.log(street, state, zip);
+  };
 
   return (
     <div>
@@ -637,7 +665,7 @@ export default function Cart(props) {
                 renderInput={renderInput}
                 // style={{display: "flex"}}
               />
-              <TextField
+              {/* <TextField
                 className={classes.outlinedStyle}
                 onChange={(e) => handleLocationChange(e.target.value)}
                 placeholder="Address"
@@ -660,8 +688,10 @@ export default function Cart(props) {
                 {suggestions.map((suggestion) => (
                   <li key={suggestion.place_id} style={{cursor: 'pointer'}} onClick={() => handleLocationClick(suggestion.display_name)}>{suggestion.display_name}</li>
                 ))}
-              </ul>
-              <AddressAutocomplete />
+              </ul> */}
+
+              <AutocompleteInput handleAddressContainerChange={handleAddressContainerChange} noPadding={classes.noPadding} smallFont={classes.smallFont} outlinedStyle={classes.outlinedStyle} onSelectAddress={handleSelectAddress} />
+
               {clientSecret&&(
                 
               <Elements stripe={stripePromise} options={{clientSecret:clientSecret}} >

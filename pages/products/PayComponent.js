@@ -71,8 +71,8 @@ export default function CheckoutForm(props) {
     }
     if(props.date == '' || props.date == undefined)
       return snackbar.enqueueSnackbar("Enter shipping date please", { variant: "error" });
-    if(props.location == '')
-      return snackbar.enqueueSnackbar("Enter shipping address please", { variant: "error" });
+    // if(props.location == '')
+    //   return snackbar.enqueueSnackbar("Enter shipping address please", { variant: "error" });
       
 
     setIsLoading(true);

@@ -305,6 +305,9 @@ export default function Products(props) {
           const {
             error
           } = response.data;
+          console.log('************');
+          console.log(error);
+          console.log('************');
           dispatch(actions.createError(error));
 
           if(response.data.error == "NOT_MEMBER") {
