@@ -38,7 +38,7 @@ const AutocompleteInput = (props) => {
         const placeId = response.data.predictions[0].place_id;
         axios
           .get(
-            `${BACKEND_URL}/maps/api/place/details/json?place_id=${placeId}&key=AIzaSyD8AFOPal_mqvfiuPxwvML-kg_SdZBK9s0`
+            `${BACKEND_URL}/maps/api/place/details/json?place_id=${placeId}&key=${process.env.SHIPPO_NAME}`
           )
           .then((res) => {
             const data = res.data;
