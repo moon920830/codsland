@@ -66,6 +66,7 @@ import { useCheckTokenValidity } from '../redux/hooks.js';
 import { useSelector, useDispatch } from "react-redux";
 //other
 import { useSnackbar } from "notistack";
+import CustomScroll from 'react-custom-scroll';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -130,6 +131,7 @@ export default function Home(props) {
   const classes = useStyles();
   const { ...rest } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [headerSlide, setHeaderSlide] = useState(0);
   const [selectedEnabled, setSelectedEnabled] = React.useState("b");
 
   const redux_token = useSelector((state) => state.authentication.token);
@@ -171,6 +173,33 @@ export default function Home(props) {
       </div>
     ),
     afterChange: (current) => setCurrentSlide(current),
+  };
+  const headerSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: false,
+    arrows: false,
+    // nextArrow: <div></div>,
+    // prevArrow: <div></div>,
+    customPaging: i => (
+      <div
+        style={{
+          width: i === headerSlide ? "20px" : "20px",
+          height: i === headerSlide ? "20px" : "20px",
+          border: "1px solid white",
+          borderRadius: '100%',
+          borderColor:"white",
+          backgroundColor: i === headerSlide ? 'white' : 'transparent',
+          padding: "5px",
+          marginTop: '150px'
+        }}
+      >
+      </div>
+    ),
+    afterChange: (current) => setHeaderSlide(current),
   };
   const testimonial_settings = {
     className: "center",
@@ -221,16 +250,38 @@ export default function Home(props) {
        id="home_section">
         <div className={classes.overlay}></div>
         <div className={classes.container}>
-          <GridContainer>
-            <GridItem>
-              <div className={classes.brand}>
-                <h1 className={classes.title} style={{ color: 'white' }}>We Are Healers. We Share Our Healings and Methods with our Members. Join US!</h1>
-                <h3 className={classes.subtitle}>
-                  Reverend Dr Dean Howell has developed NeuroCranial Restructuring and Howelling. Reverend Rebecca Hart has dramatically revised Body Electronics. Reverend Peter Radatti has created Magic Flour and has improved Radionics machine designs.
-                </h3>
-              </div>
-            </GridItem>
-          </GridContainer>
+          <Carousel {...headerSettings}>
+            <GridContainer>
+              <GridItem>
+                <div className={classes.brand}>
+                  <h1 className={classes.title} style={{ color: 'white' }}>Holistic Healing and Spiritual Ascendance</h1>
+                  <h3 className={classes.subtitle}>
+                    Experience Hands-On Healing & Divine Wellness Today!
+                  </h3>
+                </div>
+              </GridItem>
+            </GridContainer>
+            <GridContainer>
+              <GridItem>
+                <div className={classes.brand}>
+                  <h1 className={classes.title} style={{ color: 'white' }}>Healing the Mind Body and Spirit</h1>
+                  <h3 className={classes.subtitle}>
+                    Your Journey to Bio-Energetic Healing Begins Here
+                  </h3>
+                </div>
+              </GridItem>
+            </GridContainer>
+            <GridContainer>
+              <GridItem>
+                <div className={classes.brand}>
+                  <h1 className={classes.title} style={{ color: 'white' }}>Church of Divine Structure Awaits Your Transformation</h1>
+                  <h3 className={classes.subtitle}>
+                    Embrace Holistic Wellness
+                  </h3>
+                </div>
+              </GridItem>
+            </GridContainer>
+          </Carousel>
         </div>
         <img src="/img/CoDS_Black_Logo_Big.png" alt="..." style={{ position: 'absolute', bottom: '-100px', left: '50%', transform: 'translateX(-50%)', zIndex: '2' }}></img>
       </Parallax>
@@ -240,16 +291,23 @@ export default function Home(props) {
             {/* <div className={classes.container}> */}
             <GridContainer justify="center">
               <GridItem xs={12} sm={6}>
-                <h4 className={classes.title} style={{ color: '#2E3192' }}>coDS HEALING</h4>
+                <h4 className={classes.title} style={{ color: '#2E3192' }}>Life-Coaching and Mindful Healing Counseling Services</h4>
                 <h1 className={classes.title}>Who <span style={{ color: '#2E3192' }}>We Are </span></h1>
                 <Carousel {...settings}>
-                  <div  >
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>The Church of Divine Structure is a worldwide healing community with its headquarters in Okanogan County, Washington. We are affiliated with the Eastern Orthodox Catholic Church. </p>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.</p>
+                  <div>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Welcome to our sanctuary of healing!</p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Led by Reverend Doctor Dean Howell and Reverend Rebecca Hart Malter, CoDS - Church of Divine Structure stands as a beacon of transformation. With a history rooted in ancient healing traditions, our founders envisioned a space where true healing transcends boundaries, going beyond conventional medical practices.</p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>The Church of Divine Structure is a worldwide healing community with its headquarters in Okanogan County, Washington. We are affiliated with the Eastern Orthodox Catholic Church. </p>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.</p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Nestled in Okanogan County, Washington, the Church of Divine Structure, affiliated with the Eastern Orthodox Catholic Church, is a global healing community. As a private membership association registered as a church in Puerto Rico, our roots run deep. Our ministers and deacons, recognized as sanctified healers, hold worldwide recognition, affirmed by the UN and governments. As members of the Sacred Medical Order of the Knights of Hope and heirs to the Knights of St. John, we uphold a legacy of compassionate care, seamlessly blending faith and healing within our sacred mission.</p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>At the core of our mission lies a profound dedication to genuine healing. We believe in healing that triggers the body's innate ability to repair itself, transcending the limitations of modern medicine. Our methods involve hands-on healing, bio-energetic healing, lifestyle modifications, and the use of both FDA-approved and non-FDA-approved remedies. From spiritual healing to practical applications, we embrace holistic approaches.  </p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>In our quest for powerful healing methods, we discovered that FDA regulations and strict licensing board guidelines limited our options. At the Church of Divine Structure (CoDS), we provide our members with the most effective healing techniques and supplements, free from commercial constraints that hinder their potential.</p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Our mission extends beyond the individual; we are architects of a self-sustaining community where every member contributes to the collective healing journey. Embracing harmonious living, we cultivate an environment where the land, homes, and human energies align for sustained longevity. Our practices encompass everything from mindful healing counseling services to online healing services, ensuring a comprehensive approach to life-coaching and over well-being. </p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>We invite you to join our community of healers, where your journey to true healing and counseling begins. Whether you seek spiritual ascendance, physical well-being, or both, Church of Divine Structure welcomes you. As we focus on your healing, let us embark on this transformative journey together.</p>
                   </div>
                 </Carousel>
               </GridItem>
@@ -326,19 +384,26 @@ export default function Home(props) {
                 <img src="/img/CoDS_Black_Logo.png" alt="...."></img>
               </GridContainer>
               <GridContainer justify="center">
-                <h4 className={classes.title} style={{ color: '#2E3192' }}>Our Services</h4>
+                <h4 className={classes.title} style={{ color: '#2E3192' }}>Spiritual Healer Near Me</h4>
+              </GridContainer>
+              <GridContainer alignItems="center" direction="column">
+                <h2 className={classes.title} style={{marginBottom: '0px'}}><span style={{ color: '#2E3192' }}>Church of Divine Structure is the </span></h2>
+                <h2 className={classes.title}><span style={{ color: '#2E3192' }}>Center for Spirituality and Healing</span></h2>
               </GridContainer>
               <GridContainer justify="center">
-                <h2 className={classes.title}>We Love Our Parish and Stay Together to <span style={{ color: '#2E3192' }}>Serve God</span></h2>
+                <h4 className={classes.title} style={{ color: '#2E3192', marginBottom: '0px' }}>At Church of Divine Structure, our healing services encompass four fundamental categories, </h4>
+              </GridContainer>
+              <GridContainer justify="center">
+                <h4 className={classes.title} style={{ color: '#2E3192', marginTop: '20px' }}>tailored to nurture true hand-on healing.</h4>
               </GridContainer>
               <GridContainer>
                 <GridItem sm={6}>
                   <Card>
                     <CardBody>
-                      <GridContainer>
+                      <GridContainer style={{minHeight: '365px'}}>
                         <GridItem sm={8}>
-                          <h3 className={classes.title}>Service</h3>
-                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                          <h3 className={classes.title}>Hands-On Healing</h3>
+                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>Our skilled practitioners channel ancient techniques, guiding the body's natural healing energies. Through gentle touch and spiritual connection, we facilitate profound healing experiences, addressing ailments at their core.</p>
                         </GridItem>
                         <GridItem sm={4}>
                           <GridContainer style={{ justifyContent: "end" }}>
@@ -368,8 +433,8 @@ export default function Home(props) {
                     <CardBody>
                       <GridContainer>
                         <GridItem sm={8}>
-                          <h3 className={classes.title}>Service</h3>
-                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                          <h3 className={classes.title}>Life-Coaching/Lifestyle Modifications</h3>
+                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>Our experts guide you in adopting balanced lifestyles, harmonizing your physical, mental, and spiritual well-being. From personalized dietary plans to mindful practices, we empower you to make sustainable lifestyle changes.</p>
                         </GridItem>
                         <GridItem sm={4}>
                           <GridContainer style={{ justifyContent: "end" }}>
@@ -401,8 +466,8 @@ export default function Home(props) {
                     <CardBody>
                       <GridContainer>
                         <GridItem sm={8}>
-                          <h3 className={classes.title}>Service</h3>
-                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                          <h3 className={classes.title}>Pharmaceutical Solutions</h3>
+                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>Our clinically tested medications, endorsed for safety and effectiveness, complement our holistic approach. Guided by experienced professionals, you receive the best of contemporary medical science tailored to your unique healing needs.</p>
                         </GridItem>
                         <GridItem sm={4}>
                           <GridContainer style={{ justifyContent: "end" }}>
@@ -432,8 +497,8 @@ export default function Home(props) {
                     <CardBody>
                       <GridContainer>
                         <GridItem sm={8}>
-                          <h3 className={classes.title}>Service</h3>
-                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>The Church of Divine Structure is a worldwide heading community with its headquarters in Okanogan Country. Washington. We are affiliated with the Eastern Orthodox Catholic Church</p>
+                          <h3 className={classes.title}>Natural Remedies</h3>
+                          <p style={{ fontSize: "20px", lineHeight: "200%" }}>Rooted in centuries-old traditions, these carefully selected treatments offer alternative pathways to healing. Our remedies honor the profound healing potential found in nature, providing holistic solutions beyond mainstream medicine.</p>
                         </GridItem>
                         <GridItem sm={4}>
                           <GridContainer style={{ justifyContent: "end" }}>
@@ -469,10 +534,14 @@ export default function Home(props) {
               <img src="/img/CoDS_Black_Logo.png" alt="...."></img>
             </GridContainer>
             <GridContainer justify="center">
-              <h4 className={classes.title} style={{ color: '#2E3192' }}>OUR LATEST</h4>
+              <h4 className={classes.title} style={{ color: '#2E3192' }}>Elevate Your Wellness Journey</h4>
             </GridContainer>
             <GridContainer justify="center">
-              <h2 className={classes.title}>Featured  <span style={{ color: '#2E3192' }}>Products</span></h2>
+              <h2 className={classes.title}>Holistic Healing Products</h2>
+            </GridContainer>
+            <GridContainer justify="center">
+              <h4 className={classes.title} style={{marginBottom: '0px'}}>Discover our curated selection of holistic healing products, crafted to rejuvenate your body and soul.</h4>
+              <h4 className={classes.title} style={{marginTop: '20px'}}> From our revitalizing tonics to delicious bakery items, each item is a step towards holistic well-being.</h4>
             </GridContainer>
             <GridContainer  >
               <GridItem sm={4}>
@@ -557,13 +626,16 @@ export default function Home(props) {
                 }} ></div>
               </GridItem>
               <GridItem sm={6}>
-                <h1 className={classes.title}>OUR<span style={{ color: '#2E3192' }}> Story</span></h1>
-                <h2 className={classes.title}>Our Journey</h2>
-                <p style={{ lineHeight: "200%", fontSize: "18px" }} >
-                  Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.
-                  The healing services of the Church Of Divine Structure are delivered all over the world by our sanctified ministers and deacons. The main two healers, Rev Dr Howell and Rev Rebecca, come back for rest and recovery to the CoDS’ headquarters in the Okanogan highlands in north-central Washington.
-                  Our Church is, first and foremost, a healing organization. We have been a private membership association since 2001. We believe in healing rather than to simply offer treatments. We hope that we will raise enough money o that some day we can have We do not believe that medicine should be practiced as a form of commerce.
-                  The healing services of the Church Of Divine Structure are delivered all over the world by our sanctified ministers and deacons. The main two healers, Rev Dr Howell and Rev Rebecca, come back for rest and recovery to the CoDS’ headquarters in the Okanogan highlands in north-central Washington.
+                <h1 className={classes.title}>Our Journey to <span style={{ color: '#2E3192' }}> Dynamic Energetic Healing</span></h1>
+                <h2 className={classes.title}>Unraveling the Path to Wellness</h2>
+                <p style={{ lineHeight: "200%", fontSize: "18px", maxHeight: '480px', overflowY: 'auto' }} >
+                In the heart of our shared history lies a transformative tale, woven by the hands of healers and visionaries, Rev Dr. Dean Howell and Rev Rebecca Hart Malter. With over four decades of healing and counseling experience, Dr. Dean's expertise in NeuroCranial Restructuring melds seamlessly with Rebecca's profound skills in Body Electronics and medical psychic abilities. Together, as life partners, they embarked on a remarkable journey within the realm of holistic health. Dr. Dean with 41 years of masterful expertise under his belt and Rebecca, with illustrious 25-year legacy, they’ve carved out an extraordinary reputation in their fields.
+Our story begins with a realization - true healing doesn't reside within conventional medical treatments or standard nutritional protocols. Dr. Dean's personal odyssey, battling weight issues and sleep disturbances, led him to a profound revelation. Parasites, tiny invaders sharing his nervous system, were the hidden culprits affecting his health. This epiphany led him to delve deep into the intricate world of parasite eradication, birthing innovative protocols that prioritize localized healing of body tissues.
+Joined by Rev Rebecca, whose keen insights mirrored his own, they pioneered holistic healing practices that transcended conventional boundaries. Together, they developed TtT (Transformation through Transmogrification), a groundbreaking bodywork technique, meticulously reshaping tendons, ligaments, and periosteum millimeter by millimeter. Simultaneously, Rebecca's expertise in combining multiple anti-parasitic agents revealed a profound truth - liberating the mind from the pervasive control of these parasites equated to true healing.
+Central to our healing philosophy is a return to ancestral dietary principles - a ketogenic diet reminiscent of our forebears. Rejecting modern carbohydrate-laden diets, our approach embraces animal products predominantly, aligning with the way our ancestors thrived.
+Church of Divine Structure (CoDS) champions holistic wellness, intertwining ancient wisdom with modern techniques. From ketogenic diets to innovative bodywork, our healing encompasses an array of methodologies. We fuse traditional practices with cutting-edge technologies, including radionic techniques. These profound tools are harnessed in various forms, from broadcast modes to infused jewelry, addressing a spectrum of conditions imaginable.
+As a Church member, you gain access to this transformative healing. Dr. Dean and Rebecca, having transitioned from traditional medical practices, now dedicate their expertise exclusively to Church members. Our loyal members are beginning their wellness adventure under the care of Dr. Dean and Rebecca, who operate independently, free from the limitations of a conventional medical setup. Both of these excellent practitioners can provide any treatments and holistic therapies that they and the members mutually decide. Our shared goal is to cultivate a living community within the Church, fostering true healing.
+Join us in this transformative journey, where our story converges with yours, paving the way to authentic well-being!
                 </p>
                 <Button color="primary" size="lg">
                   Explore
@@ -572,29 +644,56 @@ export default function Home(props) {
             </GridContainer>
 
             {/* Our Story */}
+            {/*  Services */}
+            <div id="service_section">
+              <Container maxWidth={false} style={{ maxWidth: "80%" }} >
+                <GridContainer justify="center" style={{ marginTop: "70px" }}>
+                  <img src="/img/CoDS_Black_Logo.png" alt="...."></img>
+                </GridContainer>
+                <GridContainer justify="center">
+                  <h4 className={classes.title} style={{ color: '#2E3192' }}>Energetic Healing Near Me</h4>
+                </GridContainer>
+                <GridContainer alignItems="center" direction="column">
+                  <h2 className={classes.title} style={{marginBottom: '0px'}}><span style={{ color: '#2E3192' }}>Our Approach Behind  </span></h2>
+                  <h2 className={classes.title}><span style={{ color: '#2E3192' }}>Bio-Energetic Healing</span></h2>
+                </GridContainer>
+                <GridContainer justify="center">
+                  <h4 className={classes.title} style={{ marginBottom: '0px', fontSize: '24px' }}>At CoDS, we're rewriting the rules of healing and counseling. While traditional methods focus on symptom relief, our hands-on healer started as naturopathic physicians with a mission to cure - to make annoying problems disappear for good. Unlike mainstream medicine, which often treats symptoms, our naturopathic philosophy targets the root causes of disease.
+  Our founders offer a range of hands-on treatments, including massage, manipulation, and cutting-edge therapies like NeuroCranial Restructuring. This innovative approach is especially effective in healing mechanical traumatic injuries resulting from falls, accidents, or difficult births.
+  Taking our commitment to healing further, we've introduced Howelling treatments, combining it with Rebecca's Body Electronics, a unique acupressure therapy. We also guide individuals towards a carnivore or Ketogenic diet, detoxify their bodies from heavy metals, and eliminate vaccine residues and other toxins. We believe that by consistently reducing chemical levels, toxins, and parasitic populations, the body can unlock its natural healing power. 
+  Our goal at CoDS is to help everyone's body heal itself by relieving it from ongoing burdens, using a combination of hands-on care, counseling and life-coaching.
+  </h4>
+                </GridContainer>
+              </Container>
+            </div>
 
+            {/* Services */}
             {/* Testimonials */}
 
             <GridContainer justify="center" style={{ marginTop: "50px" }}>
-              <h4 className={classes.title} style={{ color: '#2E3192' }}>Testimonials</h4>
+              <h4 className={classes.title} style={{ color: '#2E3192' }}>Stories of Our True Healing Center</h4>
             </GridContainer>
             <GridContainer justify="center">
-              <h2 className={classes.title}>What Our Clients Say <span style={{ color: '#2E3192' }}>About Us  </span></h2>
+              <h2 className={classes.title}><span style={{ color: '#2E3192' }}>Listen from Our Community Members</span></h2>
+            </GridContainer>
+            <GridContainer justify="center">
+              <h4 className={classes.title}>Within the embrace of Church of Divine Structure, lives are transformed.</h4>
+              <h4 className={classes.title} style={{marginTop: '0px'}}> Here, our community members share their heartfelt stories, testament to the power of genuine healing and the sanctuary we've created together.</h4>
             </GridContainer>
             <Slider spac {...testimonial_settings}>
               <div>
                 <Card className={classes.slideCard}>
                   <CardBody>
                     <GridContainer>
-                      <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
+                      <p>“Joining Church of Divine Structure changed my life profoundly. Their holistic healing approach, blending ancient wisdom with modern techniques, offered me the serenity I sought. The personalized treatments and mindful living advice reshaped my journey to well-being. Grateful beyond words.”</p>
                     </GridContainer>
                     <GridContainer justify="flex-start" alignItems="center" space="5px">
                       <GridItem sm={2}>
                         <img src="/img/avatar1.jpg" style={{ width: "70px", height: "70px", borderRadius: "50%" }}></img>
                       </GridItem>
                       <GridItem sm={7}>
-                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Elsi Hansdottir</h6>
-                        <p style={{ marginTop: "-10px" }}>Meditation</p>
+                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Emma Thompson</h6>
+                        <p style={{ marginTop: "-10px" }}>Yoga Instructor</p>
                       </GridItem>
                     </GridContainer>
                   </CardBody>
@@ -604,15 +703,15 @@ export default function Home(props) {
                 <Card className={classes.slideCard}>
                   <CardBody>
                     <GridContainer>
-                      <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
+                      <p>“Discovering Church of Divine Structure was a revelation. Their hands-on healing sessions and nutritional guidance reshaped my health journey. The meticulous care and genuine concern of their healers transformed my life. I've found solace, healing, and a newfound sense of balance here."</p>
                     </GridContainer>
                     <GridContainer justify="flex-start" alignItems="center" space="5px">
                       <GridItem sm={2}>
                         <img src="/img/avatar2.jpg" style={{ width: "70px", height: "70px", borderRadius: "50%" }}></img>
                       </GridItem>
                       <GridItem sm={7}>
-                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Elsi Hansdottir</h6>
-                        <p style={{ marginTop: "-10px" }}>Meditation</p>
+                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Alex Carter</h6>
+                        <p style={{ marginTop: "-10px" }}>Financial Analyst</p>
                       </GridItem>
                     </GridContainer>
                   </CardBody>
@@ -622,15 +721,15 @@ export default function Home(props) {
                 <Card className={classes.slideCard}>
                   <CardBody>
                     <GridContainer>
-                      <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
+                      <p>"I had struggled with chronic health issues for years until I found Church of Divine Structure. Their unique healing protocols, rooted in ancient traditions, provided the breakthrough I needed. The ketogenic diet and their innovative bodywork methods made a world of difference. I am healthier and happier today, thanks to them."</p>
                     </GridContainer>
                     <GridContainer justify="flex-start" alignItems="center" space="5px">
                       <GridItem sm={2}>
                         <img src="/img/avatar1.jpg" style={{ width: "70px", height: "70px", borderRadius: "50%" }}></img>
                       </GridItem>
                       <GridItem sm={7}>
-                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Elsi Hansdottir</h6>
-                        <p style={{ marginTop: "-10px" }}>Meditation</p>
+                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Olivia Walker</h6>
+                        <p style={{ marginTop: "-10px" }}>Graphic Designer</p>
                       </GridItem>
                     </GridContainer>
                   </CardBody>
@@ -640,15 +739,33 @@ export default function Home(props) {
                 <Card className={classes.slideCard}>
                   <CardBody>
                     <GridContainer>
-                      <p>"It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text."</p>
+                      <p>"The Church of Divine Structure is not just a place; it’s a sanctuary of hope. Their dedicated healers, Dr. Dean and Rebecca, are true visionaries. Their blend of hands-on healing and personalized nutritional plans restored my faith in holistic healing. I’ve never felt more alive, and I owe it all to them."</p>
                     </GridContainer>
                     <GridContainer justify="flex-start" alignItems="center" space="5px">
                       <GridItem sm={2}>
                         <img src="/img/avatar2.jpg" style={{ width: "70px", height: "70px", borderRadius: "50%" }}></img>
                       </GridItem>
                       <GridItem sm={7}>
-                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Elsi Hansdottir</h6>
-                        <p style={{ marginTop: "-10px" }}>Meditation</p>
+                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Ethan Bennett</h6>
+                        <p style={{ marginTop: "-10px" }}>Teacher</p>
+                      </GridItem>
+                    </GridContainer>
+                  </CardBody>
+                </Card>
+              </div>
+              <div>
+                <Card className={classes.slideCard}>
+                  <CardBody>
+                    <GridContainer>
+                      <p>"My journey with Church of Divine Structure has been nothing short of miraculous. Their natural remedies and spiritual healing methods worked wonders for my well-being. I found not just healing here but a sense of belonging. It's more than a Church; it’s a community that nurtures your soul."</p>
+                    </GridContainer>
+                    <GridContainer justify="flex-start" alignItems="center" space="5px">
+                      <GridItem sm={2}>
+                        <img src="/img/avatar2.jpg" style={{ width: "70px", height: "70px", borderRadius: "50%" }}></img>
+                      </GridItem>
+                      <GridItem sm={7}>
+                        <h6 className={classes.title} style={{ marginTop: "10px" }}>Lily Rodriguez</h6>
+                        <p style={{ marginTop: "-10px" }}>Nurse Practitioner</p>
                       </GridItem>
                     </GridContainer>
                   </CardBody>
@@ -660,10 +777,14 @@ export default function Home(props) {
             {/* Membership */}
 
             <GridContainer justify="center" style={{ marginTop: "50px" }}>
-              <h4 className={classes.title} style={{ color: '#2E3192' }}>CODS ISLAND</h4>
+              <h4 className={classes.title} style={{ color: '#2E3192' }}>Investment in Wellness</h4>
             </GridContainer>
             <GridContainer justify="center">
-              <h2 className={classes.title}>Our <span style={{ color: '#2E3192' }}>Pricing & Membership</span></h2>
+              <h2 className={classes.title}>Our <span style={{ color: '#2E3192' }}>Our Membership Plans</span></h2>
+            </GridContainer>
+            <GridContainer justify="center">
+              <h4 className={classes.title}>At Church of Divine Structure, we believe in making holistic healing accessible to all. </h4>
+              <h4 className={classes.title} style={{marginTop: '0px'}}> Our pricing plans are designed to offer flexibility and affordability, ensuring that the path to true well-being is within reach for everyone.</h4>
             </GridContainer>
             <Grid container spacing={4} alignContent="center" alignItems="center" justify="center" >
               <Grid item xs={3} >
@@ -1137,10 +1258,17 @@ export default function Home(props) {
             {/* Contact US */}
 
             <GridContainer justify="center" style={{ marginTop: "50px" }} id="contact_section">
-              <h4 className={classes.title} style={{ color: '#2E3192' }}>CODS ISLAND</h4>
+              <h4 className={classes.title} style={{ color: '#2E3192' }}>Get in Touch with Us</h4>
             </GridContainer>
             <GridContainer justify="center">
-              <h2 className={classes.title}>Contact  <span style={{ color: '#2E3192' }}>Us </span></h2>
+              <h2 className={classes.title}><span style={{ color: '#2E3192' }}>Reach Out for Healing and </span></h2>
+            </GridContainer>
+            <GridContainer justify="center">
+              <h2 className={classes.title} style={{marginTop: '0px'}}><span style={{ color: '#2E3192' }}>Personalized Support </span></h2>
+            </GridContainer>
+            <GridContainer justify="center" id="contact_section">
+              <h4 className={classes.title}>Discover the path to transformative healing. If you have questions, need more information, or want to start your healing journey with us, </h4>
+              <h4 className={classes.title} style={{marginTop: '0px'}}>our dedicated team is here to assist you. Feel free to get in touch; we are just a message away.</h4>
             </GridContainer>
             <GridContainer>
               <Card>
@@ -1306,7 +1434,8 @@ export default function Home(props) {
             <GridContainer justify="space-between" style={{ marginTop: "100px" }}>
               <GridItem sm={6}>
                 <img src="/img/CoDS_Black_Logo.png"></img>
-                <p>Lorem ipsum dolor sit amet consectetur adipising elit aliquam</p>
+                <p style={{fontSize: '18px', marginTop: '20px'}}>About CoDS</p>
+                <p>Church of Divine Structure (CoDS) specializes in transformative holistic healing, fostering spiritual growth, and well-being through personalized, innovative practices and ancient wisdom.</p>
                 <GridContainer style={{ color: "#2E3192", width: "50%" }} justify="space-between">
                   <GridItem>
                     <IconButton color="primary" ><TwitterIcon /></IconButton>
