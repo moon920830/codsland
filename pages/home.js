@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // react components for routing our app without refresh
@@ -63,10 +63,15 @@ import { Container, IconButton, Typography } from "@material-ui/core";
 //hook
 import { useCheckTokenValidity } from '../redux/hooks.js';
 //redux
+import actions from '../redux/actions';
 import { useSelector, useDispatch } from "react-redux";
 //other
 import { useSnackbar } from "notistack";
 import CustomScroll from 'react-custom-scroll';
+import axios from 'axios';
+import { BACKEND_URL } from "../AppConfigs";
+import { removeCookie } from '../utils/cookie';
+import { DEAUTHENTICATE } from '../redux/types/authTypes';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -127,6 +132,7 @@ function SamplePrevArrow(props) {
 export default function Home(props) {
   //snackbar
   const snackbar = useSnackbar();
+  const dispatch = useDispatch();
   
   const classes = useStyles();
   const { ...rest } = props;
@@ -229,6 +235,32 @@ export default function Home(props) {
       return Router.push('/memberships/annual');
     }
   }
+
+  //component mount
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/auth/verify`, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            data
+          } = response.data;
+          if (data == "AUTH_ERROR") {
+            removeCookie('token');
+            removeCookie('fullname');
+            removeCookie('email');
+            dispatch({ type: DEAUTHENTICATE });
+          } else {
+            dispatch(actions.createError(data));
+            snackbar.enqueueSnackbar(
+              response.data.data ? response.data.data : "Error",
+              { variant: "error" }
+            );
+          }
+        }
+      });
+  }, []);
 
   return (
     <div>

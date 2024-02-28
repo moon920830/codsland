@@ -529,7 +529,7 @@ export default function HomeFeed(props) {
                 </GridContainer>
                 {Array.isArray(posts) && posts.map((post) => {
                   return (
-                  <Card className={classes.cardPadding}>
+                  <Card key={post._id} className={classes.cardPadding}>
                     <GridContainer direction="column" spacing={2}>
                       <GridItem>
                         <GridContainer alignItems="center">
