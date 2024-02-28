@@ -338,7 +338,7 @@ export default function HomeFeed(props) {
   //component mount
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/shared-contents/categories`, {}, {headers: {token:redux_token}})
+      .get(`${BACKEND_URL}/shared-contents/categories`, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -355,7 +355,7 @@ export default function HomeFeed(props) {
       });
 
     axios
-      .get(`${BACKEND_URL}/shared-contents/all`, {}, {headers: {token:redux_token}})
+      .get(`${BACKEND_URL}/shared-contents/all`, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
