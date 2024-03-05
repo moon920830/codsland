@@ -297,6 +297,15 @@ export default function HomeFeed(props) {
   }
 
   const saveContent=()=>{
+    // validation
+    
+    if(postTitle === "" || postTitle === null || postTitle === undefined)
+      return snackbar.enqueueSnackbar("Enter title Please", { variant: "error" });
+    if(postDescription === "" || postDescription === null || postDescription === undefined)
+      return snackbar.enqueueSnackbar("Enter Description Please", { variant: "error" });
+    if(postCategory === "" || postCategory === null || postCategory === undefined)
+      return snackbar.enqueueSnackbar("Select Category Please", { variant: "error" });
+
     const formData = new FormData();
     if(postFile != null)
       formData.append('upload', postFile);
@@ -528,13 +537,16 @@ export default function HomeFeed(props) {
                   </GridItem>
                 </GridContainer>
                 {Array.isArray(posts) && posts.map((post) => {
+                  console.log(post.author);
                   return (
                   <Card key={post._id} className={classes.cardPadding}>
                     <GridContainer direction="column" spacing={2}>
                       <GridItem>
                         <GridContainer alignItems="center">
                           <GridItem sm={1}>
-                            <Avatar src={`${BACKEND_URL}/auth/avatars/${post.author.email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
+                            {
+                              post && post.author && post.author.email && <Avatar src={`${BACKEND_URL}/auth/avatars/${post.author.email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
+                            }
                           </GridItem>
                           <GridItem sm={4}>
                             <h5>Briansky Alex</h5>
