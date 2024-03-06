@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => {
       display: '-webkit-box',
       WebkitLineClamp: 2, // Adjust the number of lines to fit your desired height
       WebkitBoxOrient: 'vertical',
-      height: '48px'
+      height: '40px'
     },
     titleEllipsis: {
       overflow: 'hidden',
@@ -58,7 +58,7 @@ export default function productCard(props) {
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }} >
               {(props.value && props.value.image_url) ?
               (<img src={props.value.image_url} alt="..." style={{ width: "15vw", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id, url:props.value.image_url}}) }}></img>) : 
-              (<img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "15vw", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id, url:`${BACKEND_URL}/shop/products/${props.id}/image`}}) }}></img>)}
+              (<img src={`${BACKEND_URL}/shop/products/${props.id}/image`} alt="..." style={{ width: "15vw", height: "25vh", cursor: 'pointer'}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.id, url:`${BACKEND_URL}/shop/products/${props.id}/image`}})}}></img>)}
             </div>
             <h3 className={classes.title + " " + classes.titleEllipsis} style={{ color: "#2E3192" }}>{props.title}</h3>
             <p className={classes.ellipsis}>{convert(props.description)}</p>

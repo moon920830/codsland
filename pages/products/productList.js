@@ -21,6 +21,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Rating from '@material-ui/lab/Rating';
 import { Divider } from '@material-ui/core';
 import { BACKEND_URL } from "../../AppConfigs";
+import Router from "next/router";
 import axios from 'axios';
 const { convert } = require('html-to-text');
 
@@ -36,6 +37,22 @@ const useStyles = makeStyles(theme => {
       fontFamily: 'satoshi',
       fontWeight: '700',
       lineHeight: '34px'
+    },
+    ellipsis: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: '-webkit-box',
+      WebkitLineClamp: 2, // Adjust the number of lines to fit your desired height
+      WebkitBoxOrient: 'vertical',
+      height: '40px'
+    },
+    titleEllipsis: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: '-webkit-box',
+      WebkitLineClamp: 1, // Adjust the number of lines to fit your desired height
+      WebkitBoxOrient: 'vertical',
+      height: '40px'
     }
   }
 });
@@ -127,8 +144,8 @@ export default function ProductList(props) {
           <div style={{marginLeft: '20px', height: '15vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
             {props.product && props.product._id && 
               (props.product.image_url ? 
-              <img src={props.product.image_url} alt="..." style={{ width: "8vw", height: "12vh"}}></img> : 
-              <img src={`${BACKEND_URL}/shop/products/${props.product._id}/image`} alt="..." style={{ width: "8vw", height: "12vh"}}></img>)
+              <img src={props.product.image_url} alt="..." style={{ width: "8vw", height: "12vh", cursor: "pointer"}}  onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.product._id, url:props.product.image_url}})}}></img> : 
+              <img src={`${BACKEND_URL}/shop/products/${props.product._id}/image`} alt="..." style={{ width: "8vw", height: "12vh", cursor: "pointer"}} onClick={() => { Router.push({pathname: '/products/productDetails', query: {id:props.product._id, url:`${BACKEND_URL}/shop/products/${props.product._id}/image`}})}}></img>)
             }
             {/* <img src="/img/airbuds.png" alt="..." style={{ width: "auto", height: "25vh"}}></img> */}
           </div>
@@ -136,8 +153,8 @@ export default function ProductList(props) {
         <GridItem sm={7}>
           <GridContainer direction="column" justify="space-between" style={{height: '100%'}}>
             <div>
-              {props.product && props.product.title && <h3 className={classes.title} style={{ color: "#2E3192" }}>{props.product.title}</h3>}
-              {props.product && props.product.description && <p>{convert(props.product.description)}</p>}
+              {props.product && props.product.title && <h3 className={classes.title + " " + classes.titleEllipsis} style={{ color: "#2E3192" }}>{props.product.title}</h3>}
+              {props.product && props.product.description && <p className={classes.ellipsis}>{convert(props.product.description)}</p>}
             </div>
             <Rating name="read-only" value={4} readOnly />
           </GridContainer>
