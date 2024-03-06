@@ -2,21 +2,17 @@ import React, { useState, useEffect } from "react";
 //components
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
-import Card from "/components/Card/Card.js";
-import CardBody from "/components/Card/CardBody.js";
-import CardHeader from "/components/Card/CardHeader.js";
 //icon
-import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 //@material-ui/core components
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import Grid from '@material-ui/core/Grid';
 import { makeStyles } from "@material-ui/core/styles";
+//redux
+import { useSelector } from "react-redux";
 //custom
 import Rating from '@material-ui/lab/Rating';
 import { Divider } from '@material-ui/core';
@@ -44,7 +40,7 @@ const useStyles = makeStyles(theme => {
       display: '-webkit-box',
       WebkitLineClamp: 2, // Adjust the number of lines to fit your desired height
       WebkitBoxOrient: 'vertical',
-      height: '40px'
+      minHeight: '44px'
     },
     titleEllipsis: {
       overflow: 'hidden',
@@ -58,7 +54,11 @@ const useStyles = makeStyles(theme => {
 });
 
 export default function ProductList(props) {
+  //redux
+  const redux_token = useSelector((state) => state.authentication.token);
+  //other
   const classes = useStyles();
+  //state
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -89,8 +89,6 @@ export default function ProductList(props) {
   const handleMinus = (e) => {
     let q = quantity;
     let new_q = (q-1 >= 1 ? (q-1) : 1);
-    props.handleTotalChange((new_q-q)*props.product.price);
-
     axios
       .post(`${BACKEND_URL}/shop/cart/${props.product._id}/count`, {
         count: new_q
@@ -108,14 +106,13 @@ export default function ProductList(props) {
           );
         }
         setQuantity(new_q);
+        props.handleTotalChange((new_q-q)*props.product.price);
       });
   }
 
   const handlePlus = (e) => {
     let q = quantity;
     let new_q = q+1;
-    props.handleTotalChange((new_q-q)*props.product.price);
-
     axios
       .post(`${BACKEND_URL}/shop/cart/${props.id}/count`, {
         count: new_q
@@ -133,6 +130,7 @@ export default function ProductList(props) {
           );
         }
         setQuantity(new_q);
+        props.handleTotalChange((new_q-q)*props.product.price);
       });
   }
 
