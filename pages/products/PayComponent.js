@@ -68,6 +68,8 @@ export default function CheckoutForm(props) {
       return snackbar.enqueueSnackbar("Enter email please", { variant: "error" });
     if(!emailRegex.test(props.email))
       return snackbar.enqueueSnackbar("Enter valid email please", { variant: "error" });
+    if(props.phone === "")
+      return snackbar.enqueueSnackbar("Enter phone number please", { variant: "error" });
     if (props.phone.match(/12345/)) {
       return snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
     } else if (props.phone.match(/1234/)) {

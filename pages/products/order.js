@@ -5,96 +5,32 @@ import classNames from "classnames";
 import Link from "next/link";
 // @material-ui/core components
 import Button from '@material-ui/core/Button';
-import Fab from '@material-ui/core/Fab';
 import { makeStyles } from "@material-ui/core/styles";
-import Rating from '@material-ui/lab/Rating';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import MUIButton from '@material-ui/core/Button';
 // @material-ui/icons
-import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
-import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
-import WallpaperOutlinedIcon from '@material-ui/icons/WallpaperOutlined';
-import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
-import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
-import MoreVertOutlinedIcon from '@material-ui/icons/MoreVertOutlined';
-import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
-import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
-import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
-import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 // import Badge from '@material-ui/core/Badge';
 import Badge from '../../components/Badge/Badge.js';
-import { ButtonBase, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Typography } from "@material-ui/core";
+import { Container, IconButton, Typography } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
 // components
-import Header from "/components/Header/Header.js";
-import HeaderLinks from "/components/Header/HeaderLinks.js";
-import Footer from "/components/Footer/Footer.js";
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
-import CustomDropdown from "/components/CustomDropdown/CustomDropdown.js";
-import Parallax from "/components/Parallax/Parallax.js";
-import Info from "/components/Typography/Info.js";
 // sections for this page
-import SectionBasics from "/pages-sections/Components-Sections/SectionBasics.js";
-import SectionNavbars from "/pages-sections/Components-Sections/SectionNavbars.js";
-import SectionTabs from "/pages-sections/Components-Sections/SectionTabs.js";
-import SectionPills from "/pages-sections/Components-Sections/SectionPills.js";
-import SectionNotifications from "/pages-sections/Components-Sections/SectionNotifications.js";
-import SectionTypography from "/pages-sections/Components-Sections/SectionTypography.js";
-import SectionJavascript from "/pages-sections/Components-Sections/SectionJavascript.js";
-import SectionCarousel from "/pages-sections/Components-Sections/SectionCarousel.js";
-import SectionCompletedExamples from "/pages-sections/Components-Sections/SectionCompletedExamples.js";
-import SectionLogin from "/pages-sections/Components-Sections/SectionLogin.js";
-import SectionExamples from "/pages-sections/Components-Sections/SectionExamples.js";
-import SectionDownload from "/pages-sections/Components-Sections/SectionDownload.js";
-import Carousel from "react-slick";
-import LocationOn from "@material-ui/icons/LocationOn";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import Card from "/components/Card/Card.js";
-import CardBody from "/components/Card/CardBody.js";
-import CardHeader from "/components/Card/CardHeader.js";
-import Slider from "react-slick";
-import NavPills from "/components/NavPills/NavPills.js";
 import ElevateAppBar from "/components/General/layouts/NavBar.js";
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import PhoneIcon from '@material-ui/icons/Phone';
-import MailIcon from '@material-ui/icons/Mail';
-import RoomIcon from '@material-ui/icons/Room';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import FacebookIcon from '@material-ui/icons/Facebook';
-import CustomInput from "/components/CustomInput/CustomInput.js";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Radio from "@material-ui/core/Radio";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
-import Avatar from '@material-ui/core/Avatar';
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import actions from '../../redux/actions';
 import axios from 'axios';
 import { BACKEND_URL } from "../../AppConfigs";
 //other
-import Datetime from "react-datetime";
 import { useSnackbar } from "notistack";
-import { formatDistanceToNow } from 'date-fns';
-import OrderList from "./orderList.js";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
-//rsuite
-import { Calendar, Whisper, Popover } from 'rsuite';
-import 'rsuite/dist/rsuite.min.css';
 //style
 import modalStyle from "../../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
@@ -117,12 +53,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
-import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CancelIcon from '@material-ui/icons/Cancel';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-import Close from "@material-ui/icons/Close";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -132,8 +66,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 
-function createData(id, image, title, date, price, quantity, total_price, status, action) {
-  return { id, image, title, date, price, quantity, total_price, status, action };
+function createData(id, image, title, date, price, quantity, total_price, status, action, image_url) {
+  return { id, image, title, date, price, quantity, total_price, status, action, image_url };
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -420,7 +354,7 @@ export default function EnhancedTable (props) {
         const result_rows = [];
         dummy_rows.forEach(row => {
           row.products.forEach(product => {
-            result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel'));
+            result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel', product.product.image_url));
           })
         });
         setRows(result_rows);
@@ -559,7 +493,6 @@ export default function EnhancedTable (props) {
                               .map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
                                 const labelId = `enhanced-table-checkbox-${index}`;
-
                                 return (
                                   <TableRow
                                     hover
@@ -576,15 +509,19 @@ export default function EnhancedTable (props) {
                                         inputProps={{ 'aria-labelledby': labelId }}
                                       />
                                     </TableCell>
-                                    <TableCell component="th" id={labelId} scope="row" padding="none">                                  
-                                      <img src={`${BACKEND_URL}/shop/products/${row.image}/image`} alt="..." style={{ width: "50px", height: "50px"}}></img>
+                                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                                      {row.image_url ? (
+                                        <img src={row.image_url} alt="..." style={{ width: "50px", height: "50px"}}></img>
+                                      ) : (
+                                        <img src={`${BACKEND_URL}/shop/products/${row.image}/image`} alt="..." style={{ width: "50px", height: "50px"}}></img>
+                                      )}
                                     </TableCell>
                                     <TableCell align="left">{row.title}</TableCell>
                                     <TableCell align="left">{new Date(row.date).toLocaleString()}</TableCell>
                                     <TableCell align="left">{row.price}</TableCell>
                                     <TableCell align="left">{row.quantity}</TableCell>
                                     <TableCell align="left">{row.total_price}</TableCell>
-                                    <TableCell align="left"><Badge color="warning" size="medium"><p style={{fontSize: '12px'}}>{row.status}</p></Badge></TableCell>
+                                    <TableCell align="left"><Badge color="warning" size="medium"><p style={{fontSize: '12px', margin: '0px'}}>{row.status}</p></Badge></TableCell>
                                   </TableRow>
                                 );
                               })}
