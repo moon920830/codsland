@@ -5,8 +5,12 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
+import { useSnackbar } from "notistack";
 
 const AutocompleteInput = (props) => {
+  //snackbar
+  const snackbar = useSnackbar();
+  //state
   const [inputValue, setInputValue] = useState('');
   const [predictions, setPredictions] = useState([]);
 
@@ -29,8 +33,8 @@ const AutocompleteInput = (props) => {
     //   .get(`${BACKEND_URL}/shop/cart`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
     axios
       .get(
-        // `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=AIzaSyD8AFOPal_mqvfiuPxwvML-kg_SdZBK9s0`
-        `${BACKEND_URL}/maps/api/place/autocomplete/json?input=${input}&key=AIzaSyD8AFOPal_mqvfiuPxwvML-kg_SdZBK9s0`
+        // `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${process.env.GOOGLE_MAP_API_KEY}`
+        `${BACKEND_URL}/maps/api/place/autocomplete/json?input=${input}&key=${process.env.GOOGLE_MAP_API_KEY}`
       )
       .then((response) => {
         setPredictions(response.data.predictions);
@@ -38,7 +42,7 @@ const AutocompleteInput = (props) => {
         const placeId = response.data.predictions[0].place_id;
         axios
           .get(
-            `${BACKEND_URL}/maps/api/place/details/json?place_id=${placeId}&key=${process.env.SHIPPO_NAME}`
+            `${BACKEND_URL}/maps/api/place/details/json?place_id=${placeId}&key=${process.env.GOOGLE_MAP_API_KEY}`
           )
           .then((res) => {
             const data = res.data;
@@ -57,18 +61,13 @@ const AutocompleteInput = (props) => {
               state,
               country
             });
-            // console.log('Street:', street);
-            // console.log('City:', city);
-            // console.log('State:', state);
-            // console.log('Country:', country);
-            // console.log('Phone:', phone);
           })
           .catch((error) => {
-            console.error(error);
+            return snackbar.enqueueSnackbar(error, { variant: "error" });
           });
       })
       .catch((error) => {
-        console.error(error);
+        return snackbar.enqueueSnackbar(error, { variant: "error" });
       });
   };
 
@@ -95,7 +94,6 @@ const AutocompleteInput = (props) => {
       />
       <ul>
         {predictions.map((prediction) => (
-          // <li key={prediction.place_id}>{prediction.description}</li>
           <List
           classes={{
             padding	: props.noPadding
@@ -111,7 +109,6 @@ const AutocompleteInput = (props) => {
                   setInputValue(prediction.description);
                   setPredictions([]);
                 }}
-                // secondary={prediction.description}
               />
             </ListItem>
           </List>
