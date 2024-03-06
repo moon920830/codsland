@@ -106,7 +106,21 @@ export default function Products(props) {
 
   const router = useRouter();
 
-  
+  const displayContentOrNull = (text) => {
+    try {
+      if(text === "" || text === undefined || text.length === 0)
+        return "No Description To Display";
+    } catch (e) {
+      return "No Description To Display";
+    }
+    return text;
+  }
+
+  const displayPriceOrZero = (price) => {
+    if(!price || price == 0)
+      return 0;
+    return price;
+  }
 
   //component mount
   useEffect(() => {
@@ -151,8 +165,8 @@ export default function Products(props) {
                 <Card style={{padding: '20px', minHeight: '40vh'}}>
                   <h4 style={{ color: "#170F49", fontSize: '40px' }}>{product.title}</h4>
                   <Rating name="read-only" value={4} readOnly  style={{marginTop: '15px'}} />
-                  <p style={{ color: "#170F49", fontSize: '30px', marginTop: '20px' }}>${product.price ? 0 : product.price}</p>
-                  <p style={{ color: "#170F49", fontSize: '20px', marginTop: '20px' }}>{convert(product.description) && "No Description To Display"}</p>
+                  <p style={{ color: "#170F49", fontSize: '30px', marginTop: '20px' }}>${displayPriceOrZero(product.price)}</p>
+                  <p style={{ color: "#170F49", fontSize: '20px', marginTop: '20px' }}>{displayContentOrNull(convert(product.description))}</p>
                 </Card>
               </GridItem>
             </GridContainer>
