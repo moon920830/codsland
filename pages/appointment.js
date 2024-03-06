@@ -111,6 +111,12 @@ const useStyles = makeStyles(theme => {
         padding: '9px',
       }
     },
+    outlinedStyleForAddress: {
+      marginTop: '30px',
+      '& .MuiOutlinedInput-input' : {
+        padding: '9px',
+      }
+    },
     tooltipStyle: {
       maxWidth: 500,
       fontSize: '14px'
@@ -571,7 +577,7 @@ export default function Appointment(props) {
                           variant="outlined"
                           defaultValue={redux_fullname}
                           InputProps={{
-                            readOnly: "true",
+                            readOnly: true,
                             style: {
                               // Control font or other styles here
                               fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -590,7 +596,7 @@ export default function Appointment(props) {
                           variant="outlined"
                           defaultValue={selectedDate}
                           InputProps={{
-                            readOnly: "true",
+                            readOnly: true,
                             value: selectedDate,
                             style: {
                               // Control font or other styles here
@@ -607,13 +613,12 @@ export default function Appointment(props) {
                           <FormControl style={{marginTop: '30px'}} variant="outlined" className={classes.formControl} fullWidth>
                             <InputLabel id="demo-simple-select-helper-label">Appointment Types</InputLabel>
                             <Select
-                            className={classes.selectOutlinedStyle}
+                              className={classes.selectOutlinedStyle}
                               label="Appointment Type"
                               labelId="demo-simple-select-helper-label"
                               id="demo-simple-select-helper"
                               value={treatType}
                               fullWidth
-                              
                               onChange={(e) => {handleSetTreatType(e.target.value)}}
                             >
                               {Array.isArray(appointmentTypes) && appointmentTypes.map((item, index) => (
@@ -624,9 +629,8 @@ export default function Appointment(props) {
                         </Tooltip>
                         <TextField
                           label="Address"
-                          className={classes.outlinedStyle}
+                          className={classes.outlinedStyleForAddress}
                           onChange={(e) => handleLocationChange(e.target.value)}
-                          placeholder="Address"
                           fullWidth
                           value={location}
                           variant="outlined"
