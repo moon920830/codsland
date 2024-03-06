@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => {
       display: '-webkit-box',
       WebkitLineClamp: 2, // Adjust the number of lines to fit your desired height
       WebkitBoxOrient: 'vertical',
-      height: '40px'
+      height: '48px'
     },
     titleEllipsis: {
       overflow: 'hidden',

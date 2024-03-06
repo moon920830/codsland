@@ -8,7 +8,6 @@ import { makeStyles } from "@material-ui/core/styles";
 // @material-ui/icons
 import NavigationIcon from "@material-ui/icons/Navigation";
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
-import AddIcon from "@material-ui/icons/Add";
 import BlockIcon from "@material-ui/icons/Block";
 // core components
 import Grid from "@material-ui/core/Grid";
@@ -328,6 +327,8 @@ export default function Products(props) {
   };
 
   const handleRowsPerPageChange = (new_rows_per_page) => {
+    if (new_rows_per_page === -1)
+      new_rows_per_page = cartCount;
     setRowsPerPage(new_rows_per_page);
     axios
       .post(
@@ -549,7 +550,7 @@ export default function Products(props) {
               <Fab
                 color="primary"
                 aria-label="add"
-                style={{ position: "fixed", bottom: 180, right: 60 }}
+                style={{ position: "fixed", bottom: 100, right: 60 }}
               >
                 <NavigationIcon />
               </Fab>

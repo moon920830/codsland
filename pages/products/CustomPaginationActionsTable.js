@@ -100,6 +100,7 @@ export default function CustomPaginationActionsTable(props) {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    console.log(event.target.value);
     props.handleRowsPerPageChangeFromParent(parseInt(event.target.value, 10));
   };
 
