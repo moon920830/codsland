@@ -59,7 +59,8 @@ const AutocompleteInput = (props) => {
               street,
               city,
               state,
-              country
+              country,
+              address: input,
             });
           })
           .catch((error) => {

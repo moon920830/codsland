@@ -132,14 +132,11 @@ export default function Cart(props) {
   //other
   const classes = useStyles();
   const { ...rest } = props;
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [date, setDate] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [location, setLocation] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
   const [createPostModal, setCreatePostModal] = React.useState(false);
   const [clientSecret, setClientSecret]=useState(null);
   const [addressContainer, setAddressContainer]=useState({});
@@ -188,7 +185,7 @@ export default function Cart(props) {
           );
         }
         setProducts(response.data.data);
-        console.log(response.data.data);
+        
         const total = response.data.data.reduce((sum, value) => {
           if(value.product && value.product.price)
             return sum + value.product.price*value.count;
@@ -249,7 +246,7 @@ export default function Cart(props) {
         email,
         phone,
         date,
-        location,
+        location: addressContainer.address,
         street: addressContainer.street,
         city: addressContainer.city,
         state: addressContainer.state,
@@ -473,7 +470,7 @@ export default function Cart(props) {
               <AutocompleteInput handleAddressContainerChange={handleAddressContainerChange} noPadding={classes.noPadding} smallFont={classes.smallFont} outlinedStyle={classes.outlinedStyle} /> {/* onSelectAddress={handleSelectAddress}  */}
               {clientSecret&&(
               <Elements stripe={stripePromise} options={{clientSecret:clientSecret}} >
-                <PayComponent handlePurchase={handlePurchase} email={email} phone={phone} date={date} location={location} />
+                <PayComponent handlePurchase={handlePurchase} email={email} phone={phone} date={date} location={addressContainer} />
               </Elements>
               )}
             </GridItem>

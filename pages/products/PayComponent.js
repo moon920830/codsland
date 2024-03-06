@@ -13,7 +13,6 @@ export default function CheckoutForm(props) {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -32,17 +31,25 @@ export default function CheckoutForm(props) {
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
       switch (paymentIntent.status) {
         case "succeeded":
-            console.log(paymentIntent)
-          setMessage("Payment succeeded!");
+          snackbar.enqueueSnackbar("Payment succeeded!",
+            { variant: "success" }
+          );
           break;
         case "processing":
-          setMessage("Your payment is processing.");
+          // snackbar.enqueueSnackbar("Your payment is processing.",
+          //   { variant: "success" }
+          // );
+          // setMessage("Your payment is processing.");
           break;
         case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
+          snackbar.enqueueSnackbar("Your payment was not successful, please try again.",
+            { variant: "error" }
+          );
           break;
         default:
-          setMessage("Something went wrong.");
+          snackbar.enqueueSnackbar("Something went wrong.",
+            { variant: "error" }
+          );
           break;
       }
     });
@@ -50,9 +57,6 @@ export default function CheckoutForm(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log('***');
-    // alert(1);
-
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
@@ -71,10 +75,9 @@ export default function CheckoutForm(props) {
     }
     if(props.date == '' || props.date == undefined)
       return snackbar.enqueueSnackbar("Enter shipping date please", { variant: "error" });
-    // if(props.location == '')
-    //   return snackbar.enqueueSnackbar("Enter shipping address please", { variant: "error" });
+    if(props.location == {} || !props.location.hasOwnProperty('address') || props.location.address == "" || props.location.address == undefined)
+      return snackbar.enqueueSnackbar("Enter shipping address please", { variant: "error" });
       
-
     setIsLoading(true);
 
     const result = await stripe.confirmPayment({
