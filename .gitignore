@@ -30,3 +30,6 @@ yarn-error.log*
 pnpm-lock.yaml
 
 /.vscode
+
+# GOOGLE_KEY
+/utils/config.js

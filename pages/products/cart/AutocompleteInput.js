@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
 import { useSnackbar } from "notistack";
+import GOOGLE_MAP_API_KEY from '../../../utils/config';
 
 const AutocompleteInput = (props) => {
   //snackbar
@@ -33,16 +34,18 @@ const AutocompleteInput = (props) => {
     //   .get(`${BACKEND_URL}/shop/cart`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
     axios
       .get(
-        // `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${process.env.GOOGLE_MAP_API_KEY}`
-        `${BACKEND_URL}/maps/api/place/autocomplete/json?input=${input}&key=${process.env.GOOGLE_MAP_API_KEY}`
+        // `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${GOOGLE_MAP_API_KEY}`
+        `${BACKEND_URL}/maps/api/place/autocomplete/json?input=${input}&key=${GOOGLE_MAP_API_KEY}`
       )
       .then((response) => {
         setPredictions(response.data.predictions);
+        if(response.data.predictions.length === 0)
+          return snackbar.enqueueSnackbar("Invalid Address"+GOOGLE_MAP_API_KEY, { variant: "error" });
 
         const placeId = response.data.predictions[0].place_id;
         axios
           .get(
-            `${BACKEND_URL}/maps/api/place/details/json?place_id=${placeId}&key=${process.env.GOOGLE_MAP_API_KEY}`
+            `${BACKEND_URL}/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_MAP_API_KEY}`
           )
           .then((res) => {
             const data = res.data;
