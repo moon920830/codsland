@@ -55,6 +55,7 @@ const AutocompleteInput = (props) => {
             const city = findAddressComponent(addressComponents, 'locality');
             const state = findAddressComponent(addressComponents, 'administrative_area_level_1');
             const country = findAddressComponent(addressComponents, 'country');
+            const zip_code = findAddressComponent(addressComponents, 'postal_code');
             const phone = data.result.formatted_phone_number;
             console.log(addressComponents);
 
@@ -64,6 +65,7 @@ const AutocompleteInput = (props) => {
               city,
               state,
               country,
+              zip_code,
               address: input,
             });
           })
