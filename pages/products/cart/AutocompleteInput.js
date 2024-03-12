@@ -26,6 +26,9 @@ const AutocompleteInput = (props) => {
 
   function findAddressComponent(addressComponents, type) {
     const component = addressComponents.find((component) => component.types.includes(type));
+    if (type === "administrative_area_level_1" || type === "country") {
+      return component ? component.short_name : '';
+    }
     return component ? component.long_name : '';
   }
 
@@ -57,7 +60,6 @@ const AutocompleteInput = (props) => {
             const country = findAddressComponent(addressComponents, 'country');
             const zip_code = findAddressComponent(addressComponents, 'postal_code');
             const phone = data.result.formatted_phone_number;
-            console.log(addressComponents);
 
             // Log the extracted components
             props.handleAddressContainerChange({
