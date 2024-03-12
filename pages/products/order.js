@@ -351,10 +351,15 @@ export default function EnhancedTable (props) {
           );
         }
         const dummy_rows = response.data.data;
+        console.log(dummy_rows);
         const result_rows = [];
         dummy_rows.forEach(row => {
           row.products.forEach(product => {
-            result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel', product.product.image_url));
+            try {
+              result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel', product.product.image_url));
+            } catch (e) {
+              
+            }
           })
         });
         setRows(result_rows);
@@ -421,9 +426,40 @@ export default function EnhancedTable (props) {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
+  const handleDisplayByType = (type) => {
+    setDisplayType(type);
+    axios
+      .get(`${BACKEND_URL}/shop/orders`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        const dummy_rows = response.data.data;
+        const result_rows = [];
+        dummy_rows.forEach(row => {
+          if(type === "Purchased" && row.accepted === true)
+            return ;
+          if(type === "Accepted" && row.accepted !== true)
+            return ;
+          row.products.forEach(product => {
+            try {
+              result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel', product.product.image_url));
+            } catch (e) {
+              
+            }
+          })
+        });
+        setRows(result_rows);
+      });
+  }
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
@@ -445,17 +481,14 @@ export default function EnhancedTable (props) {
 
               <GridItem sm={3}>
                 <Card style={{ padding: '20px' }}>
-                <Button color="primary" variant={displayType === "All" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("All")}}>
+                <Button color="primary" variant={displayType === "All" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("All")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>All</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Purchased" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Purchased")}}>
+                <Button color="primary" variant={displayType === "Purchased" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Purchased")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Purchased</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Accepted" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Accepted")}}>
+                <Button color="primary" variant={displayType === "Accepted" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Accepted")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Accepted</p>
-                </Button>
-                <Button color="primary" variant={displayType === "Shipping" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Shipping")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>Shipping</p>
                 </Button>
                 <Button color="primary" variant={displayType === "Completed" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Completed")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Completed</p>
@@ -518,9 +551,9 @@ export default function EnhancedTable (props) {
                                     </TableCell>
                                     <TableCell align="left">{row.title}</TableCell>
                                     <TableCell align="left">{new Date(row.date).toLocaleString()}</TableCell>
-                                    <TableCell align="left">{row.price}</TableCell>
+                                    <TableCell align="left">${row.price}</TableCell>
                                     <TableCell align="left">{row.quantity}</TableCell>
-                                    <TableCell align="left">{row.total_price}</TableCell>
+                                    <TableCell align="left">${row.total_price}</TableCell>
                                     <TableCell align="left"><Badge color="warning" size="medium"><p style={{fontSize: '12px', margin: '0px'}}>{row.status}</p></Badge></TableCell>
                                   </TableRow>
                                 );

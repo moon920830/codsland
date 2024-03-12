@@ -250,6 +250,7 @@ export default function Cart(props) {
         city: addressContainer.city,
         state: addressContainer.state,
         country: addressContainer.country,
+        zip: addressContainer.zip_code,
       }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler

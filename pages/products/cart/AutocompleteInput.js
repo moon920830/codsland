@@ -56,6 +56,7 @@ const AutocompleteInput = (props) => {
             const state = findAddressComponent(addressComponents, 'administrative_area_level_1');
             const country = findAddressComponent(addressComponents, 'country');
             const phone = data.result.formatted_phone_number;
+            console.log(addressComponents);
 
             // Log the extracted components
             props.handleAddressContainerChange({
