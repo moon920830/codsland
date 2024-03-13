@@ -537,6 +537,7 @@ export default function HomeFeed(props) {
                   </GridItem>
                 </GridContainer>
                 {Array.isArray(posts) && posts.map((post) => {
+                  console.log(post);
                   return (
                   <Card key={post._id} className={classes.cardPadding}>
                     <GridContainer direction="column" spacing={2}>
@@ -548,7 +549,11 @@ export default function HomeFeed(props) {
                             }
                           </GridItem>
                           <GridItem sm={4}>
-                            <h5>Briansky Alex</h5>
+                            
+                              {
+                                post && post.author && post.author.fullname && <h5>{post.author.fullname}</h5>
+                              }
+                            
                             <h6 className={classes.cardSubTitle}>{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}</h6>
                           </GridItem>
                           <GridItem sm={1}>
@@ -1071,14 +1076,7 @@ export default function HomeFeed(props) {
               <input type="file" ref={imageInputRef} onChange={handleImageChange} accept="image/*" hidden />
               <input type="file" ref={videoInputRef} onChange={handleVideoChange} accept="video/*" hidden />
             </GridItem>
-            <GridItem style={{marginTop: "12px"}}>
-              <GridContainer>
-                <GridItem sm={11}></GridItem>
-                <GridItem sm={1}>
-                  <SentimentSatisfiedOutlinedIcon />
-                </GridItem>
-              </GridContainer>
-            </GridItem>
+            
           </GridContainer>
             <GridContainer direction="row" alignItems="center" style={{width:"100%",borderRadius: "26px", border: "1px solid #9A9A9A", marginLeft: "0px", marginRight: "0px", paddingTop: "16px", paddingBottom: "16px", marginTop: "24px"}}>
               <GridItem sm={3}>
@@ -1091,13 +1089,13 @@ export default function HomeFeed(props) {
                   <GridItem sm={2} onClick={() => {uploadEnabled!==1?(setUploadEnabled(1), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <WallpaperOutlinedIcon />
                   </GridItem>
-                  <GridItem sm={4}>
+                  <GridItem sm={4} onClick={() => {uploadEnabled!==1?(setUploadEnabled(1), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <h5>Image</h5>
                   </GridItem>
                   <GridItem sm={2} onClick={() => {uploadEnabled!==2?(setUploadEnabled(2), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <VideocamOutlinedIcon />
                   </GridItem>
-                  <GridItem sm={4}>
+                  <GridItem sm={4} onClick={() => {uploadEnabled!==2?(setUploadEnabled(2), setPostFile(null)):setUploadEnabled(0)}} style={{cursor: 'pointer'}}>
                     <h5>Video</h5>
                   </GridItem>
                 </GridContainer>
