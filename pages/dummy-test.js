@@ -375,7 +375,6 @@ export default function HomeFeed(props) {
 
   return (
     <div>
-      <iframe src="https://slotslaunch.com/iframe/17700?token=Y4oSrR4AdMmBKJaxQbE7Pb12hIKgnkS4WayCaYhcq9H4VlCbAg" width="100%" height="600px"></iframe>
     </div>
   );
 }
