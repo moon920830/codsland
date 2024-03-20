@@ -375,6 +375,19 @@ export default function HomeFeed(props) {
 
   return (
     <div>
+      <iframe src="https://slotslaunch.com/iframe/5148?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/6275?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/8558?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/1425?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/15586?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/12189?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/228?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/14579?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/19592?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/2723?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/4013?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/3446?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
+      <iframe src="https://slotslaunch.com/iframe/14941?token=xJgXvch3i4JyDKFchqgQ8IEMeYi5Xn3wTGCeRqow7FQK2LU3BA" width="100%" height="600px"></iframe>
     </div>
   );
 }
