@@ -328,13 +328,14 @@ export default function MyProfile(props) {
                 </GridContainer>
                 
                 {Array.isArray(posts) && posts.map((post) => {
+                  console.log(post);
                   return (
                   <Card className={classes.cardPadding}>
                     <GridContainer direction="column" spacing={2}>
                       <GridItem>
                         <GridContainer alignItems="center">
                           <GridItem sm={1}>
-                            <Avatar src={`${BACKEND_URL}/auth/avatars/${post.author.email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />
+                            {post && post.author && post.author.email && <Avatar src={`${BACKEND_URL}/auth/avatars/${post.author.email}`} className={classes.logoAvatar} style={{width: "45px", height: "45px"}}  />}
                           </GridItem>
                           <GridItem sm={4}>
                             <h5>Briansky Alex</h5>

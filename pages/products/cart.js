@@ -352,10 +352,15 @@ export default function Cart(props) {
                 <Card className={classes.cardPaddingNoTop}>
                   <GridContainer justify="center">
                     <h3 className={classes.title} style={{ color: "#2E3192" }}>
-                      Total :
+                      Products Price :
                     </h3>
                     <h3 className={classes.title} style={{ color: "#2E3192" }}>
                       &nbsp;${total}
+                    </h3>
+                  </GridContainer>
+                  <GridContainer justify="center">
+                    <h3 className={classes.title} style={{ color: "#2E3192", marginTop: '0px' }}>
+                      Total :
                     </h3>
                   </GridContainer>
                   <GridContainer justify="center" alignItems="center">
