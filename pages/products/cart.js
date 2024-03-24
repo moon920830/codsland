@@ -38,9 +38,14 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import PayComponent from './PayComponent.js';
 import ProductList from "./productList.js";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import {ship} from './cart/dummy.js'
+//children
 import AutocompleteInput from './cart/AutocompleteInput.js';
+import NoProduct from "./cart/NoProduct.js";
+import NotValid from "./cart/NotValid.js";
+import VerticalLinearStepper from "./cart/VerticalLinearStepper.js";
 //style
 import modalStyle from "../../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
@@ -116,7 +121,22 @@ const useStyles = makeStyles(theme => {
     },
     noPadding: {
       padding: '0px'
-    }
+    },
+    selectedPlan: {
+      padding: '0px',
+      marginLeft: '0px',
+      marginRight: '0px',
+      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    },
+    unselectedPlan: {
+      padding: '0px',
+      marginLeft: '0px',
+      marginRight: '0px',
+    },
+    selectedPlanItem: {
+      paddingTop: '10px',
+      paddingBottom: '10px',
+    },
   }
 });
 
@@ -136,9 +156,13 @@ export default function Cart(props) {
   const [date, setDate] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [createPostModal, setCreatePostModal] = React.useState(false);
-  const [clientSecret, setClientSecret]=useState(null);
-  const [addressContainer, setAddressContainer]=useState({});
+  const [clientSecret, setClientSecret] = useState(null);
+  const [addressContainer, setAddressContainer] = useState({});
+  const [currentStep, setCurrentStep] = useState(0);
+  const [shipment, setShipment] = useState({});
+  const [currentPlan, setCurrentPlan] = useState(-1);
+  const [disabled, setDisabled] = useState(false);
+  
 
   const renderInput = (props, openCalendar, closeCalendar) => (
     <div className="input-container">
@@ -146,6 +170,10 @@ export default function Cart(props) {
       {/* <CalendarTodayIcon className="calendar-icon" onClick={openCalendar} /> */}
     </div>
   );
+
+  const handleDisabledChange = () => {
+    setDisabled(false);
+  }
 
   const handleAddressContainerChange = (addressObject) => {
     setAddressContainer(addressObject);
@@ -166,6 +194,42 @@ export default function Cart(props) {
     console.log(formattedDate);
     setDate(formattedDate);
   };
+
+  const handleCurrentStepChange = (step) => {
+    if (step === 3 && currentPlan === -1) {
+      setCurrentPlan(0);
+      snackbar.enqueueSnackbar(
+        "You didn't selected your shipment plan. The first plan was selected as default",
+        { variant: "info" });
+    }
+    step = step > 3 ? 3 : step;
+    //get shipment
+    if (step === 2) {
+      handleGetShipment();
+    }
+    //get stripe info
+    if (step === 3) {
+      axios.post(`${BACKEND_URL}/test/create-payment-intent`,{amount: total*100} , {headers: {token:redux_token}})
+      .then(response=>{
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setClientSecret(response.data.clientSecret)
+      })
+    }
+    setCurrentStep(step);
+  }
+
+  const handleCurrentPlanChange = (value) => {
+    setCurrentPlan(value);
+  }
 
   //component mount
   useEffect(() => {
@@ -193,20 +257,22 @@ export default function Cart(props) {
       });
 
     
-    axios.get(`${BACKEND_URL}/test/payment-intent`, {headers: {token:redux_token}})
-      .then(response=>{
-        if (response.data.status == "error") {
-          const {
-            error
-          } = response.data;
-          dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
-        }
-        setClientSecret(response.data.clientSecret)
-      })
+    // axios.get(`${BACKEND_URL}/test/payment-intent`, {headers: {token:redux_token}})
+    //   .then(response=>{
+    //     if (response.data.status == "error") {
+    //       const {
+    //         error
+    //       } = response.data;
+    //       dispatch(actions.createError(error));
+    //       return snackbar.enqueueSnackbar(
+    //         response.data.error ? response.data.error : "Error",
+    //         { variant: "error" }
+    //       );
+    //     }
+    //     setClientSecret(response.data.clientSecret)
+    //   })
+    
+    // setShipment(ship.data);
   }, []);
 
   const handleDeleteProduct = (id, index, change) => {
@@ -237,8 +303,58 @@ export default function Cart(props) {
     setTotal(result.toFixed(2));
   }
 
+  const handleCheckDetails = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(email === "")
+      return snackbar.enqueueSnackbar("Enter email please", { variant: "error" });
+    if(!emailRegex.test(email))
+      return snackbar.enqueueSnackbar("Enter valid email please", { variant: "error" });
+    if(phone === "")
+      return snackbar.enqueueSnackbar("Enter phone number please", { variant: "error" });
+    if (phone.match(/12345/)) {
+      return snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
+    } else if (phone.match(/1234/)) {
+      return snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
+    }
+    if(date == '' || date == undefined)
+      return snackbar.enqueueSnackbar("Enter shipping date please", { variant: "error" });
+    if(addressContainer == {} || !addressContainer.hasOwnProperty('address') || addressContainer.address == "" || addressContainer.address == undefined)
+      return snackbar.enqueueSnackbar("Enter shipping address please", { variant: "error" });
+    return "valid";
+  }
+
+  const handleGetShipment = () => {
+    axios
+      .get(`${BACKEND_URL}/shop/orders/ship`, {
+        email,
+        phone,
+        date,
+        location: addressContainer.address,
+        street: addressContainer.street,
+        city: addressContainer.city,
+        state: addressContainer.state,
+        country: addressContainer.country,
+        zip: addressContainer.zip_code,
+      }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          setDisabled(true);
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+
+        setShipment(response.data.data);
+      });
+  }
+
   const handlePurchase = (result) => {
-    setCreatePostModal(false);
     axios
       .post(`${BACKEND_URL}/shop/orders/save`, {
         result,
@@ -251,6 +367,10 @@ export default function Cart(props) {
         state: addressContainer.state,
         country: addressContainer.country,
         zip: addressContainer.zip_code,
+        shipment: {
+          ship: shipment,
+          rate_index: currentPlan
+        }
       }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
@@ -301,86 +421,185 @@ export default function Cart(props) {
             <GridContainer>
               <GridItem xs={9} sm={9} md={9} lg={9}>
                 <Card style={{ paddingTop: "10px", paddingBottom: "10px" }}>
-                  {products && products.length == 0 ? (
-                    <GridContainer
-                      style={{ height: "100%", marginTop: '50px', marginBottom: '50px' }}
-                      justify="center"
-                      alignItems="center"
-                      direction="column"
-                    >
-                      <div
-                        style={{
-                          backgroundColor: "green",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: "50%",
-                          width: "120px",
-                          height: "120px",
-                        }}
-                      >
-                        <BlockIcon
-                          style={{
-                            width: "40%",
-                            height: "40%",
-                            color: "white",
-                          }}
-                        />
-                      </div>
-                      <h3 style={{ textAlign: "center" }}>
-                        No product in the cart
-                      </h3>
-                    </GridContainer>
-                  ) : (
-                    products.map((value, index) => {
-                      return (
-                        <ProductList
-                          count={value.count}
-                          handleTotalChange={handleTotalChange}
-                          id={value._id}
-                          key={value._id}
-                          product={value.product}
-                          handleDeleteProduct={handleDeleteProduct}
-                          index={index}
-                        />
-                      );
-                    })
-                  )}
+                  <GridContainer>
+                    <GridItem  xs={1} sm={1} md={1} lg={1}></GridItem>
+                    <GridItem  xs={10} sm={10} md={10} lg={10}>
+                      {currentStep === 0 && (products && products.length == 0 ? (
+                        <NoProduct />
+                      ) : (
+                        products.map((value, index) => {
+                          return (
+                            <ProductList
+                              count={value.count}
+                              handleTotalChange={handleTotalChange}
+                              id={value._id}
+                              key={value._id}
+                              product={value.product}
+                              handleDeleteProduct={handleDeleteProduct}
+                              index={index}
+                            />
+                          );
+                        })
+                      ))}
+
+                      {currentStep === 1 && <GridContainer direction="row">
+                        <GridItem  xs={3} sm={3} md={3} lg={3}></GridItem>
+                        <GridItem  xs={6} sm={6} md={6} lg={6}>
+                          <TextField
+                            className={classes.outlinedStyle}
+                            onChange={handleEmailChange}
+                            placeholder="Email"
+                            fullWidth
+                            variant="outlined"
+                            InputProps={{
+                              style: {
+                                // Control font or other styles here
+                                fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                                fontSize: "14px",
+                                marginTop: "30px",
+                                "::placeholder": {
+                                  display: "none",
+                                },
+                              },
+                            }}
+                          />
+                          <PhoneInput
+                            isValid={(value, country) => {
+                              if (value.match(/12345/)) {
+                                return "Invalid value: " + value + ", " + country.name;
+                              } else if (value.match(/1234/)) {
+                                return false;
+                              } else {
+                                return true;
+                              }
+                            }}
+                            style={{ marginTop: "30px" }}
+                            country={"us"}
+                            value={phone}
+                            onChange={(phone, data) => {
+                              setPhone(phone);
+                            }}
+                            inputStyle={{ width: "100%" }}
+                            placeholder="Phone"
+                            inputProps={{
+                              type: "",
+                              endAdornment: (
+                                <PhoneIcon className={classes.inputIconsColor} />
+                              ),
+                              autoComplete: "off",
+                            }}
+                          />
+                          <Datetime
+                            inputProps={{
+                              placeholder: "Shipping Date",
+                              style: {
+                                width: "100%",
+                                padding: "9px", // Adjust padding as needed
+                                borderTop: "1px solid #ced4da", // Border color for top
+                                borderLeft: "1px solid #ced4da", // Border color for left
+                                borderRight: "1px solid #ced4da", // Border color for right
+                                borderBottom: "none", // Omit bottom border
+                                borderRadius: "4px", // Border radius
+                                outline: "none",
+                                fontSize: "16px", // Font size
+                                marginTop: "30px",
+                                color: "#333",
+                                "::placeholder": {
+                                  color: "rgba(255, 0, 0, 1)", // Color and transparency of the placeholder
+                                },
+                                placeholderStyle: {
+                                  color: "rgba(255, 0, 0, 0.5)", // Color and transparency of the placeholder
+                                },
+                              },
+                            }}
+                            value={date}
+                            dateFormat={"YYYY-MM-DD"}
+                            timeFormat={false}
+                            onChange={handleDateChange}
+                            renderInput={renderInput}
+                          />
+                          <AutocompleteInput
+                            handleAddressContainerChange={handleAddressContainerChange}
+                            noPadding={classes.noPadding}
+                            smallFont={classes.smallFont}
+                            outlinedStyle={classes.outlinedStyle}
+                          />
+                        </GridItem>
+                      </GridContainer>}
+
+                      {currentStep === 2 && (Object.keys(shipment).length !== 0 ?
+                      <GridContainer>
+                        <GridItem>
+                          <GridContainer alignItems="center" className={classes.title} style={{backgroundColor:"#2E3192", borderRadius: "26px 26px 0px 0px", color: "white", marginBottom: '0px'}}>
+                            <GridItem sm={2}>No</GridItem>
+                            <GridItem sm={2}>Price</GridItem>
+                            <GridItem sm={4}>Provider Icon</GridItem>
+                            <GridItem sm={1}>Provider Name</GridItem>
+                            <GridItem sm={2}>Duration Terms</GridItem>
+                            <GridItem sm={1}>Estimated Days</GridItem>
+                          </GridContainer>
+                        </GridItem>
+                        <GridItem className={classes.title} style={{margin: '0px'}}>
+                          {shipment && shipment.rates && shipment.rates.map((item, index) => (
+                            <React.Fragment key={index}>
+                              <GridContainer onClick={() => {handleCurrentPlanChange(index)}} className={index === currentPlan ? classes.selectedPlan : classes.unselectedPlan}>
+                                <GridItem className={classes.selectedPlanItem} sm={2}>{index+1}</GridItem>
+                                <GridItem className={classes.selectedPlanItem} sm={2}>${item.amount}</GridItem>
+                                <GridItem className={classes.selectedPlanItem} sm={4}>
+                                  <img src={item.provider_image_75} />
+                                </GridItem>
+                                <GridItem className={classes.selectedPlanItem} sm={1}>{item.provider}</GridItem>
+                                <GridItem className={classes.selectedPlanItem} sm={2}>{item.duration_terms}</GridItem>
+                                <GridItem className={classes.selectedPlanItem} sm={1}>{item.estimated_days}</GridItem>
+                              </GridContainer>
+                              {index !== shipment.rates.length && <Divider />}
+                            </React.Fragment>
+                          ))}
+                        </GridItem>
+                      </GridContainer> : (
+                        <GridContainer>
+                          <GridItem style={{paddingTop: '50px', paddingBottom: '50px', }}>
+                            <NotValid />
+                          </GridItem>
+                        </GridContainer>
+                      ))}
+
+                      {currentStep === 3 &&
+                      <GridContainer>
+                        <GridItem>
+                          {clientSecret && (
+                            <Elements
+                              stripe={stripePromise}
+                              options={{ clientSecret: clientSecret }}
+                            >
+                              <PayComponent
+                                handlePurchase={handlePurchase}
+                                email={email}
+                                phone={phone}
+                                date={date}
+                                location={addressContainer}
+                              />
+                            </Elements>
+                          )}
+                        </GridItem>
+                      </GridContainer>}
+                    </GridItem>
+                    <GridItem  xs={3} sm={3} md={3} lg={3}></GridItem>
+                  </GridContainer>
                 </Card>
               </GridItem>
               <GridItem xs={3} sm={3} md={3} lg={3}>
                 <Card className={classes.cardPaddingNoTop}>
+                  <VerticalLinearStepper handleCurrentStepChange={handleCurrentStepChange} handleCheckDetails={handleCheckDetails} disabled={disabled} handleDisabledChange={handleDisabledChange} />
                   <GridContainer justify="center">
                     <h3 className={classes.title} style={{ color: "#2E3192" }}>
-                      Products Price :
-                    </h3>
-                    <h3 className={classes.title} style={{ color: "#2E3192" }}>
-                      &nbsp;${total}
-                    </h3>
-                  </GridContainer>
-                  <GridContainer justify="center">
-                    <h3 className={classes.title} style={{ color: "#2E3192", marginTop: '0px' }}>
                       Total :
                     </h3>
+                    <h3 className={classes.title} style={{ color: "#2E3192" }}>
+                      &nbsp;${(Number(total) + Number((currentPlan !== -1 && shipment && shipment.rates) ? (shipment.rates[currentPlan].amount*1.0) : (0))).toFixed(2)}
+                    </h3>
                   </GridContainer>
-                  <GridContainer justify="center" alignItems="center">
-                    <Button
-                      round
-                      color="primary"
-                      onClick={() => {
-                        if(products.length === 0) {
-                          snackbar.enqueueSnackbar("No product in the cart",
-                            { variant: "info" }
-                          );
-                        }
-                        else {
-                          setCreatePostModal(true);
-                        }
-                      }}
-                    >
-                      Purchase
-                    </Button>
-                  </GridContainer>
+                  
                 </Card>
               </GridItem>
             </GridContainer>
@@ -501,152 +720,6 @@ export default function Cart(props) {
         </Grid>
         <Grid item xs={1}></Grid>
       </Grid>
-
-      {/* start of create post dialog */}
-      <Dialog
-        classes={{
-          root: classes.center,
-          paper: classes.modal,
-        }}
-        open={createPostModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setCreatePostModal(false)}
-        aria-labelledby="classic-modal-slide-title"
-        aria-describedby="classic-modal-slide-description"
-        maxWidth="sm"
-        fullWidth={true}
-      >
-        <DialogTitle
-          id="classic-modal-slide-title"
-          disableTypography
-          className={classes.modalHeader}
-        >
-          <IconButton
-            className={classes.modalCloseButton}
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            onClick={() => setCreatePostModal(false)}
-          >
-            <Close className={classes.modalClose} />
-          </IconButton>
-          <h4
-            className={classNames(
-              classes.modalTitle,
-              classes.title,
-              classes.textCenter
-            )}
-          >
-            Enter details
-          </h4>
-        </DialogTitle>
-        <DialogContent
-          id="classic-modal-slide-description"
-          className={classes.modalBody}
-        >
-          <Divider />
-          <GridContainer direction="column">
-            <GridItem>
-              <TextField
-                className={classes.outlinedStyle}
-                onChange={handleEmailChange}
-                placeholder="Email"
-                fullWidth
-                variant="outlined"
-                InputProps={{
-                  style: {
-                    // Control font or other styles here
-                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                    fontSize: "14px",
-                    marginTop: "30px",
-                    "::placeholder": {
-                      display: "none",
-                    },
-                  },
-                }}
-              />
-              <PhoneInput
-                isValid={(value, country) => {
-                  if (value.match(/12345/)) {
-                    return "Invalid value: " + value + ", " + country.name;
-                  } else if (value.match(/1234/)) {
-                    return false;
-                  } else {
-                    return true;
-                  }
-                }}
-                style={{ marginTop: "30px" }}
-                country={"us"}
-                value={phone}
-                onChange={(phone, data) => {
-                  setPhone(phone);
-                }}
-                inputStyle={{ width: "100%" }}
-                placeholder="Phone"
-                inputProps={{
-                  type: "",
-                  endAdornment: (
-                    <PhoneIcon className={classes.inputIconsColor} />
-                  ),
-                  autoComplete: "off",
-                }}
-              />
-              <Datetime
-                inputProps={{
-                  placeholder: "Shipping Date",
-                  style: {
-                    width: "100%",
-                    padding: "9px", // Adjust padding as needed
-                    borderTop: "1px solid #ced4da", // Border color for top
-                    borderLeft: "1px solid #ced4da", // Border color for left
-                    borderRight: "1px solid #ced4da", // Border color for right
-                    borderBottom: "none", // Omit bottom border
-                    borderRadius: "4px", // Border radius
-                    outline: "none",
-                    fontSize: "16px", // Font size
-                    marginTop: "30px",
-                    color: "#333",
-                    "::placeholder": {
-                      color: "rgba(255, 0, 0, 1)", // Color and transparency of the placeholder
-                    },
-                    placeholderStyle: {
-                      color: "rgba(255, 0, 0, 0.5)", // Color and transparency of the placeholder
-                    },
-                  },
-                }}
-                value={date}
-                dateFormat={"YYYY-MM-DD"}
-                timeFormat={false}
-                onChange={handleDateChange}
-                renderInput={renderInput}
-              />
-              <AutocompleteInput
-                handleAddressContainerChange={handleAddressContainerChange}
-                noPadding={classes.noPadding}
-                smallFont={classes.smallFont}
-                outlinedStyle={classes.outlinedStyle}
-              />{" "}
-              {/* onSelectAddress={handleSelectAddress}  */}
-              {clientSecret && (
-                <Elements
-                  stripe={stripePromise}
-                  options={{ clientSecret: clientSecret }}
-                >
-                  <PayComponent
-                    handlePurchase={handlePurchase}
-                    email={email}
-                    phone={phone}
-                    date={date}
-                    location={addressContainer}
-                  />
-                </Elements>
-              )}
-            </GridItem>
-          </GridContainer>
-        </DialogContent>
-      </Dialog>
-      {/* end of create post dialog */}
     </div>
   );
 }

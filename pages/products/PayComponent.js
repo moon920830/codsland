@@ -62,23 +62,6 @@ export default function CheckoutForm(props) {
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if(props.email === "")
-      return snackbar.enqueueSnackbar("Enter email please", { variant: "error" });
-    if(!emailRegex.test(props.email))
-      return snackbar.enqueueSnackbar("Enter valid email please", { variant: "error" });
-    if(props.phone === "")
-      return snackbar.enqueueSnackbar("Enter phone number please", { variant: "error" });
-    if (props.phone.match(/12345/)) {
-      return snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
-    } else if (props.phone.match(/1234/)) {
-      return snackbar.enqueueSnackbar("Enter valid phone number please", { variant: "error" });
-    }
-    if(props.date == '' || props.date == undefined)
-      return snackbar.enqueueSnackbar("Enter shipping date please", { variant: "error" });
-    if(props.location == {} || !props.location.hasOwnProperty('address') || props.location.address == "" || props.location.address == undefined)
-      return snackbar.enqueueSnackbar("Enter shipping address please", { variant: "error" });
       
     setIsLoading(true);
 
@@ -115,7 +98,7 @@ export default function CheckoutForm(props) {
   }
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
+    <form id="payment-form" onSubmit={handleSubmit} style={{marginTop: '50px', marginBottom: '50px'}}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
         <Button type="submit" style={{marginTop: '40px'}} round color="primary" onClick={() => {}} fullWidth disabled={isLoading || !stripe || !elements} id="submit">
           <span id="button-text">

@@ -43,7 +43,7 @@ const AutocompleteInput = (props) => {
       .then((response) => {
         setPredictions(response.data.predictions);
         if(response.data.predictions.length === 0)
-          return snackbar.enqueueSnackbar("Invalid Address"+GOOGLE_MAP_API_KEY, { variant: "error" });
+          return snackbar.enqueueSnackbar("Invalid Address", { variant: 'error' });
 
         const placeId = response.data.predictions[0].place_id;
         axios
