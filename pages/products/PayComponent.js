@@ -7,6 +7,7 @@ import {
 import Button from "/components/CustomButtons/Button.js";
 import { useSnackbar } from "notistack";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Router from "next/router";
 
 export default function CheckoutForm(props) {
   const snackbar = useSnackbar();
@@ -88,7 +89,8 @@ export default function CheckoutForm(props) {
       }
     } else {
       snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
-      props.handlePurchase(result);
+      // props.handlePurchase(result);
+      Router.push("/dummy-success");
     }
     setIsLoading(false);
   };

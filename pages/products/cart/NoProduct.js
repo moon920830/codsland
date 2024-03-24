@@ -5,7 +5,7 @@ import BlockIcon from "@material-ui/icons/Block";
 export default function NoProduct() {
   return (
     <GridContainer
-      style={{ height: "100%", marginTop: '50px', marginBottom: '50px' }}
+      style={{ height: "100%", marginBottom: '50px' }}
       justify="center"
       alignItems="center"
       direction="column"

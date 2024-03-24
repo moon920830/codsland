@@ -56,6 +56,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 import Close from "@material-ui/icons/Close";
+import ShipRates from "./cart/ShipRates.js";
 
 const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
 
@@ -184,6 +185,8 @@ export default function Cart(props) {
 
   const handleDateChange = (e) => {
     const selectedDate = e._d;
+    if (selectedDate === undefined || selectedDate === "" || selectedDate === null)
+      return ;
     const year = selectedDate.getFullYear();
     const month = selectedDate.getMonth() + 1; // Adding 1 because months are zero-indexed
     const day = selectedDate.getDate();
@@ -202,9 +205,9 @@ export default function Cart(props) {
         { variant: "info" });
     }
     step = step > 3 ? 3 : step;
-    //get shipment
+    //create dummy order
     if (step === 2) {
-      handleGetShipment();
+      handlePurchase();
     }
     //get stripe info
     if (step === 3) {
@@ -302,6 +305,55 @@ export default function Cart(props) {
     setTotal(result.toFixed(2));
   }
 
+  const refreshTotal = () => {
+    setTotal(0);
+    axios
+      .get(`${BACKEND_URL}/shop/cart`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        const total = response.data.data.reduce((sum, value) => {
+          if(value.product && value.product.price)
+            return sum + value.product.price*value.count;
+        }, 0)
+        handleTotalChange(total);
+      });
+
+    axios
+      .get(`${BACKEND_URL}/shop/orders/${shipment.order_id}`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        
+        // const total = response.data.data.reduce((sum, value) => {
+        //   if(value.product && value.product.price)
+        //     return sum + value.product.price*value.count;
+        // }, 0)
+        // setTotal(total);
+        const data = response.data.data;
+        let rate_from_back = data.shipping_rate;
+        handleTotalChange(rate_from_back.amount);
+      });
+  }
+
   const handleCheckDetails = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(email === "")
@@ -322,9 +374,11 @@ export default function Cart(props) {
     return "valid";
   }
 
-  const handleGetShipment = () => {
+  const handlePurchase = () => {
+    // if (handleCheckDetails() !== "valid")
+    //   return ;
     axios
-      .get(`${BACKEND_URL}/shop/orders/ship`, {
+      .post(`${BACKEND_URL}/shop/orders/save`, {
         email,
         phone,
         date,
@@ -348,42 +402,8 @@ export default function Cart(props) {
             { variant: "error" }
           );
         }
-
         setShipment(response.data.data);
-      });
-  }
-
-  const handlePurchase = (result) => {
-    axios
-      .post(`${BACKEND_URL}/shop/orders/save`, {
-        result,
-        email,
-        phone,
-        date,
-        location: addressContainer.address,
-        street: addressContainer.street,
-        city: addressContainer.city,
-        state: addressContainer.state,
-        country: addressContainer.country,
-        zip: addressContainer.zip_code,
-        shipment: {
-          ship: shipment,
-          rate_index: currentPlan
-        }
-      }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
-      .then((response) => {
-        //error handler
-        if (response.data.status == "error") {
-          const {
-            error
-          } = response.data;
-          dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
-        }
-        Router.push("/dummy-success");
+        // Router.push("/dummy-success");
         // snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
       });
   }
@@ -526,36 +546,8 @@ export default function Cart(props) {
                         </GridItem>
                       </GridContainer>}
 
-                      {currentStep === 2 && (Object.keys(shipment).length !== 0 ?
-                      <GridContainer>
-                        <GridItem>
-                          <GridContainer alignItems="center" className={classes.title} style={{backgroundColor:"#2E3192", borderRadius: "26px 26px 0px 0px", color: "white", marginBottom: '0px'}}>
-                            <GridItem sm={2}>No</GridItem>
-                            <GridItem sm={2}>Price</GridItem>
-                            <GridItem sm={4}>Provider Icon</GridItem>
-                            <GridItem sm={1}>Provider Name</GridItem>
-                            <GridItem sm={2}>Duration Terms</GridItem>
-                            <GridItem sm={1}>Estimated Days</GridItem>
-                          </GridContainer>
-                        </GridItem>
-                        <GridItem className={classes.title} style={{margin: '0px'}}>
-                          {shipment && shipment.rates && shipment.rates.map((item, index) => (
-                            <React.Fragment key={index}>
-                              <GridContainer onClick={() => {handleCurrentPlanChange(index)}} className={index === currentPlan ? classes.selectedPlan : classes.unselectedPlan}>
-                                <GridItem className={classes.selectedPlanItem} sm={2}>{index+1}</GridItem>
-                                <GridItem className={classes.selectedPlanItem} sm={2}>${item.amount}</GridItem>
-                                <GridItem className={classes.selectedPlanItem} sm={4}>
-                                  <img src={item.provider_image_75} />
-                                </GridItem>
-                                <GridItem className={classes.selectedPlanItem} sm={1}>{item.provider}</GridItem>
-                                <GridItem className={classes.selectedPlanItem} sm={2}>{item.duration_terms}</GridItem>
-                                <GridItem className={classes.selectedPlanItem} sm={1}>{item.estimated_days}</GridItem>
-                              </GridContainer>
-                              {index !== shipment.rates.length && <Divider />}
-                            </React.Fragment>
-                          ))}
-                        </GridItem>
-                      </GridContainer> : (
+                      {currentStep === 2 && ((Object.keys(shipment).length !== 0 && disabled ===false) ?
+                      <ShipRates id={shipment.order_id} refreshTotal={refreshTotal}  /> : (
                         <GridContainer>
                           <GridItem style={{paddingTop: '50px', paddingBottom: '50px', }}>
                             <NotValid />

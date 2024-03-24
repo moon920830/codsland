@@ -69,8 +69,8 @@ export default function VerticalLinearStepper(props) {
   const steps = getSteps();
 
   const handleNext = () => {
-    // if (activeStep === 1 && props.handleCheckDetails() !== "valid")
-    //   return ;
+    if (activeStep === 1 && props.handleCheckDetails() !== "valid")
+      return ;
     props.handleDisabledChange();
     props.handleCurrentStepChange(activeStep + 1);
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
