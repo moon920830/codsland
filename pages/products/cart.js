@@ -40,7 +40,6 @@ import PayComponent from './PayComponent.js';
 import ProductList from "./productList.js";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import {ship} from './cart/dummy.js'
 //children
 import AutocompleteInput from './cart/AutocompleteInput.js';
 import NoProduct from "./cart/NoProduct.js";
