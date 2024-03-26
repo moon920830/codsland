@@ -193,7 +193,6 @@ export default function Cart(props) {
     const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${
       day < 10 ? "0" : ""
     }${day}`;
-    console.log(formattedDate);
     setDate(formattedDate);
   };
 
@@ -231,6 +230,27 @@ export default function Cart(props) {
 
   const handleCurrentPlanChange = (value) => {
     setCurrentPlan(value);
+  }
+
+  const handlePay = (result) => {
+    axios
+      .post(`${BACKEND_URL}/shop/orders/purchase`, {
+        result,
+      }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        Router.push("/dummy-success");
+      });
   }
 
   //component mount
@@ -306,28 +326,6 @@ export default function Cart(props) {
   }
 
   const refreshTotal = () => {
-    setTotal(0);
-    axios
-      .get(`${BACKEND_URL}/shop/cart`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
-      .then((response) => {
-        //error handler
-        if (response.data.status == "error") {
-          const {
-            error
-          } = response.data;
-          dispatch(actions.createError(error));
-          return snackbar.enqueueSnackbar(
-            response.data.error ? response.data.error : "Error",
-            { variant: "error" }
-          );
-        }
-        const total = response.data.data.reduce((sum, value) => {
-          if(value.product && value.product.price)
-            return sum + value.product.price*value.count;
-        }, 0)
-        handleTotalChange(total);
-      });
-
     axios
       .get(`${BACKEND_URL}/shop/orders/${shipment.order_id}`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
       .then((response) => {
@@ -343,14 +341,16 @@ export default function Cart(props) {
           );
         }
         
-        // const total = response.data.data.reduce((sum, value) => {
-        //   if(value.product && value.product.price)
-        //     return sum + value.product.price*value.count;
-        // }, 0)
-        // setTotal(total);
+
         const data = response.data.data;
-        let rate_from_back = data.shipping_rate;
-        handleTotalChange(rate_from_back.amount);
+        
+        const products_price = data.products.reduce((sum, value) => {
+          if(value.product && value.product.price)
+            return sum + value.product.price*value.count;
+        }, 0);
+        let shipping_price = data.shipping_rate.amount;
+        let result_price = products_price * 1.0 + shipping_price * 1.0 - total * 1.0;
+        handleTotalChange(result_price.toFixed(2));
       });
   }
 
@@ -564,7 +564,7 @@ export default function Cart(props) {
                               options={{ clientSecret: clientSecret }}
                             >
                               <PayComponent
-                                handlePurchase={handlePurchase}
+                                handlePay={handlePay}
                                 email={email}
                                 phone={phone}
                                 date={date}
@@ -580,14 +580,16 @@ export default function Cart(props) {
                 </Card>
               </GridItem>
               <GridItem xs={3} sm={3} md={3} lg={3}>
-                <Card className={classes.cardPaddingNoTop}>
-                  <VerticalLinearStepper handleCurrentStepChange={handleCurrentStepChange} handleCheckDetails={handleCheckDetails} disabled={disabled} handleDisabledChange={handleDisabledChange} />
+                <Card className={classes.cardPaddingNoTop} style={{minHeight: '233px'}}>
+                  {(products && products.length === 0 && currentStep === 0) ?
+                  <div></div>
+                  : <VerticalLinearStepper handleCurrentStepChange={handleCurrentStepChange} handleCheckDetails={handleCheckDetails} disabled={disabled} handleDisabledChange={handleDisabledChange} />}
                   <GridContainer justify="center">
                     <h3 className={classes.title} style={{ color: "#2E3192" }}>
                       Total :
                     </h3>
                     <h3 className={classes.title} style={{ color: "#2E3192" }}>
-                      &nbsp;${(Number(total) + Number((currentPlan !== -1 && shipment && shipment.rates) ? (shipment.rates[currentPlan].amount*1.0) : (0))).toFixed(2)}
+                      &nbsp;${total}
                     </h3>
                   </GridContainer>
                   

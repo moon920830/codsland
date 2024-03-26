@@ -89,8 +89,7 @@ export default function CheckoutForm(props) {
       }
     } else {
       snackbar.enqueueSnackbar("Purchase Success", { variant: "success" });
-      // props.handlePurchase(result);
-      Router.push("/dummy-success");
+      props.handlePay(result);
     }
     setIsLoading(false);
   };

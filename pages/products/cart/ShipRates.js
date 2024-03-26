@@ -68,7 +68,7 @@ export default function ShipRates(props) {
         const data = response.data.data;
         let rate_from_back;
         setShipment(data.shipping_info);
-        if (data.shipping_rate !== null) {
+        if (data.shipping_rate !== null && data.shipping_rate !== undefined) {
           rate_from_back = data.shipping_rate;
         } else {
           rate_from_back = data.shipping_info.rates[0];

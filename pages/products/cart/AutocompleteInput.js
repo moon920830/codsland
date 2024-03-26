@@ -104,6 +104,7 @@ const AutocompleteInput = (props) => {
       <ul>
         {predictions.map((prediction) => (
           <List
+          key={prediction.place_id}
           classes={{
             padding	: props.noPadding
           }}>
