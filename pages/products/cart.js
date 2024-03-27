@@ -160,7 +160,6 @@ export default function Cart(props) {
   const [addressContainer, setAddressContainer] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
   const [shipment, setShipment] = useState({});
-  const [currentPlan, setCurrentPlan] = useState(-1);
   const [disabled, setDisabled] = useState(false);
   
 
@@ -197,12 +196,6 @@ export default function Cart(props) {
   };
 
   const handleCurrentStepChange = (step) => {
-    if (step === 3 && currentPlan === -1) {
-      setCurrentPlan(0);
-      snackbar.enqueueSnackbar(
-        "You didn't selected your shipment plan. The first plan was selected as default",
-        { variant: "info" });
-    }
     step = step > 3 ? 3 : step;
     //create dummy order
     if (step === 2) {
@@ -226,10 +219,6 @@ export default function Cart(props) {
       })
     }
     setCurrentStep(step);
-  }
-
-  const handleCurrentPlanChange = (value) => {
-    setCurrentPlan(value);
   }
 
   const handlePay = (result) => {
