@@ -445,9 +445,11 @@ export default function EnhancedTable (props) {
         const dummy_rows = response.data.data;
         const result_rows = [];
         dummy_rows.forEach(row => {
-          if(type === "Purchased" && row.accepted === true)
+          if(type === "Unpaid" && row.paid === true)
             return ;
-          if(type === "Accepted" && row.accepted !== true)
+          if(type === "Paid" && row.paid === false)
+            return ;
+          if(type === "Accepted" && row.accepted === false)
             return ;
           row.products.forEach(product => {
             try {
@@ -484,19 +486,15 @@ export default function EnhancedTable (props) {
                 <Button color="primary" variant={displayType === "All" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("All")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>All</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Purchased" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Purchased")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>Purchased</p>
+                <Button color="primary" variant={displayType === "Unpaid" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Unpaid")}}>
+                  <p style={{fontFamily: '', fontSize: '12px'}}>Unpaid</p>
+                </Button>
+                <Button color="primary" variant={displayType === "Paid" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Paid")}}>
+                  <p style={{fontFamily: '', fontSize: '12px'}}>Paid</p>
                 </Button>
                 <Button color="primary" variant={displayType === "Accepted" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Accepted")}}>
                   <p style={{fontFamily: '', fontSize: '12px'}}>Accepted</p>
                 </Button>
-                <Button color="primary" variant={displayType === "Completed" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Completed")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>Completed</p>
-                </Button>
-                <Button color="primary" variant={displayType === "Canceled" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {setDisplayType("Canceled")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>Canceled</p>
-                </Button>
-                  
                 </Card>
               </GridItem>
               <GridItem sm={9}>

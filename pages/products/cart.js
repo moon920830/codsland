@@ -225,6 +225,7 @@ export default function Cart(props) {
     axios
       .post(`${BACKEND_URL}/shop/orders/purchase`, {
         result,
+        order: shipment.order_id
       }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
       .then((response) => {
         //error handler
