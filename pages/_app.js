@@ -54,6 +54,7 @@ class MyApp extends App {
       email = ctx.req.headers.cookie ? getCookie('email', ctx.req) : null;
       fullname = ctx.req.headers.cookie ? getCookie('fullname', ctx.req) : null;
       membership = ctx.req.headers.cookie ? getCookie('membership', ctx.req) : null;
+      membership = decodeURIComponent(membership);
       if(membership !== undefined && membership !== "" && membership !== null)
         membership = JSON.parse(membership);
     } else {
@@ -62,6 +63,7 @@ class MyApp extends App {
       email = getCookieFromBrowser('email');
       fullname = getCookieFromBrowser('fullname');
       membership = getCookieFromBrowser('membership');
+      membership = decodeURIComponent(membership);
       if(membership !== undefined && membership !== "" && membership !== null)
         membership = JSON.parse(membership);
     }
