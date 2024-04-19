@@ -35,6 +35,13 @@ function HeaderLinks(props) {
   const classes = useStyles();
   const snackbar = useSnackbar();
 
+  const checkExpired = (membership) => {
+    const databaseTime = new Date(membership.expired);
+    const currentTime = new Date();
+
+    return databaseTime < currentTime;
+  }
+
   const handleDashboard = () => {
     if(props.token==null || props.token==undefined)
     {
@@ -48,7 +55,10 @@ function HeaderLinks(props) {
     if(props.token==null || props.token==undefined)
     {
       return snackbar.enqueueSnackbar("Sign in first", { variant: "info" });
-    } else {
+    } else if(props.membership === null || props.membership === undefined || checkExpired(props.membership)) {
+      return snackbar.enqueueSnackbar("Your membership is not valid", { variant: "info" });
+    }
+    else {
       return Router.push("/products");
     }
   }
@@ -266,6 +276,7 @@ function HeaderLinks(props) {
 const mapStateToProps = (state) => {
   return {
     token: state.authentication.token,
+    membership: state.authentication.membership,
   };
 };
 

@@ -105,6 +105,7 @@ export default function Products(props) {
   //redux
   const dispatch = useDispatch();
   const redux_token = useSelector((state) => state.authentication.token);
+  const redux_membership = useSelector((state) => state.authentication.membership);
   //other
   const classes = useStyles();
   const { ...rest } = props;

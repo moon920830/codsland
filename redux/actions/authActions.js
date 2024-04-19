@@ -14,14 +14,15 @@ const authenticate = ({ email, password }, type) => {
     const formData = { email, password };
     try {
       const {
-        data: { data: { token } },
+        data: { data: { token, fullname, email, membership } },
       } = await axios.post(`${BACKEND_URL}/auth/signin`, formData);
-      // const token = "djaojnhh234234";
-      console.log(token);
       setCookie('token', token);
+      setCookie('fullname', fullname);
+      setCookie('email', email);
+      setCookie('membership', membership);
       Router.push('/');
       dispatch(removeError());
-      dispatch({ type: AUTHENTICATE, payload: token });
+      dispatch({ type: AUTHENTICATE, payload: {token, fullname, email, membership} });
     } catch (response) {
       const {
         status

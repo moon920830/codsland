@@ -7,6 +7,8 @@ import Link from "next/link";
 import Button from '@material-ui/core/Button';
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
+import { Dialog, DialogContent, DialogTitle, DialogActions, Divider } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
 // @material-ui/icons
 import KeyboardBackspaceOutlinedIcon from '@material-ui/icons/KeyboardBackspaceOutlined';
 // import Badge from '@material-ui/core/Badge';
@@ -57,17 +59,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CancelIcon from '@material-ui/icons/Cancel';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="down" ref={ref} {...props} />;
-});
-
-
-
-
-
-function createData(id, image, title, date, price, quantity, total_price, status, action, image_url) {
-  return { id, image, title, date, price, quantity, total_price, status, action, image_url };
+function createData(id, date, number, price, status, products, shipping_rate) {
+  return { id, date, number, price, status, products, shipping_rate};
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -97,11 +90,8 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'image', numeric: false, disablePadding: true, label: 'Image' },
-  { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
   { id: 'date', numeric: false, disablePadding: false, label: 'Date' },
-  { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
-  { id: 'quantity', numeric: true, disablePadding: false, label: 'Quantity' },
+  { id: 'quantity', numeric: true, disablePadding: false, label: 'Number Of Products' },
   { id: 't_price', numeric: true, disablePadding: false, label: 'Total Price' },
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
 ];
@@ -315,7 +305,7 @@ const useStyles = makeStyles(theme => {
 });
 
 
-export default function EnhancedTable (props) {
+export default function Order (props) {
   //snackbar
   const snackbar = useSnackbar();
   //redux
@@ -333,6 +323,18 @@ export default function EnhancedTable (props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [displayType, setDisplayType] = useState("All");
   const [rows, setRows] = useState([]);
+  const [showOrder, setShowOrder] = useState(0);
+  const [selectedOrder, setSelectedOrder] = useState({});
+
+  const getStatus = (order) => {
+    if (order.paid === false)
+      return "UNPAID";
+    if (order.accepted === true)
+      return "ACCEPTED";
+    if (order.paid === true)
+      return "PAID";
+    return "UNKNOWN";
+  }
 
   //component mount
   useEffect(() => {
@@ -351,16 +353,9 @@ export default function EnhancedTable (props) {
           );
         }
         const dummy_rows = response.data.data;
-        console.log(dummy_rows);
         const result_rows = [];
         dummy_rows.forEach(row => {
-          row.products.forEach(product => {
-            try {
-              result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel', product.product.image_url));
-            } catch (e) {
-              
-            }
-          })
+          result_rows.push(createData(row._id, row.createdAt, row.products.length, row.price.toFixed(2), getStatus(row), row.products, row.shipping_rate));
         });
         setRows(result_rows);
       });
@@ -388,16 +383,21 @@ export default function EnhancedTable (props) {
     setOrderBy(property);
   };
 
+  const handleShowOrder = (row) => {
+    setShowOrder(true);
+    setSelectedOrder(row);
+  }
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.image+'*'+n.date);
+      const newSelecteds = rows.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, id) => {
+  const handleSelect = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
@@ -450,14 +450,8 @@ export default function EnhancedTable (props) {
           if(type === "Paid" && row.paid === false)
             return ;
           if(type === "Accepted" && row.accepted === false)
-            return ;
-          row.products.forEach(product => {
-            try {
-              result_rows.push(createData(product.product._id+'*'+row.createdAt, product.product._id, product.product.title, row.createdAt, product.product.price, product.count, (product.product.price*product.count).toFixed(2), 'shipping', 'cancel', product.product.image_url));
-            } catch (e) {
-              
-            }
-          })
+            return ;  
+          result_rows.push(createData(row._id, row.createdAt, row.products.length, row.price.toFixed(2), getStatus(row), row.products, row.shipping_rate));
         });
         setRows(result_rows);
       });
@@ -527,31 +521,24 @@ export default function EnhancedTable (props) {
                                 return (
                                   <TableRow
                                     hover
-                                    onClick={(event) => handleClick(event, row.id)}
+                                    onClick={(event) => {handleShowOrder(row)}}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
                                     key={row.id}
                                     selected={isItemSelected}
+                                    className={classes.cursor}
                                   >
                                     <TableCell padding="checkbox">
                                       <Checkbox
+                                        onClick={(event) => {event.stopPropagation();handleSelect(event, row.id)}}
                                         checked={isItemSelected}
                                         inputProps={{ 'aria-labelledby': labelId }}
                                       />
                                     </TableCell>
-                                    <TableCell component="th" id={labelId} scope="row" padding="none">
-                                      {row.image_url ? (
-                                        <img src={row.image_url} alt="..." style={{ width: "50px", height: "50px"}}></img>
-                                      ) : (
-                                        <img src={`${BACKEND_URL}/shop/products/${row.image}/image`} alt="..." style={{ width: "50px", height: "50px"}}></img>
-                                      )}
-                                    </TableCell>
-                                    <TableCell align="left">{row.title}</TableCell>
                                     <TableCell align="left">{new Date(row.date).toLocaleString()}</TableCell>
+                                    <TableCell align="left">{row.number}</TableCell>
                                     <TableCell align="left">${row.price}</TableCell>
-                                    <TableCell align="left">{row.quantity}</TableCell>
-                                    <TableCell align="left">${row.total_price}</TableCell>
                                     <TableCell align="left"><Badge color="warning" size="medium"><p style={{fontSize: '12px', margin: '0px'}}>{row.status}</p></Badge></TableCell>
                                   </TableRow>
                                 );
@@ -578,10 +565,8 @@ export default function EnhancedTable (props) {
                   </Card>
               </GridItem>
             </GridContainer>
-            {/* Membership */}
 
-            {/* Footer */}
-
+            {/* Footer start */}
             <GridContainer justify="space-between" style={{ marginTop: "100px" }}>
               <GridItem sm={6}>
                 <img src="/img/CoDS_Black_Logo.png"></img>
@@ -622,13 +607,11 @@ export default function EnhancedTable (props) {
                 <p><Link href="/" >Chat support</Link></p>
               </GridItem>
             </GridContainer>
-
-            {/* Footer */}
-            {/* </div> */}
+            {/* Footer end */}
           </Container>
         </div>
       </div>
-      <Grid container  >
+      <Grid container>
         <Grid item xs={4} style={{display:"flex",justifyContent:'center'}}>
           <Typography>Copyright © 2023 CODS</Typography>
         </Grid>
@@ -637,6 +620,64 @@ export default function EnhancedTable (props) {
         </Grid>
         <Grid item xs={1} ></Grid>
       </Grid>
+
+
+
+
+
+      {/* dialog start */}
+      <Dialog
+        open={showOrder?true:false}
+        onClose={e=>setShowOrder(null)}
+        fullWidth
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle>
+          <GridContainer justify="space-between">
+            <p style={{fontSize: '20px'}}>Order Detail</p>
+            {
+              selectedOrder.status === "UNPAID" && (
+                <Button variant="outlined" color="primary">Complete Order</Button>
+              )
+            }
+          </GridContainer>
+        </DialogTitle>
+        <DialogContent style={{marginBottom: '32px'}}>
+          {showOrder&&(
+            <>
+              <List>
+                {selectedOrder.products && selectedOrder.products.map((oneProduct,index)=>{
+                  return oneProduct.product&&(
+                    <ListItem key={index} >
+                      <ListItemAvatar>
+                        <img style={{width:"10vh"}} src={oneProduct.product.image_url?oneProduct.product.image_url:`${BACKEND_URL}/shop/products/${oneProduct.product._id}/image`} />
+                      </ListItemAvatar>
+                      <ListItemText style={{marginLeft: '20px'}} primary={oneProduct.product.title+" X "+oneProduct.count} secondary={
+                        oneProduct.product.price.toFixed(2)+" X "+oneProduct.count+" = "+((Number(oneProduct.product.price)*Number(oneProduct.count)).toFixed(2)+" USD $")
+                        } >
+                      </ListItemText>
+                    </ListItem>
+                  )
+                })}
+                <Divider/>
+                {selectedOrder.shipping_rate&&(
+                  <ListItem  >
+                    <ListItemAvatar>
+                      <img style={{width:"10vh"}} src={selectedOrder.shipping_rate.provider_image_75} />
+                    </ListItemAvatar>
+                    <ListItemText style={{marginLeft:'20px'}} primary={`${selectedOrder.shipping_rate.provider} : ${selectedOrder.shipping_rate.servicelevel.display_name}`} secondary={
+                      Number(selectedOrder.shipping_rate.amount).toFixed(2)+" USD $"
+                      } >
+                    </ListItemText>
+                  </ListItem>
+                )}
+              </List>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* dialog end */}
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
     case SAVEOTP:
       return { ...state, otp : action.payload };
     case AUTHENTICATE:
-      return { ...state, token: action.payload.token, fullname: action.payload.fullname, email: action.payload.email };
+      return { ...state, token: action.payload.token, fullname: action.payload.fullname, email: action.payload.email, membership: action.payload.membership };
     case DEAUTHENTICATE:
       return { ...state, token: null };
     default:

@@ -117,15 +117,16 @@ export default function LoginPage(props) {
         
         const {
           data: {
-            data: { token, fullname, email },
+            data: { token, fullname, email, membership },
           },
         } = response;
         setCookie("token", token);
         setCookie("fullname", fullname);
         setCookie("email", email);
+        setCookie("membership", membership);
         sessionStorage.setItem('userToken', token);
         dispatch(actions.removeError());
-        dispatch({ type: AUTHENTICATE, payload: { token, fullname, email } });
+        dispatch({ type: AUTHENTICATE, payload: { token, fullname, email, membership } });
         return Router.push("/home-feed");
       });
     // dispatch(actions.authenticate({ email, password }, 'login'));

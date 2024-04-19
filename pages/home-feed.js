@@ -17,7 +17,6 @@ import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
 import SendOutlinedIcon from '@material-ui/icons/SendOutlined';
 // core components
 import Header from "/components/Header/Header.js";
-import HeaderLinks from "/components/Header/HeaderLinks.js";
 import Footer from "/components/Footer/Footer.js";
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
@@ -537,7 +536,6 @@ export default function HomeFeed(props) {
                   </GridItem>
                 </GridContainer>
                 {Array.isArray(posts) && posts.map((post) => {
-                  console.log(post);
                   return (
                   <Card key={post._id} className={classes.cardPadding}>
                     <GridContainer direction="column" spacing={2}>
