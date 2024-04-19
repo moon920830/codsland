@@ -55,7 +55,7 @@ class MyApp extends App {
       fullname = ctx.req.headers.cookie ? getCookie('fullname', ctx.req) : null;
       membership = ctx.req.headers.cookie ? getCookie('membership', ctx.req) : null;
       membership = decodeURIComponent(membership);
-      if(membership !== undefined && membership !== "" && membership !== null)
+      if(membership != undefined && membership != "" && membership != null)
         membership = JSON.parse(membership);
     } else {
       // Access cookies from the document object on the client
@@ -64,7 +64,7 @@ class MyApp extends App {
       fullname = getCookieFromBrowser('fullname');
       membership = getCookieFromBrowser('membership');
       membership = decodeURIComponent(membership);
-      if(membership !== undefined && membership !== "" && membership !== null)
+      if(membership != undefined && membership != "" && membership != null)
         membership = JSON.parse(membership);
     }
     ctx.store.dispatch(removeError());
