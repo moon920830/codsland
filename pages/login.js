@@ -25,7 +25,7 @@ import actions from '../redux/actions';
 import { useSnackbar } from "notistack";
 import axios from 'axios';
 import { BACKEND_URL } from "../AppConfigs";
-import { setCookie, removeCookie } from '../utils/cookie';
+import { setCookie } from '../utils/cookie';
 import { AUTHENTICATE } from '../redux/types/authTypes';
 import Router from "next/router";
 
@@ -65,7 +65,6 @@ export default function LoginPage(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const handleEmailChange = (e) => {
-    console.log('Email changed:', e.target.value);
     setEmail(e.target.value)
   };
   const handlePasswordChange = (e) => {
@@ -123,7 +122,7 @@ export default function LoginPage(props) {
         setCookie("token", token);
         setCookie("fullname", fullname);
         setCookie("email", email);
-        setCookie("membership", membership);
+        setCookie("membership", JSON.stringify(membership));
         sessionStorage.setItem('userToken', token);
         dispatch(actions.removeError());
         dispatch({ type: AUTHENTICATE, payload: { token, fullname, email, membership } });

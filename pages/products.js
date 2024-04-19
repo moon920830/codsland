@@ -117,8 +117,20 @@ export default function Products(props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(6);
 
+  const checkExpired = (membership) => {
+    const databaseTime = new Date(membership.expired);
+    const currentTime = new Date();
+
+    return databaseTime < currentTime;
+  }
+
   //component mount
   useEffect(() => {
+    if(redux_membership === null || redux_membership === undefined || checkExpired(redux_membership)) {
+      snackbar.enqueueSnackbar("Your membership is not valid", { variant: "info" });
+      Router.push("/home");
+    }
+
     axios
       .get(`${BACKEND_URL}/shop/categories`, {
         headers: { token: redux_token },

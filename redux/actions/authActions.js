@@ -19,7 +19,7 @@ const authenticate = ({ email, password }, type) => {
       setCookie('token', token);
       setCookie('fullname', fullname);
       setCookie('email', email);
-      setCookie('membership', membership);
+      setCookie('membership', JSON.stringify(membership));
       Router.push('/');
       dispatch(removeError());
       dispatch({ type: AUTHENTICATE, payload: {token, fullname, email, membership} });
@@ -45,6 +45,7 @@ const deauthenticate = () => {
     removeCookie('token');
     removeCookie('fullname');
     removeCookie('email');
+    removeCookie('membership');
     Router.push('/');
     dispatch({ type: DEAUTHENTICATE });
   };

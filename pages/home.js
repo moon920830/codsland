@@ -244,12 +244,13 @@ export default function Home(props) {
         //error handler
         if (response.data.status == "error") {
           const {
-            data
+            error
           } = response.data;
-          if (data == "AUTH_ERROR") {
+          if (error == "AUTH_ERROR") {
             removeCookie('token');
             removeCookie('fullname');
             removeCookie('email');
+            removeCookie('membership');
             dispatch({ type: DEAUTHENTICATE });
           } else {
             dispatch(actions.createError(data));

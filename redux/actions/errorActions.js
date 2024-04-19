@@ -9,6 +9,7 @@ export const createError = message => {
       removeCookie('token');
       removeCookie('fullname');
       removeCookie('email');
+      removeCookie('membership');
       Router.push('/');
       dispatch({ type: DEAUTHENTICATE });
     }
