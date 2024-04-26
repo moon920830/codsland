@@ -58,6 +58,14 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CancelIcon from '@material-ui/icons/Cancel';
 import FilterListIcon from '@material-ui/icons/FilterList';
+//custom
+import ShipRates from "./cart/ShipRates.js";
+import VerticalLinearStepper from "./order/VerticalLinearStepper.js";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import PayComponent from "./PayComponent.js";
+
+const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
 
 function createData(id, date, number, price, status, products, shipping_rate) {
   return { id, date, number, price, status, products, shipping_rate};
@@ -325,6 +333,10 @@ export default function Order (props) {
   const [rows, setRows] = useState([]);
   const [showOrder, setShowOrder] = useState(0);
   const [selectedOrder, setSelectedOrder] = useState({});
+  const [isInCompletionProgress, setIsInCompletionProgress] = useState(false);
+  const [clientSecret, setClientSecret] = useState(null);
+  const [total, setTotal] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const getStatus = (order) => {
     if (order.paid === false)
@@ -457,6 +469,83 @@ export default function Order (props) {
       });
   }
 
+  const refreshTotal = () => {
+    axios
+      .get(`${BACKEND_URL}/shop/orders/${selectedOrder.id}`, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        
+
+        const data = response.data.data;
+        
+        const products_price = data.products.reduce((sum, value) => {
+          if(value.product && value.product.price)
+            return sum + value.product.price*value.count;
+        }, 0);
+        let shipping_price = data.shipping_rate.amount;
+        let result_price = products_price * 1.0 + shipping_price * 1.0;
+        setTotal(result_price.toFixed(2));
+      });
+  }
+
+  const handleOrderComplete = () => {
+    setShowOrder(false);
+    setIsInCompletionProgress(true);
+    refreshTotal();
+  }
+
+  const handleCurrentStepChange = (step) => {
+    if (step === 1) {
+      axios.post(`${BACKEND_URL}/test/create-payment-intent`,{amount: total*100} , {headers: {token:redux_token}})
+      .then(response=>{
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        setClientSecret(response.data.clientSecret)
+      })
+    }
+    setCurrentStep(step);
+  }
+
+  const handlePay = (result) => {
+    axios
+      .post(`${BACKEND_URL}/shop/orders/purchase`, {
+        result,
+        order: selectedOrder.id
+      }, {headers: {token:redux_token}}) //, {headers: {token:redux_token}}
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+        Router.push("/dummy-success");
+      });
+  }
+
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -472,99 +561,144 @@ export default function Order (props) {
               <KeyboardBackspaceOutlinedIcon  onClick={() => {Router.push("/products")}} className={classes.cursor} />
               <h5 onClick={() => {Router.push("/products")}} className={classes.cursor} >&nbsp;Back</h5>
             </GridContainer>
-            <GridContainer>
-              
-
-              <GridItem sm={3}>
-                <Card style={{ padding: '20px' }}>
-                <Button color="primary" variant={displayType === "All" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("All")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>All</p>
-                </Button>
-                <Button color="primary" variant={displayType === "Unpaid" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Unpaid")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>Unpaid</p>
-                </Button>
-                <Button color="primary" variant={displayType === "Paid" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Paid")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>Paid</p>
-                </Button>
-                <Button color="primary" variant={displayType === "Accepted" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Accepted")}}>
-                  <p style={{fontFamily: '', fontSize: '12px'}}>Accepted</p>
-                </Button>
-                </Card>
-              </GridItem>
-              <GridItem sm={9}>
-                <Card>
-                  <div className={classes.root}>
-                    <Paper className={classes.paper}>
-                      <EnhancedTableToolbar handleCancel={handleCancel} handleDelete={handleDelete} numSelected={selected.length} />
-                      <TableContainer>
-                        <Table
-                          className={classes.table}
-                          aria-labelledby="tableTitle"
-                          size={dense ? 'small' : 'medium'}
-                          aria-label="enhanced table"
-                        >
-                          <EnhancedTableHead
-                            classes={classes}
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                          />
-                          <TableBody>
-                            {stableSort(rows, getComparator(order, orderBy))
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row, index) => {
-                                const isItemSelected = isSelected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
-                                return (
-                                  <TableRow
-                                    hover
-                                    onClick={(event) => {handleShowOrder(row)}}
-                                    role="checkbox"
-                                    aria-checked={isItemSelected}
-                                    tabIndex={-1}
-                                    key={row.id}
-                                    selected={isItemSelected}
-                                    className={classes.cursor}
+              {isInCompletionProgress ? (
+                <GridContainer>
+                  <GridItem xs={9} sm={9} md={9} lg={9}>
+                    <Card style={{ paddingTop: "10px", paddingBottom: "10px" }}>
+                      <GridContainer>
+                        <GridItem  xs={1} sm={1} md={1} lg={1}></GridItem>
+                        <GridItem  xs={10} sm={10} md={10} lg={10}>
+                          {currentStep === 0 ? (
+                            <ShipRates id={selectedOrder.id} refreshTotal={refreshTotal}  />
+                          ) : (
+                            <GridContainer>
+                              <GridItem>
+                                {clientSecret && (
+                                  <Elements
+                                    stripe={stripePromise}
+                                    options={{ clientSecret: clientSecret }}
                                   >
-                                    <TableCell padding="checkbox">
-                                      <Checkbox
-                                        onClick={(event) => {event.stopPropagation();handleSelect(event, row.id)}}
-                                        checked={isItemSelected}
-                                        inputProps={{ 'aria-labelledby': labelId }}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left">{new Date(row.date).toLocaleString()}</TableCell>
-                                    <TableCell align="left">{row.number}</TableCell>
-                                    <TableCell align="left">${row.price}</TableCell>
-                                    <TableCell align="left"><Badge color="warning" size="medium"><p style={{fontSize: '12px', margin: '0px'}}>{row.status}</p></Badge></TableCell>
+                                    <PayComponent
+                                      handlePay={handlePay}
+                                    />
+                                  </Elements>
+                                )}
+                              </GridItem>
+                            </GridContainer>
+                          )}
+                        </GridItem>
+                        <GridItem  xs={1} sm={1} md={1} lg={1}></GridItem>
+                      </GridContainer>
+                    </Card>
+                  </GridItem>
+                  <GridItem xs={3} sm={3} md={3} lg={3}>
+                    <Card className={classes.cardPaddingNoTop} style={{minHeight: '233px'}}>
+                      <VerticalLinearStepper handleCurrentStepChange={handleCurrentStepChange} />
+                      <GridContainer justify="center">
+                        <h3 className={classes.title} style={{ color: "#2E3192" }}>
+                          Total :
+                        </h3>
+                        <h3 className={classes.title} style={{ color: "#2E3192" }}>
+                          &nbsp;${total}
+                        </h3>
+                      </GridContainer>
+                      
+                    </Card>
+                  </GridItem>
+                </GridContainer>
+              ) : (
+                <GridContainer>
+                  <GridItem sm={3}>
+                    <Card style={{ padding: '20px' }}>
+                    <Button color="primary" variant={displayType === "All" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("All")}}>
+                      <p style={{fontFamily: '', fontSize: '12px'}}>All</p>
+                    </Button>
+                    <Button color="primary" variant={displayType === "Unpaid" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Unpaid")}}>
+                      <p style={{fontFamily: '', fontSize: '12px'}}>Unpaid</p>
+                    </Button>
+                    <Button color="primary" variant={displayType === "Paid" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Paid")}}>
+                      <p style={{fontFamily: '', fontSize: '12px'}}>Paid</p>
+                    </Button>
+                    <Button color="primary" variant={displayType === "Accepted" ? "contained" : 'text'} className={classes.fabButton} onClick={() => {handleDisplayByType("Accepted")}}>
+                      <p style={{fontFamily: '', fontSize: '12px'}}>Accepted</p>
+                    </Button>
+                    </Card>
+                  </GridItem>
+                  <GridItem sm={9}>
+                    <Card>
+                      <div className={classes.root}>
+                        <Paper className={classes.paper}>
+                          <EnhancedTableToolbar handleCancel={handleCancel} handleDelete={handleDelete} numSelected={selected.length} />
+                          <TableContainer>
+                            <Table
+                              className={classes.table}
+                              aria-labelledby="tableTitle"
+                              size={dense ? 'small' : 'medium'}
+                              aria-label="enhanced table"
+                            >
+                              <EnhancedTableHead
+                                classes={classes}
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                rowCount={rows.length}
+                              />
+                              <TableBody>
+                                {stableSort(rows, getComparator(order, orderBy))
+                                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                  .map((row, index) => {
+                                    const isItemSelected = isSelected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+                                    return (
+                                      <TableRow
+                                        hover
+                                        onClick={(event) => {handleShowOrder(row)}}
+                                        role="checkbox"
+                                        aria-checked={isItemSelected}
+                                        tabIndex={-1}
+                                        key={row.id}
+                                        selected={isItemSelected}
+                                        className={classes.cursor}
+                                      >
+                                        <TableCell padding="checkbox">
+                                          <Checkbox
+                                            onClick={(event) => {event.stopPropagation();handleSelect(event, row.id)}}
+                                            checked={isItemSelected}
+                                            inputProps={{ 'aria-labelledby': labelId }}
+                                          />
+                                        </TableCell>
+                                        <TableCell align="left">{new Date(row.date).toLocaleString()}</TableCell>
+                                        <TableCell align="left">{row.number}</TableCell>
+                                        <TableCell align="left">${row.price}</TableCell>
+                                        <TableCell align="left"><Badge color="warning" size="medium"><p style={{fontSize: '12px', margin: '0px'}}>{row.status}</p></Badge></TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                {emptyRows > 0 && (
+                                  <TableRow style={{ height: (dense ? 33 : 53) * (emptyRows === rowsPerPage ? 5 : emptyRows) }}>
+                                    <TableCell colSpan={6} />
                                   </TableRow>
-                                );
-                              })}
-                            {emptyRows > 0 && (
-                              <TableRow style={{ height: (dense ? 33 : 53) * (emptyRows === rowsPerPage ? 5 : emptyRows) }}>
-                                <TableCell colSpan={6} />
-                              </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                      <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                      />
-                    </Paper>
-                  </div>
-                  </Card>
-              </GridItem>
-            </GridContainer>
+                                )}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={rows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                          />
+                        </Paper>
+                      </div>
+                      </Card>
+                  </GridItem>
+                </GridContainer>
+              )}
 
             {/* Footer start */}
             <GridContainer justify="space-between" style={{ marginTop: "100px" }}>
@@ -638,7 +772,7 @@ export default function Order (props) {
             <p style={{fontSize: '20px'}}>Order Detail</p>
             {
               selectedOrder.status === "UNPAID" && (
-                <Button variant="outlined" color="primary">Complete Order</Button>
+                <Button variant="outlined" color="primary" onClick={handleOrderComplete}>Complete Order</Button>
               )
             }
           </GridContainer>
