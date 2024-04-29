@@ -72,6 +72,7 @@ import axios from 'axios';
 import { BACKEND_URL } from "../AppConfigs";
 import { removeCookie } from '../utils/cookie';
 import { DEAUTHENTICATE } from '../redux/types/authTypes';
+import Staff from "./home/staff.js";
 
 const useStyles = makeStyles(theme => {
   return {
@@ -328,19 +329,40 @@ export default function Home(props) {
                 <h1 className={classes.title}>Who <span style={{ color: '#2E3192' }}>We Are </span></h1>
                 <Carousel {...settings}>
                   <div>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Welcome to our sanctuary of healing!</p>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Led by Reverend Doctor Dean Howell and Reverend Rebecca Hart Malter, CoDS - Church of Divine Structure stands as a beacon of transformation. With a history rooted in ancient healing traditions, our founders envisioned a space where true healing transcends boundaries, going beyond conventional medical practices.</p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Why are Rev Dr Howell and Rev Rebecca treating and healing people as ministers of a Church rather than working as a naturopathic physician and massage therapist? 	
+Church of Divine Structure Priory 175 is, first and foremost, a healing organization. We have been organized as a private membership association since 2001. We believe in healing rather than to sell you treatments as a form of commerce. (We hope that our Church will raise enough money so that we can have a healing center and not always ask for money for services.)
+We do not believe that medicine should be practiced as a form of commerce. In our modern times, all medical training and the licensing systems used are designed to make us trained medical people offer you treatments instead of working at healing you. Of course, if our treatments do heal you, that is unexpected because with modern medical training, the “healing arts” are ignored. </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Nestled in Okanogan County, Washington, the Church of Divine Structure, affiliated with the Eastern Orthodox Catholic Church, is a global healing community. As a private membership association registered as a church in Puerto Rico, our roots run deep. Our ministers and deacons, recognized as sanctified healers, hold worldwide recognition, affirmed by the UN and governments. As members of the Sacred Medical Order of the Knights of Hope and heirs to the Knights of St. John, we uphold a legacy of compassionate care, seamlessly blending faith and healing within our sacred mission.</p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>The medical system utilizes fear to control you and the therapists who treat you. The system insists on determining the training and education of all professionals, restrict people’s access to them with professional licensing and insurance requirements, then threaten the professionals with liability fears to control their actions so that they will perform “legally” which is rarely the best course for the people’s health. All of these things are performed in the LEGAL world by our corporate names (like on your driver’s license with YOUR NAME IN CAPITALS), showing that our bodies are the surety (paying fines and staying in jails) to enforce legal behavior by the people (as corporations following corporate laws). We are always “conducting commerce,” so we always obey all corporate rules and pay all corporate fines and fees. Yes, all of this is essential to help the system to control us, but it also makes it unlikely that you can be healed.</p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>At the core of our mission lies a profound dedication to genuine healing. We believe in healing that triggers the body's innate ability to repair itself, transcending the limitations of modern medicine. Our methods involve hands-on healing, bio-energetic healing, lifestyle modifications, and the use of both FDA-approved and non-FDA-approved remedies. From spiritual healing to practical applications, we embrace holistic approaches.  </p>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>In our quest for powerful healing methods, we discovered that FDA regulations and strict licensing board guidelines limited our options. At the Church of Divine Structure (CoDS), we provide our members with the most effective healing techniques and supplements, free from commercial constraints that hinder their potential.</p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Why do we mean? For example, in the 1980s Dr. Howell was trained in naturopathic medical school to treat laboratory diagnosed pernicious anemia with injections of vitamin B-12. He had a few patients with anemia and treated them with the injections. (Oral vitamin B-12 does not treat pernicious anemia, only intramuscular vitamin injections.) The State of Washington prosecuted him and revoked his naturopathic medical license in 1991 for breaking the law. Yet he was safely performing the medically appropriate therapy as he was trained within the new laws that the State had passed to confirm that naturopathic physicians were well-trained. However, the new scope of practice defined in the newly passed laws did not apply to past actions, like B-12 injections he performed in 1986.   </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Our mission extends beyond the individual; we are architects of a self-sustaining community where every member contributes to the collective healing journey. Embracing harmonious living, we cultivate an environment where the land, homes, and human energies align for sustained longevity. Our practices encompass everything from mindful healing counseling services to online healing services, ensuring a comprehensive approach to life-coaching and over well-being. </p>
-                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>We invite you to join our community of healers, where your journey to true healing and counseling begins. Whether you seek spiritual ascendance, physical well-being, or both, Church of Divine Structure welcomes you. As we focus on your healing, let us embark on this transformative journey together.</p>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>The State maintains that medical practice laws are to protect the consumer, but there are many cases of malpractice despite these laws. Statistically, it is said that 98% of all malpractice is forgiven by the victims! Then, because of these laws protecting 2% of the victims, malpractice and practice laws give state bureaucrats an ability to redefine and control what services that the health care professionals can perform---regardless of their training and experience. Instead, bureaucrats can decide which treatments, therapies, foods, and herbs that people can get access to. It often blocks the best choices of the therapist. What has been happening lately, instead, is that many useful treatments are banned, making useful therapies unavailable, even to skilled doctors. 
+Whenever a licensed health practitioner goes to work, he/she must only offer services that are within the scope of practice as defined by the State, regardless of his/her training background and expertise. </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Dr, Howell once was fired from a clinic in California because the clinic’s head physician lacked the skills in cranial manipulation for him to “supervise” Dr. Howell while he was manipulating his clients. 
+We understand the desire to protect people from bad therapy. But isn’t word of mouth from happy/unhappy clients a good measure of skill? Must there be restrictive laws that prevent widespread access to a therapy? 
+In our Church, we only treat Members. Our Church, legally formed in Puerto Rico, is outside the US Corporation and is not subject to the Uniform Commercial Code and other corporate by-laws. In our healing centers we can offer any therapy that the Church healer and the Member agree upon. This allows us to, for example, offer ozone treatments, parasite cleansing, radionic treatments, and acupressure treatments to any Member.
+Because we are an IRS regulation 508 organization, you can deduct all Church donations from your IRS 1040 form, (if you have volunteered to pay income tax). Your Church membership is currently available for $100 a year. Temporary memberships are available for $7.50 daily. You must have a membership in order to receive treatment from any CoDS sanctified healer. </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>All of the ministers and deacons of CoDS are lawfully and legally-recognized, sanctified healers, able to work anywhere, worldwide. We are all members of the Sacred Medical Order of the Knights of Hope (aka SMOKH). SMOKH is the healing branch of the Knights of Saint John, the knights who are healers and hospitalers for the Knights of Malta. The Knights of St. John has only performed as Hospitalers for centuries. Our Order joined with them to provide healing services for them. Therefore, we are healers for the Knights of Hope, the Knights of St. John, and the Knights of Malta, and are accepted and recognized by the UN and governments all over the world.
+We have many goals for our Church community. There are online goals:
+Our goal is to create a living community of Church members to foster true healing. </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>We find that true healing cannot occur with simple medicines. Instead, Dr. Howell and Dame Rebecca multifactorial approach must be taken to create a path to follow to true healing.
+Our founders, through the misery of watching their patients die, have tried many methods, and almost all of them failed. Health on Earth is generally deplorable! They have discovered, though, that with the correct combination of body structural work, detoxification, parasite, yeast, and fungus protocols, radionics, Grander technology, lifestyle modification, home improvements, and generally saner living, that it is possible to heal!
+But, because of the highly controlled Internet and social media, we are unable to openly talk about these health and healing issues on the “free” internet. We have already been banned from Facebook once for posting a video where the word “healed” was used (to describe Dr. Howell’s treatment results). Did you know that “heal” is an inappropriate, four-letter word to management at Facebook? To say “heal” there is the same to them as cursing with words such as fuck or shit (or worse) to us. But those swear words are all okay on Facebook! Other times our postings on YouTube and social media have simply disappeared! </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "20px", lineHeight: "200%" }}>Frustrated with the informational political and technology scene, we gave up trying to work within that system. We decided that Church of Divine Structure should create a paid members’ site with extensive articles, (an ever increasing) video library, semi-monthly newsletter, access to private label supplements outside the FDA system (legitimized by being for members only), and a member bulletin board. 
+Website members will also have access to the treatment schedule for Dr. Howell and Dame Rebecca, so appointments can be made without needing interaction with the front office.
+We call this new, safe digital space by its Internet address: CoDS.Land  </p>
                   </div>
                 </Carousel>
               </GridItem>
@@ -701,6 +723,139 @@ Join us in this transformative journey, where our story converges with yours, pa
             </div>
 
             {/* Services */}
+
+            {/*  ALL ABOUT HEALING Start */}
+            <div id="service_section">
+              <Container maxWidth={false} style={{ maxWidth: "80%" }} >
+                <GridContainer justify="center" style={{ marginTop: "70px" }}>
+                  <img src="/img/CoDS_Black_Logo.png" alt="...."></img>
+                </GridContainer>
+                <GridContainer alignItems="center" direction="column">
+                  <h2 className={classes.title} style={{marginBottom: '0px'}}><span style={{ color: '#2E3192' }}>AT CoDS, WE ARE ALL ABOUT HEALING</span></h2>
+                </GridContainer>
+                <GridContainer justify="center">
+                  <h4 className={classes.title} style={{ marginBottom: '0px', fontSize: '24px' }}>When people think of getting healthy, they think that they need treatments. This is the commerce-based concept that we have all accepted. Why?
+How can you be healed by therapists who will only treat you? Rev Dr Howell and Rev Rebecca decided to be healers instead. Dr Howell closed his practice years ago and became Rev Dr Howell instead. Health centers and clinics can be organized outside the US governmental system within Churches.
+The Church of Divine Structure is a worldwide healing community with its headquarters in Okanogan County, Washington. We are affiliated with the Eastern Orthodox Catholic Church. The Catholic Church meant the universal church, the church of the whole world. The Eastern Orthodox Catholic Church was originally founded in Rome by Saint Peter. Emperor Constantine decided that the Roman churchmen were too corrupt to be true Christians, so he moved the Catholic Church to Constantinople. Later the Church was moved to Brazil, where it is located today. Another “Catholic” church was started in Rome in the 400s AD, and that is the Roman Catholic Church organization of today, even at its beginnings it was the corrupt organization that it remains. 
+The Knights of St. John was founded in 1653 to serve as the healers and hospitallers for the Knights of Malta. The Church of Hope is only healing order that still remains in the Knights of St. John. The Church of Divine Structure is Priory No. 175 of the Church of Hope.
+Ecclesiastically, all of our ministers are members of the Sacred Medical Order of the Knights and Dames of Hope.  We are led by our visionaries, Reverend Doctor Dean Howell and Reverend Rebecca Hart Malter.
+  </h4>
+                </GridContainer>
+              </Container>
+            </div>
+            {/* ALL ABOUT HEALING End */}
+
+
+            {/* Our Staff Start */}
+            <div className={classNames(classes.main, classes.mainRaised)} id="expert_section">
+                <GridContainer alignItems="center" direction="column">
+                  <h2 className={classes.title} style={{marginBottom: '0px'}}><span style={{ color: '#2E3192' }}>Our Staff Roster</span></h2>
+                </GridContainer>
+                <GridContainer style={{marginTop: '50px'}}>
+                  <GridItem sm={4}>
+                    <Staff title="Reverend Dr Dean Howell" image="./img/faces/christian.jpg">
+                      He became a naturopathic physician in 1982 because he was determined to treat the causes of people’s ailments. But, he discovered, almost all medical AND naturopathic medical care was designed to bring the medical consumer relief of symptoms. The naturopathic solutions were slower and usually more effective than the others available—but they were often not cures, either. Dr. Howell worked for ten years at his naturopathic family practice before he realized the folly of his commercial naturopathic practice. Commerce and healing could not co-exist, he decided. He closed his large family practice clinic in Everett, WA and slowly began a healing practice, developing NeuroCranial Restructuring, a bio-mechanical, accumulative manipulation technique in the 1990s. He continued to develop and improve his hands-on healing techniques and has continued exploring healing methods that are out-of-the-ordinary. Knowing that he had been targeted and had his license revoked for administering vitamin B-12, Dr Howell set up his healing business outside of the commerce system where medical licensing boards controlled everything.   that he might become legally targeted, he changed his healing practice into a He set up NCR-01, a not-for-profit, private membership association in 2001. More recently, Dr. Howell’s spiritual, healing path made him realize the depth of his faith. He became religious again. In order to legally demonstrate their convictions, he and Rev Rebecca joined the Church of Hope as Ministers and Sanctified Healers. They were ordained as Eastern Orthodox Catholic ministers in 2019. NCR-01 legally transformed itself into the Church of Divine Structure, Priory No. 175 of the Church of Hope. As members of the Sacred Medical Order of the Knights of Hope, their healing credentials are accepted by the United Nations so that they are accepted as healers anywhere they choose to go. 
+                    </Staff>
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <Staff title="Reverend Rebecca Hart Malter" image="./img/faces/christian.jpg">
+                    She was born and raised in Brooklyn. She always had these odd “talents” that made her thought of as weird. In college, her talents were more appreciated, and she was recruited as a psychic by the UN and US government. After they tested her skills, she began working with them in unpleasant situations—crime scenes, accidents, meetings in odd places surrounded by exotic technology. This became overwhelming, and she turned to healing in the 1990s. She showed exceptional aptitude in energy healing techniques, so she developed her Brooklyn-based practice specializing in massage with energy treatments. She did this for 15 years, until she met Dr. Howell in 2013. 
+                    When they began working together, they discovered that their hands-on methods blended beautifully, and their work progressed and became more dynamic, with episodes of true healing and other notable results. While Rev Dr Howell focused on the development of Howelling, Rev Rebecca continued with her Body Electronics and intuitively-based guidance—then, in her free time, she focused on the development of the recipes for Dame Rebecca’s Bakery where she utilized her professional baking background to create amazingly delicious bakery products with the Magic Flour developed by Rev Peter Radatti.
+                    </Staff>
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <Staff title="Minister of Healing Technologies Peter Radatti" image="./img/faces/christian.jpg">
+                      Reverend Peter began as a physicist and worked for NASA and other organizations as a scientist before founding CyberSoft, the first anti-viral computer service company over 30 years ago. As a side project, he developed an alternative to baking flour. What is amazing about the Magic Flour is that it is high in fiber content, has no carbohydrates, will not feed insects or rodents, and there is no way to become allergic to it.  Is magic, indeed!
+                      Rev Peter is also a developer of radionic equipment, and he has written a series of radionic textbooks that are best-sellers on Amazon. We have named our Radionics Department is his honor. Members can buy his amazing technology from the Members’ Store. Members can also read Rev Peter’s writings….
+                    </Staff>
+                  </GridItem>
+                </GridContainer>
+                <GridContainer style={{marginTop: '50px'}}>
+                  <GridItem sm={4}>
+                    <Staff title="Deacon Juan Abi" image="./img/faces/christian.jpg">
+                      She joined our organization in 2019, prior to her marriage and move to Pakistan. She is a  well-known personality on TikTok. 
+                    </Staff>
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <Staff title="Deacon Alan Malter" image="./img/faces/christian.jpg">
+                      He became a Deacon in 2019. He is our Notary Public. Before his retirement, his career was as a bank auditor before becoming head of fulfillment shipping for The Essence of Life online store.
+                    </Staff>
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <Staff title="Deacon Diane Gray" image="./img/faces/christian.jpg">
+                      She is a New York-area businesswoman who became a deacon in 2020. She has worked as a healer with Rebecca for many years. 
+                    </Staff>
+                  </GridItem>
+                </GridContainer>
+                <GridContainer style={{marginTop: '50px'}}>
+                  <GridItem sm={4}>
+                    <Staff title="Deacon Giona Corso-Winks" image="./img/faces/christian.jpg">
+                      He is currently a student in Utah. He has been a Member of the CODS community for years, and became a Deacon in 2021. His help with our equipment and operations have often been essential for our functions at headquarters.
+                    </Staff>
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <Staff title="Deacon Robert Hankins" image="./img/faces/christian.jpg">
+                      Deacon Robert Hankins is our Facilities Manager at the CODS Headquarters. He is responsible for our cattle, sheep, chickens, ducks, rabbits, and our horse. He helps with all of our operations at headquarters. He is the power that makes headquarters go. He has also showed skills as a healer and he teaches our Wilderness Survival and Personal Protection courses. He became a Deacon in 2023.
+                    </Staff>
+                  </GridItem>
+                  <GridItem sm={4}>
+                    <Staff title="Deacon Rebecca Ann" image="./img/faces/christian.jpg">
+                      She joined CODS as our Head of Shipping in 2022. She is also our Head Baker, assisting Rev Rebecca. She became a Deacon in 2023.
+                    </Staff>
+                  </GridItem>
+                </GridContainer>
+            </div>
+            {/* Our Staff End */}
+
+
+            {/*  MISSION Start */}
+            <div id="service_section">
+              <Container maxWidth={false} style={{ maxWidth: "80%" }} >
+                <GridContainer justify="center" style={{ marginTop: "70px" }}>
+                  <img src="/img/CoDS_Black_Logo.png" alt="...."></img>
+                </GridContainer>
+                <GridContainer alignItems="center" direction="column">
+                  <h2 className={classes.title} style={{marginBottom: '0px'}}><span style={{ color: '#2E3192' }}>MISSION of Church of Divine Structure</span></h2>
+                </GridContainer>
+                <GridContainer justify="center">
+                  <h4 className={classes.title} style={{ marginBottom: '0px', fontSize: '24px' }}>The Church of Divine Structure is dedicated to healing and survival. We believe in the importance and sanctity of true healing. It is the fundamental outreach of our organization. We develop and maintain healing services to address the needs of mankind. These are the talents, motivations, and intentions of our group: we want to help all achieve spiritual ascendance with our healing help. Commerce is not the aim of humanity, and it is not an objective of our Church. In order to be of service, we need our community to be self-sustaining, a self-sustaining community of interdependent men and women who will focus to develop and deliver our healing services as a designed healing-outreach community. We are meant to be healers! We like to heal. In order to be healthy, we must all live in harmony. This is not a simple concept. The lifestyle that our land and homes provide for us must be highly conceived: our bodies will live indefinitely long when we stop all harmful life-habit practices. Our land must be developed to raise the animals who will provide our food. 
+We seek men and women who seek true healing for themselves and others while living in a self-sustaining community. We need people with many skills. Everyone must contribute. Ours cannot be a contemplative community with hired help! Instead, we will seek to find the proper balance of work and free time—everything in harmony. 
+The animals and foods that we plan to raise are those that can be eaten safely by humans. (Many of our current dietary practices do not foster human health.) We want to develop an ongoing lifestyle to show humanity which lifestyle/habits lead to sustained longevity. We have found that this will be, at least minimally for our community, to include following ketogenic non-vegan diets, eating our alternative non-flour baked goods and pasta substitutes, utilizing traditional animal husbandry ranching and farming, and following of our methods of treatment of removal of parasites, yeast, and fungus in the body and our physical methods of hands-on healing. 
+  </h4>
+                </GridContainer>
+              </Container>
+            </div>
+            {/* MISSION End */}
+
+            
+
+            {/*  OUR STORY Start */}
+            <div id="service_section">
+              <Container maxWidth={false} style={{ maxWidth: "80%" }} >
+                <GridContainer justify="center" style={{ marginTop: "70px" }}>
+                  <img src="/img/CoDS_Black_Logo.png" alt="...."></img>
+                </GridContainer>
+                <GridContainer alignItems="center" direction="column">
+                  <h2 className={classes.title} style={{marginBottom: '0px'}}><span style={{ color: '#2E3192' }}>WE HAVE EXPERIENCED HEALNG! HERE IS OUR STORY</span></h2>
+                </GridContainer>
+                <GridContainer justify="center">
+                  <h4 className={classes.title} style={{ marginBottom: '0px', fontSize: '24px' }}>At Church of Divine Structure, we believe in true healing. Our founders, Rev Dr Dean Howell and Rev Rebecca Hart Malter, found that true healing does not usually occur in medical treatments. Dr Dean has practiced medicine since 1982. Following modern nutritional protocols based on laboratory tests has not made people healthier. Dr Dean wanted himself and his was not happening when people had hair and/or biochemical testing and followed recommended programs of pills and medicinal liquids. 
+Dr Dean used to follow these supplement programs, but he didn’t eat right. He blew up to over 450 pounds—yet he had normal cholesterol, normal liver function, normal kidney function, normal blood pressure, no anemias, no heavy metal poisoning, no parasites or Candida problems (based on stool, blood, and saliva testing). He tried to eat a somewhat ketogenic diet—at least he stopped eating breads and potatoes—and developed a problem with sleep-walking. One night he woke up at 3AM (the refrigerator light was too bright!) and he was eating dinner left-overs from the refrigerator. How had he walked through a dark house to eat the left-overs? Dr Dean realized that somebody (or something) else was operating his body—he suddenly realized that he was the HOST controlled by PARASITES. The parasites living in his body, shared his nervous system with him, and controlled his body to eat when they were hungry. It gave him creepy chills. 
+Dr Dean began researching how to kill PARASITES and normalize his body. The more he thought about our ongoing relationships with parasites, the more certain he was that the parasites were some of the “voices” we all hear in our minds. He had already discovered that the parasites could control his body in a pitch-black house to walk to the kitchen to eat at 3am when he was sleeping and not dreaming about food. The worms were tormenting him with their bad intentions. They wanted ice cream, and lots of it every day. The parasites were there, in his brain—and they were in there the whole time, being evil and controlling him! We think parasites are the demons who tested people in the Bible. 
+At CODS, we don’t think people get true healing very often. It is very rare when the classic faith healer successfully heals somebody from a crowd. Rarely do psychics and mediums heal people—they can be helpful but are rarely healing. We have found that faith, although a good thing to have, rarely creates healing.
+Instead, Dr Dean and Rev Rebecca have found, instead, that true healing only occurs when the body tissues have their local infections and poisonings entirely corrected—in a very small area. In bodywork, Dr Dean developed Howelling, a bodywork technique where the tendons, ligaments, and periosteum are reformed and remade a millimeter at a time. Rev Rebecca discovered that parasites (we are all filled with them) can be exterminated best when multiple medications are combined together in increasing dosages to finally kill the parasites which control our bodies and existence. Her prescriptions of multiple anti-parasitic agents can kill off the primary controlling parasites, freeing our minds from the pervasive control of the parasites who control our world. 
+Church of Divine Structure (CoDS) teaches our members to follow traditional human dietary principles—we now eat the same diets our “primitive” ancestors ate—the same diet that was originally followed in the Old Testament of the Bible—a carnivorous, limited, ketogenic diet. 
+In the earliest days, humans did not live in one place and farm. For uncounted centuries, men and women lived in familial, tribal -type family organizations, moving about with the seasons with their animals and eating foods with the seasons. They saved dried and preserved foods to survive the winter. But they did not farm, so they did not eat many fruits, vegetables, and/or grains in their regular diet. Carbohydrate foods were eaten infrequently, and we developed a blood system of secreting insulin to protect us from the dangerous glucose, just for the rare situation of eating significant glucose foods—perhaps a seasonal festival or party, for instance. In modern times we eat carbohydrates many times a day instead of a few times a year, and we suffer many diseases such as heart disease, cancer, and diabetes—which are all food-caused illnesses that never afflicted primitive mankind.
+This means that most human diets make us sick. The continuous ingestion of carbohydrates is not in our biochemical makeup. It is our parasite-driven culture which focuses on frequent carbohydrates throughout our work, social, and family interactions. It is by design—and demons have designed this. Only a few thousand years ago did we begin farming and consuming many carbohydrates—and we began dying of chronic diseases that we had previously never seen. The curse of the demon is the affliction of carbohydrate consumption promoting the growth of all of these parasites: fungus, yeast, bad bacteria, and worms. Just keep breathing and eating this way and you will be filled with them.
+To heal anybody, then, we need to eat the way of our ancestors—primarily a carnivore diet with very limited other foods—a strict ketogenic diet. We eat animal products, almost exclusively. 
+As healers, then we at least recommend ketogenic diets, and we perform technological and hands-on healing as well: Rev Dr Dean has developed NCR and Howelling, and he combines his work with Rev Rebecca’s hands-on energy healing techniques. 
+Our Church also espouses radionic and prayer healing techniques. These technologies can be used in broadcast modes, infused into jewelry or Prayer Waters to be consumed, and are used to treat nearly any condition you or we can imagine! If you keep up with our newsletters and look at our online Members’ Store, then you will find the jewelry and Prayer Waters that are currently available. There will be much more information available on the private side of the store, available only for Members. Be sure to join.
+  </h4>
+                </GridContainer>
+              </Container>
+            </div>
+            {/* OUR STORY End */}
+
             {/* Testimonials */}
 
             <GridContainer justify="center" style={{ marginTop: "50px" }}>
