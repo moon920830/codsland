@@ -41,7 +41,7 @@ import { BackspaceOutlined } from "@material-ui/icons";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 
-const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
+const stripePromise = loadStripe('pk_live_51OVOQtFhFnxnoDMRdazPVsRFnB2zf3G1j5jRfQfJM5wNmKPRJkTPQoIQ7esTBTvxzrFkc431Fw223qzYIznMwpQP00MjJkcLhR');
 
 const useStyles = makeStyles((styles) => {
   return {

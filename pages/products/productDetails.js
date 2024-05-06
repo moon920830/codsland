@@ -141,6 +141,23 @@ export default function Products(props) {
         setProduct(response.data.data);
         console.log(response.data.data);
       });
+    
+      
+    axios
+      .get(`${BACKEND_URL}/shop/cart/count`, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          return snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        }
+      });
   }, []);
 
 
