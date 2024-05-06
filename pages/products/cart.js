@@ -58,7 +58,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 import Close from "@material-ui/icons/Close";
 import ShipRates from "./cart/ShipRates.js";
 
-const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
+const stripePromise = loadStripe('pk_live_51OVOQtFhFnxnoDMRdazPVsRFnB2zf3G1j5jRfQfJM5wNmKPRJkTPQoIQ7esTBTvxzrFkc431Fw223qzYIznMwpQP00MjJkcLhR');
 
 const useStyles = makeStyles(theme => {
   return {
