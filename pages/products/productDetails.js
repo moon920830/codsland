@@ -158,7 +158,7 @@ export default function Products(props) {
               <GridItem xs={3} sm={3} md={3} lg={3} >
                 <Card style={{padding: '20px'}}>
                   {/* <img src={`${BACKEND_URL}/shop/products/${router.query.id}/image`} alt="..." style={{ width: "auto", height: "auto"}}></img> */}
-                  <img src={router.query.url} alt="..." style={{ width: "auto", height: "auto"}}></img>
+                  <img src={product&&(product.image_url?product.image_url:`${BACKEND_URL}/shop/products/${product._id}/image`)} alt="..." style={{ width: "auto", height: "auto"}}></img>
                 </Card>
               </GridItem>
               <GridItem xs={9} sm={9} md={9} lg={9} >
