@@ -7,61 +7,25 @@ import Link from "next/link";
 import CheckOutlinedIcon from '@material-ui/icons/CheckOutlined';
 // core components
 import { makeStyles } from "@material-ui/core/styles";
-import Rating from '@material-ui/lab/Rating';
 import Tooltip from '@material-ui/core/Tooltip';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
-import Header from "/components/Header/Header.js";
-import Footer from "/components/Footer/Footer.js";
 import GridContainer from "/components/Grid/GridContainer.js";
 import GridItem from "/components/Grid/GridItem.js";
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "/components/CustomButtons/Button.js";
-import CustomButton from "@material-ui/core/Button";
 import Fab from '@material-ui/core/Fab';
-import CustomDropdown from "/components/CustomDropdown/CustomDropdown.js";
-import Parallax from "/components/Parallax/Parallax.js";
-import Info from "/components/Typography/Info.js";
-// sections for this page
-import SectionBasics from "/pages-sections/Components-Sections/SectionBasics.js";
-import SectionNavbars from "/pages-sections/Components-Sections/SectionNavbars.js";
-import SectionTabs from "/pages-sections/Components-Sections/SectionTabs.js";
-import SectionPills from "/pages-sections/Components-Sections/SectionPills.js";
-import SectionNotifications from "/pages-sections/Components-Sections/SectionNotifications.js";
-import SectionTypography from "/pages-sections/Components-Sections/SectionTypography.js";
-import SectionJavascript from "/pages-sections/Components-Sections/SectionJavascript.js";
-import SectionCarousel from "/pages-sections/Components-Sections/SectionCarousel.js";
-import SectionCompletedExamples from "/pages-sections/Components-Sections/SectionCompletedExamples.js";
-import SectionLogin from "/pages-sections/Components-Sections/SectionLogin.js";
-import SectionExamples from "/pages-sections/Components-Sections/SectionExamples.js";
-import SectionDownload from "/pages-sections/Components-Sections/SectionDownload.js";
-import Carousel from "react-slick";
-import LocationOn from "@material-ui/icons/LocationOn";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
-import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
-import Card from "/components/Card/Card.js";
-import CardBody from "/components/Card/CardBody.js";
-import CardHeader from "/components/Card/CardHeader.js";
-import Slider from "react-slick";
+// components
+import CustomBadge from '../components/Badge/Badge.js';
 import NavPills from "/components/NavPills/NavPills.js";
 import ElevateAppBar from "/components/General/layouts/NavBar.js";
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import PhoneIcon from '@material-ui/icons/Phone';
-import MailIcon from '@material-ui/icons/Mail';
-import RoomIcon from '@material-ui/icons/Room';
+// icon
 import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import FacebookIcon from '@material-ui/icons/Facebook';
-import CustomInput from "/components/CustomInput/CustomInput.js";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
-import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 //redux
@@ -74,12 +38,10 @@ import 'rsuite/dist/rsuite.min.css';
 import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 //other
-import Router from "next/router";
 import { useSnackbar } from "notistack";
 import axios from 'axios';
 import { BACKEND_URL } from "../AppConfigs";
 import { isWithinInterval, subDays } from "date-fns";
-import LocationMap from './appointment/LocationMap.js';
 
 import { Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Input, Typography } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
@@ -110,63 +72,12 @@ const useStyles = makeStyles(theme => {
         padding: '9px',
       }
     },
-    outlinedStyleForAddress: {
-      marginTop: '30px',
-      '& .MuiOutlinedInput-input' : {
-        padding: '9px',
-      }
-    },
     tooltipStyle: {
       maxWidth: 500,
       fontSize: '14px'
     }
   }
 });
-
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        position: "absolute",
-        top: "100%",// Adjust the position as needed
-        transform: "translateY(-50%)",
-        cursor: "pointer",
-        zIndex: "0",
-        opacity: "1"
-      }}
-      onClick={onClick}
-    >
-      <ArrowForwardIcon></ArrowForwardIcon>
-    </div>
-  );
-}
-
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        position: "absolute",
-        top: "100%",// Adjust the position as needed
-        transform: "translateY(-50%)",
-        cursor: "pointer",
-        zIndex: "1",
-        left: "80%"
-      }}
-      onClick={onClick}
-    >
-      <ArrowBackIcon></ArrowBackIcon>
-    </div>
-  );
-}
 
 function isWithinXDays(date1, date2, x) {
   const firstDate = new Date(date1);
@@ -186,23 +97,21 @@ export default function Appointment(props) {
   //other
   const classes = useStyles();
   const { ...rest } = props;
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedEnabled, setSelectedEnabled] = React.useState("b");
   const [selectTimeModal, setSelectTimeModal] = React.useState(false);
-  const [selectLocationModal, setSelectLocationModal] = React.useState(false);
   const [enterDetailsModal, setEnterDetailsModal] = React.useState(false);
+  const [showDetailsModal, setShowDetailsModal] = React.useState(false);
   const [successModal, setSuccessModal] = React.useState(false);
   const [choiceModal, setChoiceModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [membership, setMembership] = useState({});
   const [treatType, setTreatType] = useState("One");
-  const [location, setLocation] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [appointmentTypes, setAppointmentTypes] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [currentAppointment, setCurrentAppointment] = useState([]);
   const [tooltipText, setTooltipText] = useState("");
-
-  
-  const refSelectedDate=useRef("");
+  const [time, setTime] = useState(-1);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
 
   //component did mount
@@ -238,13 +147,29 @@ export default function Appointment(props) {
             { variant: "error" }
           );
         } else {
-          console.log(response.data.data);
           setAppointmentTypes(response.data.data);
           if(response.data.data && response.data.data.length) {
             const currentTreatType = response.data.data[0];
             setTreatType(currentTreatType._id);
             setTooltipText("Price: $" + currentTreatType.price + " Time: " + currentTreatType.length + "minutes");
           }
+        }
+      });
+    axios
+      .get(`${BACKEND_URL}/appointments/my`, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        } else {
+          setAppointments(response.data.data);
         }
       });
   }, []);
@@ -268,82 +193,123 @@ export default function Appointment(props) {
     '17:30',
   ];
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: false,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-    appendDots: dots => (
-      <div
-        style={{
-          position: "absolute",
-          top: "100%",
-          width: "50%",
-          left: "0",
-          textAlign: "left",
+  const time_values = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ];
 
-        }}
-      >
-        <ul style={{ margin: "0px" }}> {dots} </ul>
-      </div>
-    ),
-    customPaging: i => (
-      <div
-        style={{
-          width: i === currentSlide ? "20px" : "20px",
-          height: i === currentSlide ? "20px" : "20px",
-          border: "1px solid black",
-          borderRadius: '100%',
-          borderColor:"#2E3192",
-          backgroundColor: i === currentSlide ? '#2E3192' : 'white',
-          padding: "5px"
-        }}
-      >
-      </div>
-    ),
-    afterChange: (current) => setCurrentSlide(current),
-  };
-  const testimonial_settings = {
-    className: "center",
-    centerMode: true,
-    infinite: true,
-    centerPadding: "60px",
-    slidesToShow: 2,
-    speed: 500,
-    dots: true,
-    autoplay: true,
-  };
+  const handleActionAppointment = (index) => {
+    setChoiceModal(true);
+    setCurrentIndex(index);
+  }
 
+  const convertHumanString = (stamp) => {
+    const minute = stamp / 60000;
+    return minute + 'minutes';
+  }
 
   function handleSetAppointment(date) {
-    // if(1) {
+    const saveDate = date;
+    // check whether there are already appointments
+    date = new Date(date);
+    date.setHours(0, 0, 0, 0);
+    date = date.getTime();
 
-    //   const formattedDate = date.toLocaleDateString('en-US', {
-    //     day: 'numeric',
-    //     month: 'long',
-    //     year: 'numeric',
-    //   });
-    //   setSelectedDate(formattedDate);
-    //   return setChoiceModal(true);
-    // }
+    let flag = 1;
+    let appointmentArray = [];
 
+    appointments.map(appointment => {
+      const time = new Date(appointment.time).getTime();
+      const from = time;
+
+      if (from > date && from < (date + 86400000))
+      {
+
+        
+        let difference = from - date;
+        let hour = Math.floor(difference / 3600000);
+        let minute = (difference % 3600000 <= 1800000) ? "00" : "30";
+        const timeFrom = String(hour) + ":" + minute;
+        difference += appointment.type.length;
+        hour = Math.floor(difference / 3600000);
+        minute = (difference % 3600000 <= 1800000) ? "00" : "30";
+        const timeTo = String(hour) + ":" + minute;
+        appointmentArray.push({ time: timeFrom + ' - ' + timeTo, title: appointment.type.title });
+        flag = 0;
+      }
+    });
+    if (flag == 0)
+    {
+      setCurrentAppointment([...appointmentArray]);
+      setShowDetailsModal(true);
+      return ;
+    }
+
+
+    date = saveDate;
+    // display save appointment
     const formattedDate = date.toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
     });
-    console.log(formattedDate);
     setSelectedDate(formattedDate);
     setEnterDetailsModal(true);
   }
 
+  const handleSetTime = (index) => {
+    setTime(index);
+  }
+
   function handleSelectTime() {
+    if (time == -1) {
+      return snackbar.enqueueSnackbar(
+        "Select time please.",
+        { variant: "error" }
+      );
+    }
     setSelectTimeModal(false);
-    setSuccessModal(true);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let timeStamp = today.getTime();
+    timeStamp += 5 * 864000000 + 8 * 3600000 + time_values[time] * 1800000;
+
+    axios
+      .post(`${BACKEND_URL}/appointments/save`, {appointmenttype: treatType, time: timeStamp}, {headers: {token:redux_token}})
+      .then((response) => {
+        //error handler
+        if (response.data.status == "error") {
+          const {
+            error
+          } = response.data;
+          dispatch(actions.createError(error));
+          snackbar.enqueueSnackbar(
+            response.data.error ? response.data.error : "Error",
+            { variant: "error" }
+          );
+        } else {
+          setSuccessModal(true);
+          snackbar.enqueueSnackbar(
+            "Successfly saved.",
+            { variant: "success" }
+          );
+        }
+      });    
   }
 
   function handleEnterDetails() {
@@ -352,16 +318,31 @@ export default function Appointment(props) {
   }
 
   function getTodoList(date) {
-    const day = date.getDate();
-  
-    switch (day) {
-      case 10:
-        return { time: '10:30 am - 11:00 am', title: 'Meeting' };
-      case 15:
-        return { time: '09:30 pm - 10:30 pm', title: 'Products Introduction Meeting' };
-      default:
-        return undefined;
-    }
+    date = new Date(date);
+    date.setHours(0, 0, 0, 0);
+    date = date.getTime();
+
+    let returnValue = [];
+
+    appointments.map(appointment => {
+      const time = new Date(appointment.time).getTime();
+      const from = time;
+      const to = time + appointment.type.length;
+
+      if (from > date && from < (date + 86400000))
+      {
+        let difference = from - date;
+        let hour = Math.floor(difference / 3600000);
+        let minute = (difference % 3600000 <= 1800000) ? "00" : "30";
+        const timeFrom = String(hour) + ":" + minute;
+        difference += appointment.type.length;
+        hour = Math.floor(difference / 3600000);
+        minute = (difference % 3600000 <= 1800000) ? "00" : "30";
+        const timeTo = String(hour) + ":" + minute;
+        returnValue.push({ time: timeFrom + ' - ' + timeTo, title: appointment.type.title });
+      }
+    });
+    return returnValue;
   }
 
   function renderCell(date) {
@@ -386,16 +367,20 @@ export default function Appointment(props) {
     // </li>
 
       return (
-        (displayList === undefined) ?
+        (displayList.length === 0) ?
         (<div></div>)
         :
         (<ul className="calendar-todo-list" style={{paddingLeft: '0px'}}>
-          <li style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
-            <Badge /> <b>{displayList.time}</b>
-          </li>
-          <li style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
-            <Badge /> {displayList.title}
-          </li>
+          {
+            displayList.map(display => {
+              return (
+                <li style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
+                  <Badge /> <b>{display.time}&nbsp;{display.title}</b>
+                </li>
+              )
+            })
+            
+          }
         </ul>)
       );
 
@@ -506,7 +491,7 @@ export default function Appointment(props) {
                           {times.map((value, index) => (
                             <GridItem key={"fab_"+index} sm={3} style={{marginBottom: '20px'}}>
                               <GridContainer justify="center">
-                                <Fab variant="extended" color="default">
+                                <Fab variant="extended" color={time == index ? "primary" : "default"} onClick={() => {handleSetTime(index)}}>
                                   <p style={{cursor:'pointer', textAlign: 'center', width: 'fit-content'}}>{value}</p>
                                 </Fab>
                               </GridContainer>
@@ -621,29 +606,11 @@ export default function Appointment(props) {
                               onChange={(e) => {handleSetTreatType(e.target.value)}}
                             >
                               {Array.isArray(appointmentTypes) && appointmentTypes.map((item, index) => (
-                                <MenuItem key={item._id} value={item._id}><p style={{fontSize: '16px'}}>{item.title}</p></MenuItem>
+                                <MenuItem key={item._id} value={item._id}><p>{item.title}</p></MenuItem>
                               ))}
                             </Select>
                           </FormControl>
                         </Tooltip>
-                        <TextField
-                          label="Address"
-                          className={classes.outlinedStyleForAddress}
-                          onChange={(e) => handleLocationChange(e.target.value)}
-                          fullWidth
-                          value={location}
-                          variant="outlined"
-                          InputProps={{
-                            style: {
-                              // Control font or other styles here
-                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                              fontSize: '14px',
-                              '::placeholder' : {
-                                display: 'none'
-                              },
-                            },
-                          }}
-                        />
                         <ul>
                           {suggestions.map((suggestion) => (
                             <li key={suggestion.place_id} style={{cursor: 'pointer'}} onClick={() => handleLocationClick(suggestion.display_name)}>{suggestion.display_name}</li>
@@ -666,6 +633,64 @@ export default function Appointment(props) {
                   </DialogActions>
                 </Dialog>
                 {/* end of details modal */}
+                {/* start of show details modal */}
+                <Dialog
+                  classes={{
+                    root: classes.center,
+                    paper: classes.modal
+                  }}
+                  open={showDetailsModal}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={() => setShowDetailsModal(false)}
+                  aria-labelledby="classic-modal-slide-title"
+                  aria-describedby="classic-modal-slide-description"
+                  maxWidth="sm"
+                  fullWidth={true}
+                >
+                  <DialogTitle
+                    id="classic-modal-slide-title"
+                    disableTypography
+                    className={classes.modalHeader}
+                  >
+                    <IconButton
+                      className={classes.modalCloseButton}
+                      key="close"
+                      aria-label="Close"
+                      color="inherit"
+                      onClick={() => setShowDetailsModal(false)}
+                    >
+                      <Close className={classes.modalClose} />
+                    </IconButton>
+                  </DialogTitle>
+                  <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                  >
+                    <GridContainer justify="center" alignItems="center" direction="column">
+                      <ul>
+                        {currentAppointment.map(appointment => {
+                          return (
+                            <li>
+                              <h3 style={{fontWeight: 'bold', color: 'purple'}}>{appointment.time}</h3>
+                              <h4>{appointment.title}</h4>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </GridContainer>
+                  </DialogContent>
+                  <DialogActions className={classes.modalFooter}>
+                    <Grid container justify="center">
+                        <Grid item>
+                          <Button round color="primary" onClick={() => {setShowDetailsModal(false);}}>
+                            Close
+                          </Button>
+                        </Grid>
+                      </Grid>
+                  </DialogActions>
+                </Dialog>
+                {/* end of show details modal */}
                 {/* start of success modal */}
                 <Dialog
                   classes={{
@@ -711,7 +736,7 @@ export default function Appointment(props) {
                   <DialogActions className={classes.modalFooter}>
                     <Grid container justify="center">
                         <Grid item>
-                          <Button round color="primary" onClick={() => setSuccessModal(false)}>
+                          <Button round color="primary" onClick={() => {setSuccessModal(false);}}>
                             View
                           </Button>
                         </Grid>
@@ -794,37 +819,25 @@ export default function Appointment(props) {
                         <GridContainer>
                           <GridItem>
                             <GridContainer alignItems="center" className={classes.title} style={{backgroundColor:"#2E3192", borderRadius: "26px 26px 0px 0px", color: "white"}}>
-                              <GridItem sm={2}>Name of Patient</GridItem>
-                              <GridItem sm={2}>Event name</GridItem>
-                              <GridItem sm={4}>Length of appointment</GridItem>
+                              <GridItem sm={3}>Date of appointment</GridItem>
+                              <GridItem sm={4}>Event name</GridItem>
+                              <GridItem sm={2}>Length of appointment</GridItem>
                               <GridItem sm={1}>Status</GridItem>
-                              <GridItem sm={2}>Date of appointment</GridItem>
-                              <GridItem sm={1}>Action</GridItem>
                             </GridContainer>
                           </GridItem>
                           <GridItem>
-                            {Array.from({length: 10}).map((item, index) => (
+                            {appointments.map((item, index) => (
                               <React.Fragment key={index}>
                                 <GridContainer className={classes.title}>
-                                  <GridItem sm={2}>John Doe</GridItem>
-                                  <GridItem sm={2}>Initial Consultation</GridItem>
-                                  <GridItem sm={4}>20 Mins(Child Treatment, First Visit Consultation)</GridItem>
-                                  <GridItem sm={1}>Pending</GridItem>
-                                  <GridItem sm={2}>5 Dec 2023</GridItem>
-                                  <GridItem sm={1}>Cancel</GridItem>
+                                  <GridItem sm={3}>{new Date(item.time).toLocaleString()}</GridItem>
+                                  <GridItem sm={4}>{item.type.title}</GridItem>
+                                  <GridItem sm={2}>{convertHumanString(item.type.length)}</GridItem>
+                                  <GridItem sm={1}><CustomBadge color="warning" size="small"><p style={{fontSize: '12px'}}>{item.status}</p></CustomBadge></GridItem>
                                 </GridContainer>
-                                {index != 9 && <Divider />}
+                                <Divider />
                               </React.Fragment>
                             ))}
                           </GridItem>
-                        </GridContainer>
-                      )
-                    },
-                    {
-                      tabButton: "Uncompleted Booking",
-                      tabContent: (
-                        <GridContainer>
-                          <GridItem>###</GridItem>
                         </GridContainer>
                       )
                     },
