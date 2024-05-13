@@ -235,19 +235,12 @@ export default function Appointment(props) {
     appointments.map(appointment => {
       const time = new Date(appointment.time).getTime();
       const from = time;
+      const to = from + appointment.type.length;
 
       if (from > date && from < (date + 86400000))
       {
-
-        
-        let difference = from - date;
-        let hour = Math.floor(difference / 3600000);
-        let minute = (difference % 3600000 <= 1800000) ? "00" : "30";
-        const timeFrom = String(hour) + ":" + minute;
-        difference += appointment.type.length;
-        hour = Math.floor(difference / 3600000);
-        minute = (difference % 3600000 <= 1800000) ? "00" : "30";
-        const timeTo = String(hour) + ":" + minute;
+        const timeFrom = TimeDisplay(from);
+        const timeTo = TimeDisplay(to);
         appointmentArray.push({ time: timeFrom + ' - ' + timeTo, title: appointment.type.title });
         flag = 0;
       }
@@ -284,10 +277,14 @@ export default function Appointment(props) {
     }
     setSelectTimeModal(false);
 
-    const today = new Date();
+    // const today = new Date();
+    // today.setHours(0, 0, 0, 0);
+    // let timeStamp = today.getTime();
+    // timeStamp += 5 * 86400000 + 8 * 3600000 + time_values[time] * 1800000;
+    const today = new Date(selectedDate);
     today.setHours(0, 0, 0, 0);
     let timeStamp = today.getTime();
-    timeStamp += 5 * 864000000 + 8 * 3600000 + time_values[time] * 1800000;
+    timeStamp += 8 * 3600000 + time_values[time] * 1800000;
 
     axios
       .post(`${BACKEND_URL}/appointments/save`, {appointmenttype: treatType, time: timeStamp}, {headers: {token:redux_token}})
@@ -303,11 +300,29 @@ export default function Appointment(props) {
             { variant: "error" }
           );
         } else {
-          setSuccessModal(true);
-          snackbar.enqueueSnackbar(
-            "Successfly saved.",
-            { variant: "success" }
-          );
+          axios
+          .get(`${BACKEND_URL}/appointments/my`, {headers: {token:redux_token}})
+          .then((response) => {
+            //error handler
+            if (response.data.status == "error") {
+              const {
+                error
+              } = response.data;
+              dispatch(actions.createError(error));
+              snackbar.enqueueSnackbar(
+                response.data.error ? response.data.error : "Error",
+                { variant: "error" }
+              );
+            } else {
+              setAppointments(response.data.data);
+              renderCell(selectedDate);
+              setSuccessModal(true);
+              snackbar.enqueueSnackbar(
+                "Successfly saved.",
+                { variant: "success" }
+              );
+            }
+          });
         }
       });    
   }
@@ -315,6 +330,12 @@ export default function Appointment(props) {
   function handleEnterDetails() {
     setEnterDetailsModal(false);
     setSelectTimeModal(true);
+  }
+
+  function TimeDisplay(stamp) {
+    const date = new Date(stamp);
+    const timeString = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    return timeString;
   }
 
   function getTodoList(date) {
@@ -331,14 +352,8 @@ export default function Appointment(props) {
 
       if (from > date && from < (date + 86400000))
       {
-        let difference = from - date;
-        let hour = Math.floor(difference / 3600000);
-        let minute = (difference % 3600000 <= 1800000) ? "00" : "30";
-        const timeFrom = String(hour) + ":" + minute;
-        difference += appointment.type.length;
-        hour = Math.floor(difference / 3600000);
-        minute = (difference % 3600000 <= 1800000) ? "00" : "30";
-        const timeTo = String(hour) + ":" + minute;
+        const timeFrom = TimeDisplay(from);
+        const timeTo = TimeDisplay(to);
         returnValue.push({ time: timeFrom + ' - ' + timeTo, title: appointment.type.title });
       }
     });
