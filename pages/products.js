@@ -126,7 +126,7 @@ export default function Products(props) {
 
   //component mount
   useEffect(() => {
-    if(redux_membership === null || redux_membership === undefined || checkExpired(redux_membership)) {
+    if(redux_membership == "null" || redux_membership == "undefined" || redux_membership == null || redux_membership == undefined || checkExpired(redux_membership)) {
       snackbar.enqueueSnackbar("Your membership is not valid", { variant: "info" });
       Router.push("/home");
     }

@@ -39,6 +39,7 @@ import modalStyle from "../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
 //other
 import { useSnackbar } from "notistack";
+import Router from "next/router";
 import axios from 'axios';
 import { BACKEND_URL } from "../AppConfigs";
 import { isWithinInterval, subDays } from "date-fns";
@@ -94,6 +95,7 @@ export default function Appointment(props) {
   //redux
   const redux_fullname = useSelector((state) => state.authentication.fullname);
   const redux_token = useSelector((state) => state.authentication.token);
+  const redux_membership = useSelector((state) => state.authentication.membership);
   //other
   const classes = useStyles();
   const { ...rest } = props;
@@ -116,6 +118,11 @@ export default function Appointment(props) {
 
   //component did mount
   useEffect(() => {
+    // if(redux_membership == "null" || redux_membership == "undefined" || redux_membership == null || redux_membership == undefined || checkExpired(redux_membership)) {
+    //   snackbar.enqueueSnackbar("Your membership is not valid", { variant: "info" });
+    //   Router.push("/home");
+    // }
+
     axios
       .post(`${BACKEND_URL}/members/check`, {}, {headers: {token:redux_token}})
       .then((response) => {
@@ -255,6 +262,8 @@ export default function Appointment(props) {
 
     date = saveDate;
     // display save appointment
+    if (new Date() > date)
+      return ;
     const formattedDate = date.toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'long',
@@ -389,7 +398,7 @@ export default function Appointment(props) {
           {
             displayList.map(display => {
               return (
-                <li style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
+                <li key={display.time} style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
                   <Badge /> <b>{display.time}&nbsp;{display.title}</b>
                 </li>
               )
