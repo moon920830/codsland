@@ -51,6 +51,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 import Close from "@material-ui/icons/Close";
+import AutocompleteInput from "./appointment/AutocompleteInput.js";
 
 const useStyles = makeStyles(theme => {
   return {
@@ -71,6 +72,19 @@ const useStyles = makeStyles(theme => {
       marginTop: '30px',
       '& .MuiOutlinedInput-input' : {
         padding: '9px',
+      }
+    },
+    detailOutlinedStyle: {
+      marginTop: '30px',
+      '& .MuiOutlinedInput-input' : {
+        paddingTop: '9px',
+        paddingBottom: '9px',
+      },
+      '& .MuiInputLabel-outlined' : {
+        marginTop: '-9px',
+      },
+      '& .MuiInputLabel-shrink' : {
+        marginTop: '0px',
       }
     },
     tooltipStyle: {
@@ -114,6 +128,8 @@ export default function Appointment(props) {
   const [tooltipText, setTooltipText] = useState("");
   const [time, setTime] = useState(-1);
   const [currentIndex, setCurrentIndex] = useState(-1);
+  const [address, setAddress] = useState("");
+  const [detail, setDetail] = useState("");
 
 
   //component did mount
@@ -219,6 +235,14 @@ export default function Appointment(props) {
     19
   ];
 
+  const handleDetailChange = (e) => {
+    setDetail(e.target.value);
+  }
+
+  const handleAddressContainerChange = (change) => {
+    setAddress(change.address);
+  }
+
   const handleActionAppointment = (index) => {
     setChoiceModal(true);
     setCurrentIndex(index);
@@ -296,7 +320,7 @@ export default function Appointment(props) {
     timeStamp += 8 * 3600000 + time_values[time] * 1800000;
 
     axios
-      .post(`${BACKEND_URL}/appointments/save`, {appointmenttype: treatType, time: timeStamp}, {headers: {token:redux_token}})
+      .post(`${BACKEND_URL}/appointments/save`, {appointmenttype: treatType, time: timeStamp, address: address, location: "", detail: ""}, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -635,11 +659,31 @@ export default function Appointment(props) {
                             </Select>
                           </FormControl>
                         </Tooltip>
-                        <ul>
+                        <TextField
+                          label="Detail"
+                          className={classes.detailOutlinedStyle}
+                          placeholder="Detail"
+                          fullWidth
+                          variant="outlined"
+                          value={detail}
+                          onChange={handleDetailChange}
+                          InputProps={{
+                            style: {
+                              // Control font or other styles here
+                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '14px',
+                              '::placeholder' : {
+                                display: 'none'
+                              },
+                            },
+                          }}
+                        />
+                        <AutocompleteInput handleAddressContainerChange={handleAddressContainerChange} />
+                        {/* <ul>
                           {suggestions.map((suggestion) => (
                             <li key={suggestion.place_id} style={{cursor: 'pointer'}} onClick={() => handleLocationClick(suggestion.display_name)}>{suggestion.display_name}</li>
                           ))}
-                        </ul>
+                        </ul> */}
                       </GridItem>
                     </GridContainer>
                   </DialogContent>
