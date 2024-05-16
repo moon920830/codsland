@@ -320,7 +320,7 @@ export default function Appointment(props) {
     timeStamp += 8 * 3600000 + time_values[time] * 1800000;
 
     axios
-      .post(`${BACKEND_URL}/appointments/save`, {appointmenttype: treatType, time: timeStamp, address: address, location: "", detail: ""}, {headers: {token:redux_token}})
+      .post(`${BACKEND_URL}/appointments/save`, {appointmenttype: treatType, time: timeStamp, address: address, location: "", detail: detail}, {headers: {token:redux_token}})
       .then((response) => {
         //error handler
         if (response.data.status == "error") {
@@ -664,6 +664,8 @@ export default function Appointment(props) {
                           className={classes.detailOutlinedStyle}
                           placeholder="Detail"
                           fullWidth
+                          multiline
+                          rows={4}
                           variant="outlined"
                           value={detail}
                           onChange={handleDetailChange}
