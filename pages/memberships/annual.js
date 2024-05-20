@@ -37,6 +37,7 @@ import { BACKEND_URL } from "../../AppConfigs";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import PayComponent from './PayComponent.js';
+import { payment_key } from '../../utils/config.js';
 // import { AUTHENTICATE } from '../redux/types/authTypes';
 import Router from "next/router";
 import Datetime from "react-datetime";
@@ -47,7 +48,7 @@ import { BackspaceOutlined } from "@material-ui/icons";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 
-const stripePromise = loadStripe('pk_live_51OVOQtFhFnxnoDMRdazPVsRFnB2zf3G1j5jRfQfJM5wNmKPRJkTPQoIQ7esTBTvxzrFkc431Fw223qzYIznMwpQP00MjJkcLhR');
+const stripePromise = loadStripe(payment_key);
 
 
 const useStyles = makeStyles((styles) => {

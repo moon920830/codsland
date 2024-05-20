@@ -40,6 +40,7 @@ import PayComponent from './PayComponent.js';
 import ProductList from "./productList.js";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { payment_key } from "../../utils/config.js";
 //children
 import AutocompleteInput from './cart/AutocompleteInput.js';
 import NoProduct from "./cart/NoProduct.js";
@@ -58,7 +59,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 import Close from "@material-ui/icons/Close";
 import ShipRates from "./cart/ShipRates.js";
 
-const stripePromise = loadStripe('pk_live_51OVOQtFhFnxnoDMRdazPVsRFnB2zf3G1j5jRfQfJM5wNmKPRJkTPQoIQ7esTBTvxzrFkc431Fw223qzYIznMwpQP00MjJkcLhR');
+const stripePromise = loadStripe(payment_key);
 
 const useStyles = makeStyles(theme => {
   return {

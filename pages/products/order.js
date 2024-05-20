@@ -33,6 +33,7 @@ import axios from 'axios';
 import { BACKEND_URL } from "../../AppConfigs";
 //other
 import { useSnackbar } from "notistack";
+import { payment_key } from "../../utils/config.js";
 //style
 import modalStyle from "../../styles/jss/nextjs-material-kit/modalStyle.js";
 import styles from "/styles/jss/nextjs-material-kit/pages/components.js";
@@ -65,7 +66,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import PayComponent from "./PayComponent.js";
 
-const stripePromise = loadStripe('pk_live_51OVOQtFhFnxnoDMRdazPVsRFnB2zf3G1j5jRfQfJM5wNmKPRJkTPQoIQ7esTBTvxzrFkc431Fw223qzYIznMwpQP00MjJkcLhR');
+const stripePromise = loadStripe(payment_key);
 
 function createData(id, date, number, price, status, products, shipping_rate) {
   return { id, date, number, price, status, products, shipping_rate};

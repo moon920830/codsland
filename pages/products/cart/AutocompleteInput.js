@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
 import { useSnackbar } from "notistack";
-import GOOGLE_MAP_API_KEY from '../../../utils/config';
+import { GOOGLE_MAP_API_KEY } from '../../../utils/config';
 
 const AutocompleteInput = (props) => {
   //snackbar
