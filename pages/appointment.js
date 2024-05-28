@@ -117,6 +117,7 @@ export default function Appointment(props) {
   const [enterDetailsModal, setEnterDetailsModal] = React.useState(false);
   const [showDetailsModal, setShowDetailsModal] = React.useState(false);
   const [successModal, setSuccessModal] = React.useState(false);
+  const [payModal, setPayModal] = React.useState(false);
   const [choiceModal, setChoiceModal] = React.useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [membership, setMembership] = useState({});
@@ -241,6 +242,7 @@ export default function Appointment(props) {
 
   const handleAddressContainerChange = (change) => {
     setAddress(change.address);
+    console.log(change);
   }
 
   const handleActionAppointment = (index) => {
@@ -285,8 +287,10 @@ export default function Appointment(props) {
 
 
     date = saveDate;
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
     // display save appointment
-    if (new Date() > date)
+    if (today > date)
       return ;
     const formattedDate = date.toLocaleDateString('en-US', {
       day: 'numeric',
@@ -361,6 +365,11 @@ export default function Appointment(props) {
   }
 
   function handleEnterDetails() {
+    if (address == "" || address == null || address == undefined)
+      return snackbar.enqueueSnackbar(
+        "Enter location please.",
+        { variant: "error" }
+      );
     setEnterDetailsModal(false);
     setSelectTimeModal(true);
   }
@@ -814,6 +823,58 @@ export default function Appointment(props) {
                   </DialogActions>
                 </Dialog>
                 {/* end of success modal */}
+                {/* start of pay modal */}
+                <Dialog
+                  classes={{
+                    root: classes.center,
+                    paper: classes.modal
+                  }}
+                  open={payModal}
+                  TransitionComponent={Transition}
+                  keepMounted
+                  onClose={() => setPayModal(false)}
+                  aria-labelledby="classic-modal-slide-title"
+                  aria-describedby="classic-modal-slide-description"
+                  maxWidth="sm"
+                  fullWidth={true}
+                >
+                  <DialogTitle
+                    id="classic-modal-slide-title"
+                    disableTypography
+                    className={classes.modalHeader}
+                  >
+                    <IconButton
+                      className={classes.modalCloseButton}
+                      key="close"
+                      aria-label="Close"
+                      color="inherit"
+                      onClick={() => setPayModal(false)}
+                    >
+                      <Close className={classes.modalClose} />
+                    </IconButton>
+                  </DialogTitle>
+                  <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                  >
+                    <GridContainer justify="center" alignItems="center" direction="column">
+                        <div style={{backgroundColor: "green", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "50%", width: "120px", height: "120px"}}>
+                          <CheckOutlinedIcon style={{width: "40%", height: "40%", color: "white"}} />
+                        </div>
+                        <h3>PayModal</h3>
+                    </GridContainer>
+                  </DialogContent>
+                  <DialogActions className={classes.modalFooter}>
+                    <Grid container justify="center">
+                        <Grid item>
+                          <Button round color="primary" onClick={() => {setSuccessModal(false);}}>
+                            Pay
+                          </Button>
+                        </Grid>
+                      </Grid>
+                  </DialogActions>
+                </Dialog>
+                {/* end of pay modal */}
                 {/* start of choice modal */}
                 <Dialog
                   classes={{

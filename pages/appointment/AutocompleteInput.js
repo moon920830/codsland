@@ -51,6 +51,9 @@ const AutocompleteInput = (props) => {
       fetchPredictions(e.target.value);
     } else {
       setPredictions([]);
+      props.handleAddressContainerChange({
+        address: "",
+      });
     }
   };
 
