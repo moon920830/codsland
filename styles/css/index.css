@@ -9,3 +9,11 @@ body{
 html {
     scroll-behavior: smooth;
 }
+
+.bg-blue {
+    background-color: rgb(242, 242, 242);;
+}
+
+.bg-white {
+    background-color: white;
+}

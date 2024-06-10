@@ -43,6 +43,8 @@ import Router from "next/router";
 import axios from 'axios';
 import { BACKEND_URL } from "../AppConfigs";
 import { isWithinInterval, subDays } from "date-fns";
+import {Elements,PaymentElement,useElements,useStripe} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
 
 import { Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Input, Typography } from "@material-ui/core";
 import Slide from "@material-ui/core/Slide";
@@ -102,6 +104,8 @@ function isWithinXDays(date1, date2, x) {
 
   return isWithinInterval(firstDate, { start: xDaysAgo, end: secondDate });
 }
+const stripePromise = loadStripe('pk_test_51OVOQtFhFnxnoDMRquya5UT74vYR3BcJFVk79wFhtcXg3hgvyM44n9papYedTEXyoIqqYZWFKBGkfxTampbb7sG400RmgjkKoR');
+
 
 export default function Appointment(props) {
   const snackbar = useSnackbar();
@@ -131,15 +135,65 @@ export default function Appointment(props) {
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [address, setAddress] = useState("");
   const [detail, setDetail] = useState("");
+  const [events, setEvent] = useState([]);
+  const [etitle, setEtitle] = useState("");
+  const [elocation, setElocation] = useState("");
+  const [edescription, setEdescription] = useState("");
+  const [estarttime, setEstarttime] =  useState("");
+  const [eendtime, setEendtime] = useState(0);
+  const [startHour, setStartHour] = useState(0);
+  const [startMin, setStartMin] =  useState(0);
+  const [endHour, setEndHour] = useState(0);
+  const [endMin, setEndMin] = useState(0);
+  const [PaymentIntent,setPaymentIntent]=useState(null);
+  const [appointstate, setAppointstate] = useState(true)
 
 
+  const CheckoutForm=()=>{
+    const stripe=useStripe();
+    const elements=useElements();
+    const handlePayment=async (e)=>{
+        e.preventDefault();
+        if(!stripe||!elements) return;
+        console.log(elements)
+        const result = await stripe.confirmPayment({
+        //`Elements` instance that was used to create the Payment Element
+        elements,
+        redirect:"if_required"
+        });
+        if (result.error) {
+            // Show error to your customer (for example, payment details incomplete)
+            console.log(result.error.message);
+        } else {
+            console.log(result)
+            setAppointstate(false)
+        }
+    }
+    return (
+        <>
+        <form onSubmit={handlePayment} style={{marginTop: '20px'}}>
+            <PaymentElement/>
+            <Button
+            sx={{margin:1}}
+            type='submit'
+            variant='outlined'
+            color="primary"
+            >Pay</Button>
+        </form>
+        </>
+    )
+  }
   //component did mount
   useEffect(() => {
     // if(redux_membership == "null" || redux_membership == "undefined" || redux_membership == null || redux_membership == undefined || checkExpired(redux_membership)) {
     //   snackbar.enqueueSnackbar("Your membership is not valid", { variant: "info" });
     //   Router.push("/home");
     // }
-
+    // const range = ['2023/1/1', '2024/12/31'];
+    const firstDay = new Date(2023, 0, 1);
+    const lastDay = new Date(2024, 11, 31);
+    const range = {start :firstDay, end:lastDay};
+    console.log(range.length)
     axios
       .post(`${BACKEND_URL}/members/check`, {}, {headers: {token:redux_token}})
       .then((response) => {
@@ -193,11 +247,31 @@ export default function Appointment(props) {
             { variant: "error" }
           );
         } else {
+          // console.log(response.data.data)
           setAppointments(response.data.data);
         }
       });
-  }, []);
 
+    axios
+      .post(`${BACKEND_URL}/appointments/calendar`, {range}, {headers: {token:redux_token}})
+      .then((response) => {
+        console.log(response.data)
+        setEvent(response.data.data.events)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, []);
+  const startSaving=()=>{
+    axios.post(`${BACKEND_URL}/appointments/start-payment`,{
+        price:15000
+    })
+    .then(response=>{
+        if(response.data.status=="success"){
+            setPaymentIntent(response.data.data)
+        }
+    })
+}
   const times = [
     '8:00',
     '8:30',
@@ -254,7 +328,13 @@ export default function Appointment(props) {
     const minute = stamp / 60000;
     return minute + 'minutes';
   }
-
+  function convertTimeToHoursAndMinutes(time) {
+    const hours = Math.floor(time);
+    // setStartHour(hours)
+    const minutes = Math.round((time - hours) * 60);
+    // setStartMin(minutes)
+    return { hours, minutes };
+  }
   function handleSetAppointment(date) {
     const saveDate = date;
     // check whether there are already appointments
@@ -298,7 +378,28 @@ export default function Appointment(props) {
       year: 'numeric',
     });
     setSelectedDate(formattedDate);
-    setEnterDetailsModal(true);
+    // setEnterDetailsModal(true);
+    
+    events.map(event => {
+      const start_date = new Date(event.start_date);
+      const end_date = new Date(event.end_date)
+      // setEtitle(event.title)
+      // setElocation(event.location)
+      if(start_date <= date && date <= end_date ) {
+        setEtitle(event.title);
+        setElocation(event.location);
+        setEdescription(event.description);
+        setEstarttime(event.start_time);
+        const {hours: startHours, minutes: startMinutes } = convertTimeToHoursAndMinutes(estarttime);
+        setStartHour(startHours)
+        setStartMin(startMinutes)
+        setEendtime(event.end_time);
+        const {hours: endHours, minutes: endMinutes } = convertTimeToHoursAndMinutes(eendtime);
+        setEndHour(endHours)
+        setEndMin(endMinutes)
+        setEnterDetailsModal(true);
+      }
+    })
   }
 
   const handleSetTime = (index) => {
@@ -314,10 +415,6 @@ export default function Appointment(props) {
     }
     setSelectTimeModal(false);
 
-    // const today = new Date();
-    // today.setHours(0, 0, 0, 0);
-    // let timeStamp = today.getTime();
-    // timeStamp += 5 * 86400000 + 8 * 3600000 + time_values[time] * 1800000;
     const today = new Date(selectedDate);
     today.setHours(0, 0, 0, 0);
     let timeStamp = today.getTime();
@@ -358,6 +455,7 @@ export default function Appointment(props) {
                 "Successfly saved.",
                 { variant: "success" }
               );
+              window.location.reload();
             }
           });
         }
@@ -405,34 +503,17 @@ export default function Appointment(props) {
   function renderCell(date) {
     const displayList = getTodoList(date);
 
-    // <li>
-    //   <Whisper
-    //     placement="top"
-    //     trigger="click"
-    //     speaker={
-    //       <Popover>
-    //         {list.map((item, index) => (
-    //           <p key={index}>
-    //             <b>{item.time}</b> - {item.title}
-    //           </p>
-    //         ))}
-    //       </Popover>
-    //     }
-    //   >
-    //     <a>{moreCount} more</a>
-    //   </Whisper>
-    // </li>
-
       return (
         (displayList.length === 0) ?
         (<div></div>)
         :
-        (<ul className="calendar-todo-list" style={{paddingLeft: '0px'}}>
+        (<ul className="calendar-todo-list" style={{paddingLeft: '0px',color: "black"}}>
           {
             displayList.map(display => {
               return (
-                <li key={display.time} style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
-                  <Badge /> <b>{display.time}&nbsp;{display.title}</b>
+                <li key={display.time} style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', color: 'black'}}>
+                  {/* <Badge /> <b>{display.time}&nbsp;{display.title}</b> */}
+                  <Badge />
                 </li>
               )
             })
@@ -494,7 +575,19 @@ export default function Appointment(props) {
     setTooltipText("Price: $" + currentTreatType.price + " Time: " + currentTreatType.length + "minutes");
   }
 
+  const checkDay = (date) => {
+    let value = false;
+    events.map(event => {
+      const start_date = new Date(event.start_date);
+      const end_date = new Date(event.end_date)
+      if(start_date < date && date < end_date ) {
+        value = true
+      }
+    })
+    return value
+  }
   return (
+    <>
     <div>
       <ElevateAppBar />
       <div className={classNames(classes.mainRaised)}>
@@ -610,6 +703,82 @@ export default function Appointment(props) {
                     <Divider />
                     <GridContainer>
                       <GridItem>
+                        <h6 style={{marginTop: '20px', fontWeight: 700}}>Event Details</h6>
+                      </GridItem>
+                      <GridItem sm={6}>
+                        <TextField
+                          label="Event Title"
+                          className={classes.outlinedStyle}
+                          placeholder="Event Title"
+                          fullWidth
+                          variant="outlined"
+                          value= {etitle}
+                          InputProps={{
+                            readOnly: true,
+                            style: {
+                              // Control font or other styles here
+                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '14px',
+                              '::placeholder' : {
+                                display: 'none'
+                              },
+                            },
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem sm={6}>
+                        <TextField
+                          label="Location"
+                          className={classes.outlinedStyle}
+                          placeholder="Location"
+                          fullWidth
+                          variant="outlined"
+                          value={elocation}
+                          InputProps={{
+                            readOnly: true,
+                            style: {
+                              // Control font or other styles here
+                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '14px',
+                              '::placeholder' : {
+                                display: 'none'
+                              },
+                            },
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem>
+                        <TextField
+                          label="Detail"
+                          className={classes.detailOutlinedStyle}
+                          placeholder="Detail"
+                          fullWidth
+                          multiline
+                          rows={4}
+                          variant="outlined"
+                          value={edescription}
+                          onChange={handleDetailChange}
+                          InputProps={{
+                            readOnly: true,
+                            style: {
+                              // Control font or other styles here
+                              fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                              fontSize: '14px',
+                              '::placeholder' : {
+                                display: 'none'
+                              },
+                            },
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem style={{marginTop: "20px"}}>
+                        <span style={{fontSize: "16px", fontWeight: "500"}}>Time: </span><span>{startHour}h {startMin}min ~ {endHour}h {endMin}min</span>
+                        
+                      </GridItem>
+                    </GridContainer>
+                    <Divider style={{marginTop: '30px'}}/>
+                    <GridContainer>
+                      <GridItem>
                         <TextField
                           label="Patient Name"
                           className={classes.outlinedStyle}
@@ -695,6 +864,21 @@ export default function Appointment(props) {
                             <li key={suggestion.place_id} style={{cursor: 'pointer'}} onClick={() => handleLocationClick(suggestion.display_name)}>{suggestion.display_name}</li>
                           ))}
                         </ul> */}
+                        {
+                        !PaymentIntent?(
+                        <Button
+                        variant='outlined'
+                        color="primary"
+                        onClick={startSaving}
+                        
+                        >
+                            Prepay for the Book
+                        </Button>
+                    ):(
+                        <Elements stripe={stripePromise} options={PaymentIntent}>
+                            <CheckoutForm/>
+                        </Elements>
+                    )}
                       </GridItem>
                     </GridContainer>
                   </DialogContent>
@@ -704,7 +888,7 @@ export default function Appointment(props) {
                           <Button round onClick={() => setEnterDetailsModal(false)}>
                             Cancel
                           </Button>
-                          <Button round color="primary" onClick={handleEnterDetails}>
+                          <Button round color="primary" disabled={appointstate} onClick={handleEnterDetails}>
                             Get Appointment
                           </Button>
                         </Grid>
@@ -939,7 +1123,15 @@ export default function Appointment(props) {
                       tabContent: (
                         <GridContainer>
                           <GridItem sm={12}>
-                            <Calendar bordered onSelect={handleSetAppointment} renderCell={renderCell} />
+                          {appointments && 
+                            (<Calendar bordered onSelect={handleSetAppointment} cellClassName={date => {
+                              // const checkday = checkDay(date.getDate(), date.getMonth());
+                              const checkday = checkDay(date)
+                              if(checkday == true) return 'bg-blue'
+                              else return 'bg-white'
+                            }}  
+                              renderCell={renderCell} />)
+                          } 
                           </GridItem>
                         </GridContainer>
                       )
@@ -1036,5 +1228,6 @@ export default function Appointment(props) {
         <Grid item xs={1} ></Grid>
       </Grid>
     </div>
+    </>
   );
 }
