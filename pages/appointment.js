@@ -141,7 +141,7 @@ export default function Appointment(props) {
   const [edescription, setEdescription] = useState("");
   const [estarttime, setEstarttime] =  useState("");
   const [eendtime, setEendtime] = useState(0);
-  const [startHour, setStartHour] = useState(0);
+  const [startHour, setStartHour] = useState();
   const [startMin, setStartMin] =  useState(0);
   const [endHour, setEndHour] = useState(0);
   const [endMin, setEndMin] = useState(0);
@@ -174,6 +174,7 @@ export default function Appointment(props) {
         <form onSubmit={handlePayment} style={{marginTop: '20px'}}>
             <PaymentElement/>
             <Button
+            round
             sx={{margin:1}}
             type='submit'
             variant='outlined'
@@ -330,9 +331,7 @@ export default function Appointment(props) {
   }
   function convertTimeToHoursAndMinutes(time) {
     const hours = Math.floor(time);
-    // setStartHour(hours)
     const minutes = Math.round((time - hours) * 60);
-    // setStartMin(minutes)
     return { hours, minutes };
   }
   function handleSetAppointment(date) {
@@ -388,6 +387,7 @@ export default function Appointment(props) {
       if(start_date <= date && date <= end_date ) {
         setEtitle(event.title);
         setElocation(event.location);
+        console.log(event)
         setEdescription(event.description);
         setEstarttime(event.start_time);
         const {hours: startHours, minutes: startMinutes } = convertTimeToHoursAndMinutes(estarttime);
@@ -772,8 +772,11 @@ export default function Appointment(props) {
                         />
                       </GridItem>
                       <GridItem style={{marginTop: "20px"}}>
-                        <span style={{fontSize: "16px", fontWeight: "500"}}>Time: </span><span>{startHour}h {startMin}min ~ {endHour}h {endMin}min</span>
-                        
+                        { startHour != 0 && (
+                          <>
+                          <span style={{fontSize: "16px", fontWeight: "500"}}>Time: </span>
+                          <span>{startHour}h {startMin}min ~ {endHour}h {endMin}min</span> </>)
+                        }                
                       </GridItem>
                     </GridContainer>
                     <Divider style={{marginTop: '30px'}}/>
@@ -870,7 +873,7 @@ export default function Appointment(props) {
                         variant='outlined'
                         color="primary"
                         onClick={startSaving}
-                        
+                        round
                         >
                             Prepay for the Book
                         </Button>
