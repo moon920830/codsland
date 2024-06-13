@@ -113,7 +113,7 @@ export default function Appointment(props) {
   //redux
   const redux_fullname = useSelector((state) => state.authentication.fullname);
   const redux_token = useSelector((state) => state.authentication.token);
-  const redux_membership = useSelector((state) => state.authentication.membership);
+  // const redux_membership = useSelector((state) => state.authentication.membership);
   //other
   const classes = useStyles();
   const { ...rest } = props;
