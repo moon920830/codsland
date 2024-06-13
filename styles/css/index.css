@@ -11,7 +11,12 @@ html {
 }
 
 .bg-blue {
-    background-color: rgb(242, 242, 242);;
+    background-color: #DB09AF;
+    color: white;
+}
+
+.bg-blue :hover {
+    background-color: #FF0BCC !important;
 }
 
 .bg-white {

@@ -500,32 +500,6 @@ export default function Appointment(props) {
     return returnValue;
   }
 
-  // function getLocationList(date) {
-  //   let returnValue = [];
-  //   events.map(event => {
-  //     const start_date = new Date(event.start_date);
-  //     const end_date = new Date(event.end_date)
-  //     // setEtitle(event.title)
-  //     // setElocation(event.location)
-  //     if(start_date <= date && date <= end_date ) {
-  //       returnValue.push({date: date});
-  //       setEtitle(event.title);
-  //       setElocation(event.location);
-  //       console.log(event)
-  //       setEdescription(event.description);
-  //       setEstarttime(event.start_time);
-  //       const {hours: startHours, minutes: startMinutes } = convertTimeToHoursAndMinutes(estarttime);
-  //       setStartHour(startHours)
-  //       setStartMin(startMinutes)
-  //       setEendtime(event.end_time);
-  //       const {hours: endHours, minutes: endMinutes } = convertTimeToHoursAndMinutes(eendtime);
-  //       setEndHour(endHours)
-  //       setEndMin(endMinutes)
-  //     }
-  //   })
-  //   return returnValue
-  // }
-
   function renderCell(date) {
     const displayList = getTodoList(date);
     // const EventLocationList = getLocationList(date);
@@ -547,14 +521,14 @@ export default function Appointment(props) {
           location: {location}
         </div>))
         :
-        (<ul className="calendar-todo-list" style={{paddingLeft: '0px',color: "black"}}>
+        (<ul className="calendar-todo-list" style={{paddingLeft: '0px',color: "white"}}>
           <li>
             <div style={{marginTop: '5px'}}>location: {location}</div>
           </li>
           {
             displayList.map(display => {
               return (
-                <li key={display.time} style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', color: 'black'}}>
+                <li key={display.time} style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', color: 'white'}}>
                   {/* <Badge /> <b>{display.time}&nbsp;{display.title}</b> */}
                   <Badge />
                 </li>
