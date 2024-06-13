@@ -11,12 +11,12 @@ html {
 }
 
 .bg-blue {
-    background-color: #DB09AF;
-    color: white;
+    background-color: #F0D7A3;
+    color: black;
 }
 
 .bg-blue :hover {
-    background-color: #FF0BCC !important;
+    background-color: #FFE5AD !important;
 }
 
 .bg-white {

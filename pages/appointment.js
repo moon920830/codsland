@@ -518,19 +518,19 @@ export default function Appointment(props) {
         (displayList.length === 0) ?
         ((location === "") ? (<div></div>) : 
         (<div style={{marginTop:"5px"}}>
-          location: {location}
+          {location}
         </div>))
         :
-        (<ul className="calendar-todo-list" style={{paddingLeft: '0px',color: "white"}}>
+        (<ul className="calendar-todo-list" style={{paddingLeft: '0px'}}>
           <li>
-            <div style={{marginTop: '5px'}}>location: {location}</div>
+            <div style={{marginTop: '5px'}}>{location}</div>
           </li>
           {
             displayList.map(display => {
               return (
-                <li key={display.time} style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', color: 'white'}}>
+                <li key={display.time} style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}>
                   {/* <Badge /> <b>{display.time}&nbsp;{display.title}</b> */}
-                  <Badge />
+                  <Badge color="blue"/>
                 </li>
               )
             })
