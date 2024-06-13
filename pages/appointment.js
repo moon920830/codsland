@@ -500,14 +500,57 @@ export default function Appointment(props) {
     return returnValue;
   }
 
+  // function getLocationList(date) {
+  //   let returnValue = [];
+  //   events.map(event => {
+  //     const start_date = new Date(event.start_date);
+  //     const end_date = new Date(event.end_date)
+  //     // setEtitle(event.title)
+  //     // setElocation(event.location)
+  //     if(start_date <= date && date <= end_date ) {
+  //       returnValue.push({date: date});
+  //       setEtitle(event.title);
+  //       setElocation(event.location);
+  //       console.log(event)
+  //       setEdescription(event.description);
+  //       setEstarttime(event.start_time);
+  //       const {hours: startHours, minutes: startMinutes } = convertTimeToHoursAndMinutes(estarttime);
+  //       setStartHour(startHours)
+  //       setStartMin(startMinutes)
+  //       setEendtime(event.end_time);
+  //       const {hours: endHours, minutes: endMinutes } = convertTimeToHoursAndMinutes(eendtime);
+  //       setEndHour(endHours)
+  //       setEndMin(endMinutes)
+  //     }
+  //   })
+  //   return returnValue
+  // }
+
   function renderCell(date) {
     const displayList = getTodoList(date);
-
+    // const EventLocationList = getLocationList(date);
+    // console.log(EventLocationList)
+    let location = "";
+    events.map(event => {
+      const start_date = new Date(event.start_date);
+      const end_date = new Date(event.end_date)
+      // setEtitle(event.title)
+      // setElocation(event.location)
+      if(start_date <= date && date <= end_date ) {
+        location = event.location
+      }
+    })
       return (
         (displayList.length === 0) ?
-        (<div></div>)
+        ((location === "") ? (<div></div>) : 
+        (<div style={{marginTop:"5px"}}>
+          location: {location}
+        </div>))
         :
         (<ul className="calendar-todo-list" style={{paddingLeft: '0px',color: "black"}}>
+          <li>
+            <div style={{marginTop: '5px'}}>location: {location}</div>
+          </li>
           {
             displayList.map(display => {
               return (
