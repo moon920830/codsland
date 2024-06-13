@@ -173,13 +173,15 @@ export default function Appointment(props) {
         <>
         <form onSubmit={handlePayment} style={{marginTop: '20px'}}>
             <PaymentElement/>
+            <div style={{width: '100%', textAlign: 'center'}}>
             <Button
             round
-            sx={{margin:1}}
+            sx={{margin:1, margin: 'auto'}}
             type='submit'
             variant='outlined'
             color="primary"
             >Pay</Button>
+            </div>
         </form>
         </>
     )
@@ -886,14 +888,17 @@ export default function Appointment(props) {
                         </ul> */}
                         {
                         !PaymentIntent?(
-                        <Button
-                        variant='outlined'
-                        color="primary"
-                        onClick={startSaving}
-                        round
-                        >
-                            Prepay for the Book
-                        </Button>
+                        <div style={{width: '100%', textAlign: 'center'}}>
+                          <Button
+                          variant='outlined'
+                          color="primary"
+                          onClick={startSaving}
+                          style={{margin: 'auto'}}
+                          round
+                          >
+                              Prepay for the Book
+                          </Button>
+                        </div>
                     ):(
                         <Elements stripe={stripePromise} options={PaymentIntent}>
                             <CheckoutForm/>
