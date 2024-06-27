@@ -143,7 +143,7 @@ function HeaderLinks(props) {
             href="#service_section"
             style={{color:"inherit"}}
             >
-            Services
+            Courses
           </a>
         </Button>
       </ListItem>
@@ -155,7 +155,7 @@ function HeaderLinks(props) {
           className={classes.navLink}
           onClick={handleProducts}
         >
-          Products
+          Schedule
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
