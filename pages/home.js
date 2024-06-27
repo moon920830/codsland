@@ -349,7 +349,7 @@ export default function Home(props) {
           textAlign: "center",
         }}
       >
-        <div style={{ fontSize: "48px", fontWeight: "700", color: "white" }}>
+        <div style={{ fontSize: "48px", fontWeight: "700", color: "white", fontFamily: 'satoshi' }}>
           Welcome to the Home of True Healing!
         </div>
         <div
@@ -358,6 +358,7 @@ export default function Home(props) {
             fontWeight: "700",
             color: "white",
             marginTop: "40px",
+            fontFamily: 'satoshi'
           }}
         >
           Join with us and gain access to
@@ -368,6 +369,7 @@ export default function Home(props) {
             fontWeight: "600",
             color: "white",
             marginTop: "40px",
+            fontFamily: 'satoshi'
           }}
         >
           Hands-on Healing, Healing Guidance, Healing Training, Healing
@@ -421,17 +423,17 @@ export default function Home(props) {
               <GridItem xs={12} sm={6}>
                 <h4
                   className={classes.title}
-                  style={{ color: "#2E3192", fontSize: "20px" }}
+                  style={{ color: "#2E3192", fontSize: "20px", fontFamily: 'satoshi' }}
                 >
                   Hands-on Healing, Intutive Cuidance and Unusual Healing
                   Products
                 </h4>
                 <h1 className={classes.title} style={{ fontSize: "36px" }}>
-                  <span style={{ color: "#2E3192" }}>Who We Are </span>
+                  <span style={{ color: "#2E3192", fontFamily: 'satoshi' }}>Who We Are </span>
                 </h1>
                 <Carousel {...settings}>
                   <div>
-                    <p style={{ fontSize: "18px", lineHeight: "200%" }}>
+                    <p style={{ fontSize: "18px", lineHeight: "200%", fontFamily: 'satoshi' }}>
                       Why are Rev Dr Howell and Rev Rebecca treating and healing
                       people as ministers of a Church rather than working as a
                       naturopathic physician and massage therapist? CODS (Church
@@ -445,7 +447,7 @@ export default function Home(props) {
                     </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "18px", lineHeight: "200%" }}>
+                    <p style={{ fontSize: "18px", lineHeight: "200%", fontFamily: 'satoshi' }}>
                       The medical system utilizes fear to control you and the
                       therapists who treat you. The system insists on
                       determining the training and education of all
@@ -467,7 +469,7 @@ export default function Home(props) {
                     </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "18px", lineHeight: "200%" }}>
+                    <p style={{ fontSize: "18px", lineHeight: "200%", fontFamily: 'satoshi' }}>
                       Why do we mean? For example, in the 1980s Dr. Howell was
                       trained in naturopathic medical school to treat laboratory
                       diagnosed pernicious anemia with injections of vitamin
@@ -485,7 +487,7 @@ export default function Home(props) {
                     </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "18px", lineHeight: "200%" }}>
+                    <p style={{ fontSize: "18px", lineHeight: "200%", fontFamily: 'satoshi'}}>
                       The State maintains that medical practice laws are to
                       protect the consumer, but there are many cases of
                       malpractice despite these laws. Statistically, it is said
@@ -507,7 +509,7 @@ export default function Home(props) {
                     </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: "18px", lineHeight: "200%" }}>
+                    <p style={{ fontSize: "18px", lineHeight: "200%", fontFamily: 'satoshi' }}>
                       All of the ministers and deacons of CoDS are lawfully and
                       legally-recognized, sanctified healers, able to work
                       anywhere, worldwide. We are all members of the Sacred
@@ -531,7 +533,7 @@ Our founders, through the misery of watching their patients die, have tried many
 But, because of the highly controlled Internet and social media, we are unable to openly talk about these health and healing issues on the “free” internet. We have already been banned from Facebook once for posting a video where the word “healed” was used (to describe Dr. Howell’s treatment results). Did you know that “heal” is an inappropriate, four-letter word to management at Facebook? To say “heal” there is the same to them as cursing with words such as fuck or shit (or worse) to us. But those swear words are all okay on Facebook! Other times our postings on YouTube and social media have simply disappeared! </p>
                   </div> */}
                   <div>
-                    <p style={{ fontSize: "18px", lineHeight: "200%" }}>
+                    <p style={{ fontSize: "18px", lineHeight: "200%", fontFamily: 'satoshi' }}>
                       Frustrated with the informational political and technology
                       scene, we gave up trying to work within that system. We
                       decided that Church of Divine Structure should create a
@@ -564,6 +566,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     fontSize: "20px",
                     fontWeight: "700",
                     marginTop: "50px",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   Spiritual Healer Near Me
@@ -580,6 +583,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                       color: "#2E3192",
                       fontSize: "45px",
                       fontWeight: "700",
+                      fontFamily: 'satoshi'
                     }}
                   >
                     CODS is the Association for True Healing
@@ -594,6 +598,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     fontSize: "21px",
                     fontWeight: "500",
                     marginTop: "20px",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   At Church of Divine Structure, our healing services encompass
@@ -633,6 +638,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           color: "#2E3192",
                           fontSize: "21px",
                           fontWeight: "600",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Hands-On Healing
@@ -649,6 +655,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         top: "240px",
                         width: "70%",
                         textAlign: "center",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       Our skilled healers have developed unique and powerful
@@ -664,6 +671,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         fontSize: "15px",
                         position: "absolute",
                         top: "350px",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       www.drdeanhowell.com
@@ -700,6 +708,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           color: "white",
                           fontSize: "21px",
                           fontWeight: "600",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Intuitive Guidance
@@ -716,6 +725,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         top: "220px",
                         width: "70%",
                         textAlign: "center",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       Our expertise is to find the right course of bodily and
@@ -730,6 +740,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         fontSize: "15px",
                         position: "absolute",
                         top: "310px",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       www.angelreadings.live
@@ -766,6 +777,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           color: "#2E3192",
                           fontSize: "21px",
                           fontWeight: "600",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Natural remedies
@@ -782,6 +794,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         top: "240px",
                         width: "70%",
                         textAlign: "center",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       There are two ways to utilize supplementation: treat the
@@ -797,6 +810,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         fontSize: "15px",
                         position: "absolute",
                         top: "350px",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       www.theessenceoflife.com
@@ -833,6 +847,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           color: "white",
                           fontSize: "21px",
                           fontWeight: "600",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Repair Your Environment
@@ -849,6 +864,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         top: "220px",
                         width: "70%",
                         textAlign: "center",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       We are inundated with bad things in our world! Here we
@@ -864,6 +880,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         fontSize: "15px",
                         position: "absolute",
                         top: "320px",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       www.theessenceoflife.com
@@ -910,6 +927,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           fontSize: "21px",
                           fontWeight: "600",
                           width: "80%",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Healing Training with the Developers
@@ -926,6 +944,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         top: "260px",
                         width: "70%",
                         textAlign: "center",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       We offer three healing trainings to CODS Members. We are
@@ -942,6 +961,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         fontSize: "15px",
                         position: "absolute",
                         top: "380px",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       www.theessenceoflife.com
@@ -989,6 +1009,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           color: "white",
                           fontSize: "19px",
                           fontWeight: "600",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Missing your bakery? Here's our unique solution!
@@ -1005,6 +1026,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         top: "210px",
                         width: "70%",
                         textAlign: "center",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       We offer three healing trainings to CODS Members. We are
@@ -1021,6 +1043,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         fontSize: "15px",
                         position: "absolute",
                         top: "330px",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       www.theessenceoflife.com
@@ -1065,6 +1088,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           fontSize: "21px",
                           fontWeight: "600",
                           width: "90%",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Members can buy Radionics equipment and training courses
@@ -1081,6 +1105,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         top: "290px",
                         width: "70%",
                         textAlign: "center",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       Our equipment is all American made and designed by
@@ -1096,6 +1121,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                         fontSize: "15px",
                         position: "absolute",
                         top: "380px",
+                        fontFamily: 'satoshi'
                       }}
                     >
                       www.theessenceoflife.com
@@ -1117,6 +1143,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     color: "#2E3192",
                     fontSize: "37px",
                     fontWeight: "700",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   Our Journey to Dynamic
@@ -1127,6 +1154,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     fontSize: "37px",
                     fontWeight: "700",
                     marginTop: "15px",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   Energetic Healing
@@ -1137,6 +1165,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     fontSize: "16px",
                     fontWeight: "700",
                     marginTop: "15px",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   Unraveling the Path to Wellness
@@ -1149,6 +1178,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     fontSize: "18px",
                     textAlign: "left",
                     marginLeft: "190px",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   In the heart of our shared history lies a transformative tale,
@@ -1213,6 +1243,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     color: "#2E3192",
                     fontSize: "45px",
                     fontWeight: "700",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   AT CoDS, WE ARE ALL ABOUT HEALING
@@ -1225,6 +1256,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     lineHeight: "55px",
                     maxHeight: abouthealing ? "210px" : "100%",
                     overflow: "hidden",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   When people think of getting healthy, they think that they
@@ -1287,6 +1319,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           fontSize: "30px",
                           fontWeight: "800",
                           textAlign: "left",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Reverend Dr Dean Howell
@@ -1301,6 +1334,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           maxHeight: aboutdean ? "180px" : "100%",
                           overflow: "hidden",
                           lineHeight: "36px",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         became a naturopathic physician in 1982 because he was
@@ -1365,6 +1399,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           fontSize: "30px",
                           fontWeight: "800",
                           textAlign: "right",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Reverend Rebecca Hart Malter
@@ -1379,6 +1414,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           maxHeight: aboutrebecca ? "180px" : "100%",
                           overflow: "hidden",
                           lineHeight: "36px",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         She was born and raised in Brooklyn. She always had
@@ -1436,6 +1472,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           fontSize: "30px",
                           fontWeight: "800",
                           textAlign: "left",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Minister of Healing Technologies Peter Radatti
@@ -1450,6 +1487,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           maxHeight: aboutpeter ? "180px" : "100%",
                           overflow: "hidden",
                           lineHeight: "36px",
+                          fontFamily: 'satoshi'
                         }}
                       >
                         Reverend Peter began as a physicist and worked for NASA
@@ -1493,6 +1531,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     color: "#2E3192",
                     fontSize: "45px",
                     fontWeight: "700",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   Church of Divine Structure Priory 175 is also called CoDS
@@ -1505,6 +1544,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     lineHeight: "55px",
                     maxHeight: aboutpriory ? "100px" : "100%",
                     overflow: "hidden",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   The Church of Divine Structure is dedicated to healing and
@@ -1541,6 +1581,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     color: "#2E3192",
                     fontSize: "45px",
                     fontWeight: "700",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   WE HAVE EXPERIENCED HEALING! HERE IS OUR STORY
@@ -1553,6 +1594,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     lineHeight: "55px",
                     maxHeight: storyhealing ? "100px" : "100%",
                     overflow: "hidden",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   The Church of Divine Structure is dedicated to healing and
@@ -1590,6 +1632,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     color: "#2E3192",
                     fontSize: "45px",
                     fontWeight: "700",
+                    fontFamily: 'satoshi'
                   }}
                 >
                   Articles
@@ -1605,6 +1648,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                             lineHeight: "29px",
                             fontWeight: "700",
                             textAlign: "left",
+                            fontFamily: 'satoshi'
                           }}
                         >
                           The Church of Hope's Holistic Approach
@@ -1617,13 +1661,14 @@ But, because of the highly controlled Internet and social media, we are unable t
                             fontWeight: "400",
                             marginTop: "20px",
                             textAlign: "left",
+                            fontFamily: 'satoshi'
                           }}
                         >
                           Rev Dr. Howell and Rev Rebecca offer holistic healing
                           through the Church of Hope.
                         </div>
                         <div style={{ textAlign: "left", marginTop: "20px" }}>
-                          <Button color="primary" style={{ width: "100%" }}>
+                          <Button color="primary" style={{ width: "100%", fontFamily: 'satoshi' }}>
                             Read More
                           </Button>
                         </div>
@@ -1640,6 +1685,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                             lineHeight: "29px",
                             fontWeight: "700",
                             textAlign: "left",
+                            fontFamily: 'satoshi'
                           }}
                         >
                           CODS (Church of Divine Structure Priory 175, Inc.)
@@ -1652,12 +1698,13 @@ But, because of the highly controlled Internet and social media, we are unable t
                             fontWeight: "400",
                             marginTop: "20px",
                             textAlign: "left",
+                            fontFamily: 'satoshi'
                           }}
                         >
                           A holistic approach to healing beyond commerce.
                         </div>
                         <div style={{ textAlign: "left", marginTop: "50px" }}>
-                          <Button color="primary" style={{ width: "100%" }}>
+                          <Button color="primary" style={{ width: "100%", fontFamily: 'satoshi' }}>
                             Read More
                           </Button>
                         </div>
@@ -1666,23 +1713,23 @@ But, because of the highly controlled Internet and social media, we are unable t
                   </GridItem>
                 </GridContainer>
                 <GridContainer justify="center" style={{ marginTop: "50px" }}>
-                  <h4 className={classes.title} style={{ color: "#2E3192" }}>
+                  <h4 className={classes.title} style={{ color: "#2E3192", fontFamily: 'satoshi' }}>
                     Investment in Wellness
                   </h4>
                 </GridContainer>
                 <GridContainer justify="center">
                   <h2 className={classes.title}>
-                    <span style={{ color: "#2E3192" }}>
+                    <span style={{ color: "#2E3192", fontFamily: 'satoshi' }}>
                       Our Membership Plans
                     </span>
                   </h2>
                 </GridContainer>
                 <GridContainer justify="center">
-                  <h4 className={classes.title} style={{color: "#2E3192"}}>
+                  <h4 className={classes.title} style={{color: "#2E3192", fontFamily: 'satoshi'}}>
                     At Church of Divine Structure, we believe in making holistic
                     healing accessible to all.{" "}
                   </h4>
-                  <h4 className={classes.title} style={{ marginTop: "0px", color: "#2E3192" }}>
+                  <h4 className={classes.title} style={{ marginTop: "0px", color: "#2E3192", fontFamily: 'satoshi' }}>
                     {" "}
                     Our pricing plans are designed to offer flexibility and
                     affordability, ensuring that the path to true well-being is
@@ -1741,7 +1788,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                       <CardContent>
                         <Typography
                           className={classes.title}
-                          style={{ color: "white" }}
+                          style={{ color: "white", fontFamily: 'satoshi' }}
                           color="textSecondary"
                           gutterBottom
                         >
