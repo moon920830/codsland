@@ -2066,7 +2066,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                           label="General Inquiry"
                         /> */}
                         <GridContainer
-                          justify="flex-center"
+                          justify="center"
                           style={{ marginTop: "100px", padding: '20px'}}
                         >
                           <Button round color="primary" style={{width: '100%'}}>
