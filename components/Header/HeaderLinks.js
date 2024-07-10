@@ -78,7 +78,7 @@ function HeaderLinks(props) {
   }
 
   return (
-    <List className={classes.list}>
+    <List className={classes.list} style={{marginLeft: 'auto'}}>
       {/* <ListItem className={classes.listItem}>
         <CustomDropdown
           noLiPadding
@@ -185,23 +185,29 @@ function HeaderLinks(props) {
         </Button>
       </ListItem>
       {props.token == null ? <ListItem className={classes.listItem}>
-        <Button
+        {/* <Button
           href=""
-          color="transparent"
+          color="primary"
           target="_blank"
           className={classes.navLink}
           onClick={handleLogin}
         >
           Log In
+        </Button> */}
+        <Button color="primary" style={{ width: "100px", fontFamily: 'satoshi', marginLeft: '50px' }} onClick={handleLogin}>
+          Log In
         </Button>
       </ListItem> : <ListItem className={classes.listItem}>
-        <Button
+        {/* <Button
           href=""
           color="transparent"
           target="_blank"
           className={classes.navLink}
           onClick={handleLogout}
         >
+          Log Out
+        </Button> */}
+        <Button color="primary" style={{ width: "100px", fontFamily: 'satoshi', marginLeft: '50px' }} onClick={handleLogout}>
           Log Out
         </Button>
       </ListItem>}

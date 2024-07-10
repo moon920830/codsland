@@ -22,38 +22,38 @@ const useStyles = makeStyles(styles);
 export default function Header(props) {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  React.useEffect(() => {
-    if (props.changeColorOnScroll) {
-      window.addEventListener("scroll", headerColorChange);
-    }
-    return function cleanup() {
-      if (props.changeColorOnScroll) {
-        window.removeEventListener("scroll", headerColorChange);
-      }
-    };
-  });
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-  const headerColorChange = () => {
-    const { color, changeColorOnScroll } = props;
-    const windowsScrollTop = window.pageYOffset;
-    if (windowsScrollTop > changeColorOnScroll.height) {
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.remove(classes[color]);
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.add(classes[changeColorOnScroll.color]);
-    } else {
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.add(classes[color]);
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.remove(classes[changeColorOnScroll.color]);
-    }
-  };
+  // React.useEffect(() => {
+  //   if (props.changeColorOnScroll) {
+  //     window.addEventListener("scroll", headerColorChange);
+  //   }
+  //   return function cleanup() {
+  //     if (props.changeColorOnScroll) {
+  //       window.removeEventListener("scroll", headerColorChange);
+  //     }
+  //   };
+  // });
+  // const handleDrawerToggle = () => {
+  //   setMobileOpen(!mobileOpen);
+  // };
+  // const headerColorChange = () => {
+  //   const { color, changeColorOnScroll } = props;
+  //   const windowsScrollTop = window.pageYOffset;
+  //   if (windowsScrollTop > changeColorOnScroll.height) {
+  //     document.body
+  //       .getElementsByTagName("header")[0]
+  //       .classList.remove(classes[color]);
+  //     document.body
+  //       .getElementsByTagName("header")[0]
+  //       .classList.add(classes[changeColorOnScroll.color]);
+  //   } else {
+  //     document.body
+  //       .getElementsByTagName("header")[0]
+  //       .classList.add(classes[color]);
+  //     document.body
+  //       .getElementsByTagName("header")[0]
+  //       .classList.remove(classes[changeColorOnScroll.color]);
+  //   }
+  // };
   const { color, rightLinks, leftLinks, brand, fixed, absolute } = props;
   const appBarClasses = classNames({
     [classes.appBar]: true,
@@ -73,48 +73,58 @@ export default function Header(props) {
     </Link>
   );
   return (
-    <AppBar className={appBarClasses} style={{backgroundColor: 'white !important', color: 'black', padding: '0px' }}>
-      <Toolbar className={classes.container}>
-        {leftLinks !== undefined ? brandComponent : null}
-        <div className={classes.flex}>
-          {leftLinks !== undefined ? (
-            <Hidden smDown implementation="css">
-              {leftLinks}
-            </Hidden>
-          ) : (
-            brandComponent
-          )}
-        </div>
-        <Hidden smDown implementation="css">
-          {rightLinks}
-        </Hidden>
-        <Hidden mdUp>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-          >
-            <Menu />
-          </IconButton>
-        </Hidden>
-      </Toolbar>
-      <Hidden mdUp implementation="js">
-        <Drawer
-          variant="temporary"
-          anchor={"right"}
-          open={mobileOpen}
-          classes={{
-            paper: classes.drawerPaper
-          }}
-          onClose={handleDrawerToggle}
-        >
-          <div className={classes.appResponsive}>
-            {leftLinks}
-            {rightLinks}
-          </div>
-        </Drawer>
-      </Hidden>
-    </AppBar>
+    // <AppBar className={appBarClasses} style={{backgroundColor: 'white !important', color: 'black', padding: '0px' }}>
+    //   <Toolbar className={classes.container}>
+    //     {leftLinks !== undefined ? brandComponent : null}
+    //     <div className={classes.flex}>
+    //       {leftLinks !== undefined ? (
+    //         <Hidden smDown implementation="css">
+    //           {leftLinks}
+    //         </Hidden>
+    //       ) : (
+    //         brandComponent
+    //       )}
+    //     </div>
+    //     <Hidden smDown implementation="css">
+    //       {rightLinks}
+    //     </Hidden>
+    //     <Hidden mdUp>
+    //       <IconButton
+    //         color="inherit"
+    //         aria-label="open drawer"
+    //         onClick={handleDrawerToggle}
+    //       >
+    //         <Menu />
+    //       </IconButton>
+    //     </Hidden>
+    //   </Toolbar>
+    //   <Hidden mdUp implementation="js">
+    //     <Drawer
+    //       variant="temporary"
+    //       anchor={"right"}
+    //       open={mobileOpen}
+    //       classes={{
+    //         paper: classes.drawerPaper
+    //       }}
+    //       onClose={handleDrawerToggle}
+    //     >
+    //       <div className={classes.appResponsive}>
+    //         {leftLinks}
+    //         {rightLinks}
+    //       </div>
+    //     </Drawer>
+    //   </Hidden>
+    // </AppBar>
+    <>
+      <div style={{position: 'fixed', paddingTop: '20px', paddingBottom: '20px', paddingRight: '100px', paddingLeft: '100px', display: 'flex', backgroundColor: 'white', width: '100%', zIndex: '10', boxShadow: '0px 4px 10px rgba(0,0,0,0.5)', alignItems: 'center'}}>
+         <Link href='/'>
+          <Button>
+            <img src="/img/CoDS_Black_Logo_Big.png" style={{height:"50px",width:"100px"}} />
+          </Button>
+         </Link>
+         {rightLinks}
+      </div>
+    </>
   );
 }
 

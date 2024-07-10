@@ -608,7 +608,7 @@ But, because of the highly controlled Internet and social media, we are unable t
               </GridContainer>
             
               <GridContainer style={{ marginTop: "30px" }}>
-                <GridItem sm={3}>
+                <GridItem xl={3} md={4}>
                   <img
                     src="/img/Rectangle 3847.png"
                     style={{ width: "100%", position: "relative" }}
@@ -678,7 +678,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     </a>
                   </GridContainer>
                 </GridItem>
-                <GridItem sm={3}>
+                <GridItem xl={3} md={4}>
                   <img
                     src="/img/Rectangle 3848.png"
                     style={{ width: "100%", position: "relative" }}
@@ -747,7 +747,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     </a>
                   </GridContainer>
                 </GridItem>
-                <GridItem sm={3}>
+                <GridItem xl={3} md={4}>
                   <img
                     src="/img/Rectangle 3847.png"
                     style={{ width: "100%", position: "relative" }}
@@ -817,7 +817,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     </a>
                   </GridContainer>
                 </GridItem>
-                <GridItem sm={3}>
+                <GridItem xl={3} md={4}>
                   <img
                     src="/img/Rectangle 3848.png"
                     style={{ width: "100%", position: "relative" }}
@@ -887,9 +887,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     </a>
                   </GridContainer>
                 </GridItem>
-              </GridContainer>
-              <GridContainer justify="center">
-                <GridItem sm={3}>
+                <GridItem xl={3} md={4}>
                   <img
                     src="/img/Rectangle 3847.png"
                     style={{ width: "100%", position: "relative" }}
@@ -968,7 +966,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     </a>
                   </GridContainer>
                 </GridItem>
-                <GridItem sm={3}>
+                <GridItem xl={3} md={4}>
                   <img
                     src="/img/Rectangle 3848.png"
                     style={{
@@ -1050,7 +1048,7 @@ But, because of the highly controlled Internet and social media, we are unable t
                     </a>
                   </GridContainer>
                 </GridItem>
-                <GridItem sm={3}>
+                <GridItem xl={3} md={4}>
                   <img
                     src="/img/Rectangle 3847.png"
                     style={{ width: "100%", position: "relative" }}
