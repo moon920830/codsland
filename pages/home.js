@@ -1214,11 +1214,12 @@ But, because of the highly controlled Internet and social media, we are unable t
                 cursor: "pointer",
               }}
             >
-              <img src="/img/dean_video.png" style={{ width: "100%" }}></img>
+              {/* <img src="/img/dean_video.png" style={{ width: "100%" }}></img>
               <img
                 src="/img/logos_youtube-icon.png"
                 style={{ position: "absolute", left: "45%", bottom: "45%" }}
-              ></img>
+              ></img> */}
+              <iframe width="100%" height="800" src="https://www.youtube.com/embed/R3tVgmDPUh8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </GridContainer>
             <GridContainer
               justify="center"
